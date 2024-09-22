@@ -1,4 +1,5 @@
 using BeatSaberOffsetMigrator.Configuration;
+using BeatSaberOffsetMigrator.Installers;
 using IPA;
 using IPA.Config;
 using IPA.Config.Stores;
@@ -21,6 +22,11 @@ namespace BeatSaberOffsetMigrator
             Log = logger;
 
             PluginConfig.Instance = config.Generated<PluginConfig>();
+
+            zenjector.UseLogger(logger);
+            zenjector.UseMetadataBinder<Plugin>();
+            zenjector.Install<AppInstaller>(Location.App, PluginConfig.Instance);
+            zenjector.Install<MenuInstaller>(Location.Menu);
             
             Log.Debug("BeatSaberOffsetMigrator initialized.");
         }
