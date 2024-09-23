@@ -37,9 +37,11 @@ public class VRControllerPatch: IAffinity
                 return;
         }
         
+        __instance.viewAnchorTransform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
         var transform = __instance.transform;
-        transform.rotation = controllerPose.rotation;
-        transform.position = controllerPose.position;
+        transform.SetLocalPositionAndRotation(controllerPose.position, controllerPose.rotation);
+        // transform.rotation = controllerPose.rotation;
+        // transform.position = controllerPose.position;
         transform.Translate(offset.position);
         transform.Rotate(offset.rotation.eulerAngles);
     }

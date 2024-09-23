@@ -59,18 +59,15 @@ public class OffsetHelper: MonoBehaviour
 
     private void LateUpdate()
     {
-        var leftPose = new SteamVR_Utils.RigidTransform(_openVRInputHelper.GetLeftControllerLastPose().mDeviceToAbsoluteTracking);
-        LeftSteamVRPose = new Pose(leftPose.pos, leftPose.rot);
-        
-        var rightPose = new SteamVR_Utils.RigidTransform(_openVRInputHelper.GetRightControllerLastPose().mDeviceToAbsoluteTracking);
-        RightSteamVRPose = new Pose(rightPose.pos, rightPose.rot);
+        LeftSteamVRPose = _openVRInputHelper.GetLeftControllerLastPose();
+        RightSteamVRPose = _openVRInputHelper.GetRightControllerLastPose();
 
-        var leftLoc = _leftController.position;
-        var leftRot = _leftController.rotation;
+        var leftLoc = _leftController.viewAnchorTransform.position;
+        var leftRot = _leftController.viewAnchorTransform.rotation;
         LeftGamePose = new Pose(leftLoc, leftRot);
 
-        var rightLoc = _rightController.position;
-        var rightRot = _rightController.rotation;
+        var rightLoc = _rightController.viewAnchorTransform.position;
+        var rightRot = _rightController.viewAnchorTransform.rotation;
         RightGamePose = new Pose(rightLoc, rightRot);
         
         // _logger.Debug($"L:{leftPose.pos}{leftPose.rot} {leftLoc}{leftRot} R:{rightPose.pos}{rightPose.rot} {rightLoc}{rightRot}");

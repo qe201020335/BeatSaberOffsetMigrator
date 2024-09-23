@@ -76,17 +76,18 @@ namespace BeatSaberOffsetMigrator.UI
             
             _saveButton.interactable = !_config.ApplyOffset;
 
-            if (_config.ApplyOffset)
-            {
-                _infoText.text = "Offset is applied, disable offset to see live numbers \n" +
-                                 $"L: {new Pose(_config.LeftOffsetPosition, _config.LeftOffsetRotation).Format()}\n" +
-                                 $"R: {new Pose(_config.RightOffsetPosition, _config.RightOffsetRotation).Format()}";
-            }
+            // if (_config.ApplyOffset)
+            // {
+            //     _infoText.text = "Offset is applied, disable offset to see live numbers \n" +
+            //                      $"L: {new Pose(_config.LeftOffsetPosition, _config.LeftOffsetRotation).Format()}\n" +
+            //                      $"R: {new Pose(_config.RightOffsetPosition, _config.RightOffsetRotation).Format()}";
+            // }
         }
         
         private void LateUpdate()
         {
-            if (!_parsed || _config.ApplyOffset) return;
+            // if (!_parsed || _config.ApplyOffset) return;
+            if (!_parsed) return;
 
             _infoText.text = $"L Real: {_offsetHelper.LeftSteamVRPose.Format()}\nR Real: {_offsetHelper.RightSteamVRPose.Format()}\n" +
                              $"L Game: {_offsetHelper.LeftGamePose.Format()}\nR Game: {_offsetHelper.RightGamePose.Format()}\n" +

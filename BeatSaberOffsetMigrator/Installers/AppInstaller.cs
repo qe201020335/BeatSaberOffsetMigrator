@@ -1,4 +1,5 @@
 using BeatSaberOffsetMigrator.Configuration;
+using Valve.VR;
 using Zenject;
 
 namespace BeatSaberOffsetMigrator.Installers
@@ -14,6 +15,8 @@ namespace BeatSaberOffsetMigrator.Installers
 
         public override void InstallBindings()
         {
+            OpenVRHelper.Initialize();
+            
             Container.BindInstance(_config);
             Container.BindInterfacesAndSelfTo<OpenVRInputHelper>().AsSingle();
         }
