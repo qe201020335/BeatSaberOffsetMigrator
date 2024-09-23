@@ -1,5 +1,6 @@
 using System;
 using BeatSaberOffsetMigrator.Configuration;
+using Valve.VR;
 using BeatSaberOffsetMigrator.InputHelper;
 using UnityEngine.XR;
 using Zenject;
@@ -17,6 +18,8 @@ namespace BeatSaberOffsetMigrator.Installers
 
         public override void InstallBindings()
         {
+            OpenVRHelper.Initialize();
+            
             Container.BindInstance(_config);
             
             if (XRSettings.loadedDeviceName.IndexOf("openvr", StringComparison.OrdinalIgnoreCase) >= 0)

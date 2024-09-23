@@ -5,10 +5,11 @@
   "author": "qe201020335",
   "version": "0.1.0",
   "description": "",
-  "gameVersion": "1.29.1",
+  "gameVersion": "1.37.3",
   "dependsOn": {
     "BSIPA": "^4.2.0",
     "BeatSaberMarkupLanguage": "^1.5.12",
-    "SiraUtil": "^3.0.0"
+    "SiraUtil": "^3.0.0",
+    "OpenVR": "^2.2.3"
   }
 }

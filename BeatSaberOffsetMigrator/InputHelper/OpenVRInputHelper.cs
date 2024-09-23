@@ -6,7 +6,7 @@ using Zenject;
 
 namespace BeatSaberOffsetMigrator.InputHelper;
 
-public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable
+public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable, ITickable
 {
     private readonly SiraLog _logger;
 
@@ -14,7 +14,10 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable
 
     private readonly CVRCompositor _vrCompositor;
 
-    private readonly OpenVRHelper _openVRHelper;
+    private readonly IVRPlatformHelper _vrPlatformHelper;
+    
+    private readonly TrackedDevicePose_t[] _poses = new TrackedDevicePose_t[OpenVR.k_unMaxTrackedDeviceCount];
+    private readonly TrackedDevicePose_t[] _gamePoses = new TrackedDevicePose_t[OpenVR.k_unMaxTrackedDeviceCount];
 
     private uint LeftControllerIndex { get; set; }
     private uint RightControllerIndex { get; set; }
@@ -27,18 +30,23 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable
         _logger = logger;
         _vrSystem = OpenVR.System;
         _vrCompositor = OpenVR.Compositor;
-        _openVRHelper = (platformHelper as OpenVRHelper)!;
+        _vrPlatformHelper = platformHelper;
     }
 
     void IInitializable.Initialize()
     {
         LoadControllers();
-        _openVRHelper.inputFocusWasCapturedEvent += OnInputFocusCaptured;
+        _vrPlatformHelper.inputFocusWasCapturedEvent += OnInputFocusCaptured;
     }
 
     void IDisposable.Dispose()
     {
-        _openVRHelper.inputFocusWasCapturedEvent -= OnInputFocusCaptured;
+        _vrPlatformHelper.inputFocusWasCapturedEvent -= OnInputFocusCaptured;
+    }
+
+    void ITickable.Tick()
+    {
+        _vrSystem.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, 0, _poses);
     }
 
     private void OnInputFocusCaptured()
@@ -49,6 +57,17 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable
 
     private void LoadControllers()
     {
+        _logger.Info("Loading controllers");
+        _logger.Debug($"Current tracking space: {_vrCompositor.GetTrackingSpace()}");
+        for (uint i = 0; i < 64; i++)
+        {
+            var c = _vrSystem.GetTrackedDeviceClass(i);
+            if (c != ETrackedDeviceClass.Invalid && c != ETrackedDeviceClass.Max)
+            {
+                _logger.Debug($"Found device class {c} at index {i}");
+            }
+        }
+        
         var leftIndex = _vrSystem.GetTrackedDeviceIndexForControllerRole(ETrackedControllerRole.LeftHand);
         var rightIndex = _vrSystem.GetTrackedDeviceIndexForControllerRole(ETrackedControllerRole.RightHand);
 
@@ -66,13 +85,13 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable
     
     public Pose GetLeftVRControllerPose()
     {
-        var transform = new SteamVR_Utils.RigidTransform(_openVRHelper._poses[LeftControllerIndex].mDeviceToAbsoluteTracking);
-        return new Pose(transform.pos, transform.rot);
+        var m = _poses[LeftControllerIndex].mDeviceToAbsoluteTracking;
+        return new Pose(m.GetPosition(), m.GetRotation());
     }
 
     public Pose GetRightVRControllerPose()
     {
-        var transform = new SteamVR_Utils.RigidTransform(_openVRHelper._poses[RightControllerIndex].mDeviceToAbsoluteTracking);
-        return new Pose(transform.pos, transform.rot);
+        var m = _poses[RightControllerIndex].mDeviceToAbsoluteTracking;
+        return new Pose(m.GetPosition(), m.GetRotation());
     }
 }
