@@ -98,8 +98,9 @@ namespace BeatSaberOffsetMigrator.UI
     {
         public static string Format(this Pose pose)
         {
+            var euler = Utils.ClampAngle(pose.rotation.eulerAngles);
             return $"({pose.position.x:F3}, {pose.position.y:F3}, {pose.position.z:F3}) " + 
-                   $"({pose.rotation.x:F3}, {pose.rotation.y:F3}, {pose.rotation.z:F3}, {pose.rotation.w:F3})";
+                   $"({euler.x:F1}, {euler.y:F1}, {euler.z:F1})";
         }
     }
 }

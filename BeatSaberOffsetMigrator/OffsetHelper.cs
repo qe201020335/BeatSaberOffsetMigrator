@@ -45,10 +45,12 @@ public class OffsetHelper: MonoBehaviour
 
     private Pose CalculateOffset(Pose from, Pose to)
     {
+        var invRot = Quaternion.Inverse(from.rotation);
+        
         var offset = new Pose
         {
-            position = to.position - from.position,
-            rotation = Quaternion.Inverse(from.rotation) * to.rotation
+            position = invRot * (to.position - from.position),
+            rotation = invRot * to.rotation
         };
         
         // _logger.Debug($"Offset: {offset.position}{offset.rotation}");

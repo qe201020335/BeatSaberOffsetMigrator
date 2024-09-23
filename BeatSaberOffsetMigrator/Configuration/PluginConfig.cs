@@ -15,47 +15,24 @@ namespace BeatSaberOffsetMigrator.Configuration
 
         public virtual Vector3 LeftOffsetPosition { get; set; } = Vector3.zero;
         
-        [SerializedName("LeftOffsetRotation")]
-        protected virtual Quat _LeftOffsetRotation { get; set; } = new Quat(Quaternion.identity);
+        protected virtual Vector3 LeftOffsetRotationEuler { get; set; } = Vector3.zero;
        
         public virtual Vector3 RightOffsetPosition { get; set; } = Vector3.zero;
         
-        [SerializedName("RightOffsetRotation")]
-        protected virtual Quat _RightOffsetRotation { get; set; } = new Quat(Quaternion.identity);
+        protected virtual Vector3 RightOffsetRotationEuler { get; set; } = Vector3.zero;
         
         [Ignore]
         public virtual Quaternion LeftOffsetRotation
         {
-            get => _LeftOffsetRotation.ToQuaternion();
-            set => _LeftOffsetRotation = new Quat(value);
+            get => Quaternion.Euler(LeftOffsetRotationEuler);
+            set => LeftOffsetRotationEuler = Utils.ClampAngle(value.eulerAngles);
         }
         
         [Ignore]
         public virtual Quaternion RightOffsetRotation
         {
-            get => _RightOffsetRotation.ToQuaternion();
-            set => _RightOffsetRotation = new Quat(value);
-        }
-    }
-
-    internal struct Quat
-    {
-        public float x;
-        public float y;
-        public float z;
-        public float w;
-        
-        public Quat(Quaternion quat)
-        {
-            x = quat.x;
-            y = quat.y;
-            z = quat.z;
-            w = quat.w;
-        }
-        
-        public Quaternion ToQuaternion()
-        {
-            return new Quaternion(x, y, z, w);
+            get => Quaternion.Euler(RightOffsetRotationEuler);
+            set => RightOffsetRotationEuler = Utils.ClampAngle(value.eulerAngles);
         }
     }
 }

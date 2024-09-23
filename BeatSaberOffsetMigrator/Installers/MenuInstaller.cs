@@ -1,3 +1,4 @@
+using BeatSaberOffsetMigrator.Patches;
 using BeatSaberOffsetMigrator.UI;
 using Zenject;
 
@@ -16,6 +17,7 @@ namespace BeatSaberOffsetMigrator.Installers
             Container.BindInterfacesAndSelfTo<MenuViewController>().FromNewComponentAsViewController().AsSingle();
             Container.BindInterfacesAndSelfTo<MenuFlowCoordinator>().FromNewComponentOnNewGameObject().AsSingle();
             Container.BindInterfacesTo<MenuButtonManager>().AsSingle();
+            Container.BindInterfacesTo<VRControllerPatch>().AsSingle();
         }
     }
 }
