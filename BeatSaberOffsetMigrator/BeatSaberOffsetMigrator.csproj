@@ -73,6 +73,10 @@
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.XRModule">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.XRModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Zenject">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Zenject.dll</HintPath>
       <Private>False</Private>
@@ -110,5 +114,7 @@
   <ItemGroup>
     <None Remove="manifest.json" />
     <EmbeddedResource Include="manifest.json" />
+    <None Remove="UI\BSML\MenuView.bsml" />
+    <EmbeddedResource Include="UI\BSML\MenuView.bsml" />
   </ItemGroup>
 </Project>
