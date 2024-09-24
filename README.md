@@ -23,7 +23,7 @@ This offset can then be imported by [EasyOffset](https://github.com/Reezonate/Ea
 - OpenVR API (Only for 1.29.4+)
 
 ## How To Use
-### Record Offset (For example, 1.29.1)
+### Record Offset (For example, on 1.29.1)
 1. Grab a [release](https://github.com/qe201020335/BeatSaberOffsetMigrator/releases) for your game version and install it
 2. Make sure all your controller offset mods and settings are working correctly
 3. Disable all menu pointer smoothing mods
@@ -33,7 +33,7 @@ This offset can then be imported by [EasyOffset](https://github.com/Reezonate/Ea
     - The "Diff" values should stay the same and not change as you move your controller slowly.
 7. Press `Save Offset` to save the current offset.
 
-### Restore Offset (For example, 1.37.3)
+### Restore Offset (For example, on 1.37.3)
 1. Grab a [release](https://github.com/qe201020335/BeatSaberOffsetMigrator/releases) for your game version and install it
 2. Copy the configuration file from the "source" game to the "target" game
     - The configuration file location is `UserData\BeatSaberOffsetMigrator.json`
@@ -47,7 +47,7 @@ This offset can then be imported by [EasyOffset](https://github.com/Reezonate/Ea
 8. You should see the pose of your controllers and in-game sabers
     - The "Diff" values should stay the same and not change as you move your controller slowly.
     - Due to some small latency, the Diff values may vary ~0.1 as you move your controller.
-9. Toggle on the `Apply Offset` option and see if your controllers are in the correct place like before
+9. Toggle on the `Apply Offset` option and see if your sabers are in the correct place like before
     - If the offsets are clearly wrong, contact me @qe201020335 on Discord
 10. In the EasyOffset mod settings menu click the `Universal Import` button to import the offset and enable EasyOffset
     - See EasyOffset's [readme](https://github.com/Reezonate/EasyOffset?tab=readme-ov-file#from-any-source) for details
