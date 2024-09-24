@@ -36,7 +36,7 @@ This offset can then be imported by [EasyOffset](https://github.com/Reezonate/Ea
 ### Restore Offset (For example, 1.37.3)
 1. Grab a [release](https://github.com/qe201020335/BeatSaberOffsetMigrator/releases) for your game version and install it
 2. Copy the configuration file from the "source" game to the "target" game
-    - The configuration file location is `Beat Saber\UserData\BeatSaberOffsetMigrator.json`
+    - The configuration file location is `UserData\BeatSaberOffsetMigrator.json`
     - "Source" game is the one you use to save the offset from
     - "Target" game is the one you want to migrate your offset to
 3. Install [EasyOffset](https://github.com/Reezonate/EasyOffset) 
@@ -53,7 +53,7 @@ This offset can then be imported by [EasyOffset](https://github.com/Reezonate/Ea
     - See EasyOffset's [readme](https://github.com/Reezonate/EasyOffset?tab=readme-ov-file#from-any-source) for details
 11. In EasyOffset's controller settings menu save the current offset to a profile
 12. Toggle off the `Apply Offset` option in the `OFFSET HELPER` menu
-13. Uninstall `BeatSaberOffsetMigrator`
+13. Uninstall `BeatSaberOffsetMigrator` by deleting `Plugins\BeatSaberOffsetMigrator.dll`
 
 > [!NOTE]  
 > It is not recommended to play with this mod installed. All the offset logic only applies in the menu.
