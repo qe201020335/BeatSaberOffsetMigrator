@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using BeatSaberOffsetMigrator.Configuration;
 using SiraUtil.Logging;
 using UnityEngine;
 using Valve.VR;
@@ -10,10 +12,14 @@ public class OpenVRInputHelper: IInitializable, IDisposable, ITickable
 {
     private readonly SiraLog _logger;
 
+    [Inject]
+    private readonly PluginConfig _config;
+
     private readonly CVRSystem _vrSystem;
 
     private readonly CVRCompositor _vrCompositor;
 
+    [Inject]
     private readonly IVRPlatformHelper _vrPlatformHelper;
     
     private readonly TrackedDevicePose_t[] _poses = new TrackedDevicePose_t[OpenVR.k_unMaxTrackedDeviceCount];
@@ -23,28 +29,43 @@ public class OpenVRInputHelper: IInitializable, IDisposable, ITickable
     public uint RightControllerIndex { get; private set; }
     
     
-    private OpenVRInputHelper(SiraLog logger, IVRPlatformHelper platformHelper)
+    private OpenVRInputHelper(SiraLog logger)
     {
         _logger = logger;
         _vrSystem = OpenVR.System;
         _vrCompositor = OpenVR.Compositor;
-        _vrPlatformHelper = platformHelper;
     }
 
     void IInitializable.Initialize()
     {
         LoadControllers();
         _vrPlatformHelper.inputFocusWasCapturedEvent += OnInputFocusCaptured;
+        Application.onBeforeRender += OnBeforeRender;
     }
 
     void IDisposable.Dispose()
     {
         _vrPlatformHelper.inputFocusWasCapturedEvent -= OnInputFocusCaptured;
+        Application.onBeforeRender -= OnBeforeRender;
     }
 
     void ITickable.Tick()
     {
-        _vrSystem.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, 0, _poses);
+        //_vrSystem.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, 0, _poses);
+        
+        var delay = Time.deltaTime * _config.FrameDelay;  // attempt to get the pose for the next frame
+        _vrSystem.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, delay, _poses);
+        
+        // this has really bad latency
+        // VRControllerState_t state = default;
+        // var stateSize = (uint)Marshal.SizeOf<VRControllerState_t>();
+        // _vrSystem.GetControllerStateWithPose(ETrackingUniverseOrigin.TrackingUniverseStanding, LeftControllerIndex, ref state, stateSize, ref _poses[LeftControllerIndex]);
+        // _vrSystem.GetControllerStateWithPose(ETrackingUniverseOrigin.TrackingUniverseStanding, RightControllerIndex, ref state, stateSize, ref _poses[RightControllerIndex]);
+    }
+    
+    private void OnBeforeRender()
+    {
+
     }
 
     private void OnInputFocusCaptured()

@@ -12,6 +12,8 @@ namespace BeatSaberOffsetMigrator.Configuration
         public static PluginConfig Instance { get; set; } = null!;
 
         public virtual bool ApplyOffset { get; set; } = false;
+        
+        public virtual float FrameDelay { get; set; } = 4.5f;
 
         public virtual Vector3 LeftOffsetPosition { get; set; } = Vector3.zero;
         

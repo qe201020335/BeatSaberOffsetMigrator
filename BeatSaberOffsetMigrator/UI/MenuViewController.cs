@@ -37,6 +37,13 @@ namespace BeatSaberOffsetMigrator.UI
             }
         }
 
+        [UIValue("FrameDelay")]
+        private float FrameDelay
+        {
+            get => _config.FrameDelay;
+            set => _config.FrameDelay = value;
+        }
+
         [UIComponent("info_text")]
         private TMP_Text _infoText = null!;
 
