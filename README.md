@@ -4,6 +4,18 @@ A simple mod to migrate controller settings between versions.
 > [!NOTE]  
 > Currently only supports SteamVR. OculusVR support is WIP.
 
+## The Idea
+### The Runtime-to-Saber Offset
+Controller poses are read directly from VR runtime, OpenVR at the moment, thus the reading will not be affected by the *internal* offsets done by Unity, Unity plugins and the game devs.
+Hence this controller pose is the source of truth.
+
+The offset is then calculated using the controller poses and the in-game saber poses (the menu pointer). This will include the offset done by all the other controller settings mod.
+
+### Applying the Offset
+Re-applying the offset is as simple as overwriting the in-game saber pose with (controller pose + offset).
+
+This offset can then be imported by [EasyOffset](https://github.com/Reezonate/EasyOffset) via its universal import feature.
+
 ## Requirements
 - BSIPA
 - BSML
@@ -42,4 +54,8 @@ A simple mod to migrate controller settings between versions.
 11. In EasyOffset's controller settings menu save the current offset to a profile
 12. Toggle off the `Apply Offset` option in the `OFFSET HELPER` menu
 13. Uninstall `BeatSaberOffsetMigrator`
-    
+
+> [!NOTE]  
+> It is not recommended to play with this mod installed. All the offset logic only applies in the menu.
+>
+> Please uninstall this mod once you verified the offset is correctly imported by EasyOffset.
