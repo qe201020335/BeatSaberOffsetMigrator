@@ -4,6 +4,7 @@ using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Settings;
 using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberOffsetMigrator.Configuration;
+using BeatSaberOffsetMigrator.InputHelper;
 using SiraUtil.Logging;
 using TMPro;
 using UnityEngine;
@@ -24,6 +25,9 @@ namespace BeatSaberOffsetMigrator.UI
         [Inject]
         private readonly OffsetHelper _offsetHelper = null!;
         
+        [Inject]
+        private readonly IVRInputHelper _vrInputHelper = null!;
+        
         private bool _parsed = false;
 
         [UIValue("ApplyOffset")]
@@ -36,6 +40,9 @@ namespace BeatSaberOffsetMigrator.UI
                 RefreshState();
             }
         }
+
+        [UIValue("supported")]
+        private bool OffsetSupported => _vrInputHelper.Supported;
 
         [UIComponent("info_text")]
         private TMP_Text _infoText = null!;
@@ -74,11 +81,18 @@ namespace BeatSaberOffsetMigrator.UI
         {
             if (!_parsed) return;
             
-            _saveButton.interactable = !_config.ApplyOffset;
+            _saveButton.interactable = !_config.ApplyOffset && OffsetSupported;
+
+            if (!OffsetSupported)
+            {
+                _infoText.text = "Current runtime: <color=#FF0000>Unsupported</color>";
+                return;
+            }
 
             if (_config.ApplyOffset)
             {
-                _infoText.text = "Offset is applied, disable offset to see live numbers \n" +
+                _infoText.text = $"Current runtime: {_vrInputHelper.RuntimeName}\n" + 
+                                 "Offset is applied, disable offset to see live numbers \n" +
                                  $"L: {new Pose(_config.LeftOffsetPosition, _config.LeftOffsetRotation).Format()}\n" +
                                  $"R: {new Pose(_config.RightOffsetPosition, _config.RightOffsetRotation).Format()}";
             }
@@ -86,9 +100,10 @@ namespace BeatSaberOffsetMigrator.UI
         
         private void LateUpdate()
         {
-            if (!_parsed || _config.ApplyOffset) return;
+            if (!_parsed || _config.ApplyOffset || !OffsetSupported) return;
 
-            _infoText.text = $"L Real: {_offsetHelper.LeftRuntimePose.Format()}\nR Real: {_offsetHelper.RightRuntimePose.Format()}\n" +
+            _infoText.text = $"Current runtime: {_vrInputHelper.RuntimeName}\n" + 
+                             $"L Real: {_offsetHelper.LeftRuntimePose.Format()}\nR Real: {_offsetHelper.RightRuntimePose.Format()}\n" +
                              $"L Game: {_offsetHelper.LeftGamePose.Format()}\nR Game: {_offsetHelper.RightGamePose.Format()}\n" +
                              $"L Diff: {_offsetHelper.LeftOffset.Format()}\nR Diff: {_offsetHelper.RightOffset.Format()}";
         }

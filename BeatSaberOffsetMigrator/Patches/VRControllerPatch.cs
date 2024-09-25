@@ -17,7 +17,7 @@ public class VRControllerPatch: IAffinity
     [AffinityPatch(typeof(VRController), nameof(VRController.Update))]
     private void Postfix(VRController __instance)
     {
-        if (!PluginConfig.Instance.ApplyOffset) return;
+        if (!PluginConfig.Instance.ApplyOffset || !_offsetHelper.IsSupported) return;
         
         var node = __instance.node;
         
