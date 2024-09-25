@@ -88,7 +88,7 @@ namespace BeatSaberOffsetMigrator.UI
         {
             if (!_parsed || _config.ApplyOffset) return;
 
-            _infoText.text = $"L Real: {_offsetHelper.LeftSteamVRPose.Format()}\nR Real: {_offsetHelper.RightSteamVRPose.Format()}\n" +
+            _infoText.text = $"L Real: {_offsetHelper.LeftRuntimePose.Format()}\nR Real: {_offsetHelper.RightRuntimePose.Format()}\n" +
                              $"L Game: {_offsetHelper.LeftGamePose.Format()}\nR Game: {_offsetHelper.RightGamePose.Format()}\n" +
                              $"L Diff: {_offsetHelper.LeftOffset.Format()}\nR Diff: {_offsetHelper.RightOffset.Format()}";
         }

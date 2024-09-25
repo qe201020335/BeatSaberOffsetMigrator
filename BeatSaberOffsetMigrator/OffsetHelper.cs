@@ -1,4 +1,5 @@
 ﻿using BeatSaberOffsetMigrator.Configuration;
+using BeatSaberOffsetMigrator.InputHelper;
 using SiraUtil.Logging;
 using SiraUtil.Services;
 using UnityEngine;
@@ -17,28 +18,28 @@ public class OffsetHelper: MonoBehaviour
 
     private VRController _rightController = null!;
 
-    private OpenVRInputHelper _openVRInputHelper = null!;
+    private IVRInputHelper _vrInputHelper = null!;
     
     internal Pose LeftGamePose { get; private set; }
     
     internal Pose RightGamePose { get; private set; }
     
-    internal Pose LeftSteamVRPose { get; private set; }
+    internal Pose LeftRuntimePose { get; private set; }
     
-    internal Pose RightSteamVRPose { get; private set; }
+    internal Pose RightRuntimePose { get; private set; }
     
-    internal Pose LeftOffset => CalculateOffset(LeftSteamVRPose, LeftGamePose);
-    internal Pose RightOffset => CalculateOffset(RightSteamVRPose, RightGamePose);
-    
-    
+    internal Pose LeftOffset => CalculateOffset(LeftRuntimePose, LeftGamePose);
+    internal Pose RightOffset => CalculateOffset(RightRuntimePose, RightGamePose);
+
+
     [Inject]
-    private void Init(SiraLog logger, PluginConfig config, IMenuControllerAccessor controllerAccessor, OpenVRInputHelper openVRInputHelper)
+    private void Init(SiraLog logger, PluginConfig config, IMenuControllerAccessor controllerAccessor, IVRInputHelper vrInputHelper)
     {
         _logger = logger;
         _config = config;
         _leftController = controllerAccessor.LeftController;
         _rightController = controllerAccessor.RightController;
-        _openVRInputHelper = openVRInputHelper;
+        _vrInputHelper = vrInputHelper;
         
         _logger.Debug("OffsetHelper initialized");
     }
@@ -59,11 +60,8 @@ public class OffsetHelper: MonoBehaviour
 
     private void LateUpdate()
     {
-        var leftPose = new SteamVR_Utils.RigidTransform(_openVRInputHelper.GetLeftControllerLastPose().mDeviceToAbsoluteTracking);
-        LeftSteamVRPose = new Pose(leftPose.pos, leftPose.rot);
-        
-        var rightPose = new SteamVR_Utils.RigidTransform(_openVRInputHelper.GetRightControllerLastPose().mDeviceToAbsoluteTracking);
-        RightSteamVRPose = new Pose(rightPose.pos, rightPose.rot);
+        LeftRuntimePose = _vrInputHelper.GetLeftVRControllerPose();
+        RightRuntimePose = _vrInputHelper.GetRightVRControllerPose();
 
         var leftLoc = _leftController.position;
         var leftRot = _leftController.rotation;

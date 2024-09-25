@@ -1,11 +1,12 @@
 ﻿using System;
 using SiraUtil.Logging;
+using UnityEngine;
 using Valve.VR;
 using Zenject;
 
-namespace BeatSaberOffsetMigrator;
+namespace BeatSaberOffsetMigrator.InputHelper;
 
-public class OpenVRInputHelper: IInitializable, IDisposable
+public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable
 {
     private readonly SiraLog _logger;
 
@@ -15,9 +16,11 @@ public class OpenVRInputHelper: IInitializable, IDisposable
 
     private readonly OpenVRHelper _openVRHelper;
 
-    public uint LeftControllerIndex { get; private set; }
-    public uint RightControllerIndex { get; private set; }
-    
+    private uint LeftControllerIndex { get; set; }
+    private uint RightControllerIndex { get; set; }
+
+    public string RuntimeName => "OpenVR (Steam VR)";
+    public bool Supported => true;
     
     private OpenVRInputHelper(SiraLog logger, IVRPlatformHelper platformHelper)
     {
@@ -61,13 +64,15 @@ public class OpenVRInputHelper: IInitializable, IDisposable
         _logger.Notice($"Found index for controllers! {LeftControllerIndex} {RightControllerIndex}");
     }
     
-    public TrackedDevicePose_t GetLeftControllerLastPose()
+    public Pose GetLeftVRControllerPose()
     {
-        return _openVRHelper._poses[LeftControllerIndex];
+        var transform = new SteamVR_Utils.RigidTransform(_openVRHelper._poses[LeftControllerIndex].mDeviceToAbsoluteTracking);
+        return new Pose(transform.pos, transform.rot);
     }
-    
-    public TrackedDevicePose_t GetRightControllerLastPose()
+
+    public Pose GetRightVRControllerPose()
     {
-        return _openVRHelper._poses[RightControllerIndex];
+        var transform = new SteamVR_Utils.RigidTransform(_openVRHelper._poses[RightControllerIndex].mDeviceToAbsoluteTracking);
+        return new Pose(transform.pos, transform.rot);
     }
 }
