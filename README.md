@@ -11,6 +11,19 @@ Hence this controller pose is the source of truth.
 
 The offset is then calculated using the controller poses and the in-game saber poses (the menu pointer). This will include the offset done by all the other controller settings mod.
 
+```mermaid
+---
+title: Processing of Poses
+---
+flowchart LR;
+    A("Runtime Pose
+(OpenVR/OculusVR)");
+    B("Unity XRNode Pose");
+    C("Saber Pose");
+    A-- Unity XR plugins --->B;
+    B-- Base game offset / Controller offset mods  --->C;
+```
+
 ### Applying the Offset
 Re-applying the offset is as simple as overwriting the in-game saber pose with (controller pose + offset).
 
