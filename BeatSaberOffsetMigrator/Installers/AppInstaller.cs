@@ -1,9 +1,6 @@
 using System;
 using BeatSaberOffsetMigrator.Configuration;
-using Valve.VR;
 using BeatSaberOffsetMigrator.InputHelper;
-using nkast.LibOVR;
-using UnityEngine.XR;
 using UnityEngine.XR.OpenXR;
 using Zenject;
 
