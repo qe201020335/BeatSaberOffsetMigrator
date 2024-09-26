@@ -20,7 +20,11 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="nkast.LibOVR" Version="2.1.0" />
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="nkast.LibOVR" Version="2.1.0" Publicize="true"/>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\BeatSaberOffsetMigrator\Shared\ControllerPose.cs">

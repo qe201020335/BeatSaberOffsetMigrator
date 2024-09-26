@@ -16,12 +16,25 @@ namespace VRInputHelper.Oculus
         private Program(OvrSession session)
         {
             _session = session;
+            _session.SetTrackingOriginType(OvrTrackingOrigin.FloorLevel);
         }
         
         private void Run()
         {
             for (;;)
             {
+                var a = _session.GetSessionStatus(out var sessionStatus);
+                if (a < 0)
+                {
+                    Console.WriteLine($"Failed to get session status, error code: {a}");
+                }
+                if (sessionStatus.ShouldQuit == OvrBool.True) break;
+                if (sessionStatus.ShouldRecenter == OvrBool.True)
+                {
+                    Console.WriteLine("Recentering tracking origin");
+                    _session.RecenterTrackingOrigin(OvrTrackingOrigin.FloorLevel);
+                }
+                
                 var poses = _session.GetTrackingState(0, OvrBool.False).HandPoses;
                 var controllerPose = new ControllerPose
                 {
@@ -44,7 +57,7 @@ namespace VRInputHelper.Oculus
                 
                 _sharedMemoryManager.Write(ref controllerPose);
                 
-                Console.WriteLine($"({controllerPose.lposx}, {controllerPose.lposy}, {controllerPose.lposz}), ({controllerPose.rposx}, {controllerPose.rposy}, {controllerPose.rposz})");
+                //Console.WriteLine($"({controllerPose.lposx}, {controllerPose.lposy}, {controllerPose.lposz}), ({controllerPose.rposx}, {controllerPose.rposy}, {controllerPose.rposz})");
                 
                 Thread.Sleep(Delay);
             }
