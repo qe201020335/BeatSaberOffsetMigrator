@@ -27,6 +27,7 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable, ITi
     
     private OpenVRInputHelper(SiraLog logger, IVRPlatformHelper platformHelper)
     {
+        OpenVRHelper.Initialize();
         _logger = logger;
         _vrSystem = OpenVR.System;
         _vrCompositor = OpenVR.Compositor;

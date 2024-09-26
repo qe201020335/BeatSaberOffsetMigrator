@@ -2,7 +2,9 @@ using System;
 using BeatSaberOffsetMigrator.Configuration;
 using Valve.VR;
 using BeatSaberOffsetMigrator.InputHelper;
+using nkast.LibOVR;
 using UnityEngine.XR;
+using UnityEngine.XR.OpenXR;
 using Zenject;
 
 namespace BeatSaberOffsetMigrator.Installers
@@ -18,15 +20,15 @@ namespace BeatSaberOffsetMigrator.Installers
 
         public override void InstallBindings()
         {
-            OpenVRHelper.Initialize();
-            
             Container.BindInstance(_config);
             
-            if (XRSettings.loadedDeviceName.IndexOf("openvr", StringComparison.OrdinalIgnoreCase) >= 0)
+            Plugin.Log.Notice("Current OpenXR runtime: " + OpenXRRuntime.name);
+            
+            if (OpenXRRuntime.name.IndexOf("openvr", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 Container.BindInterfacesTo<OpenVRInputHelper>().AsSingle();
             }
-            else if (XRSettings.loadedDeviceName.IndexOf("oculus", StringComparison.OrdinalIgnoreCase) >= 0)
+            else if (OpenXRRuntime.name.IndexOf("oculus", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 Container.BindInterfacesTo<OculusVRInputHelper>().AsSingle();
             }
