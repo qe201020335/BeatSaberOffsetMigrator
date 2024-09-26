@@ -17,7 +17,7 @@ public class VRControllerPatch: IAffinity
     [AffinityPatch(typeof(VRController), nameof(VRController.Update))]
     private void Postfix(VRController __instance)
     {
-        if (!PluginConfig.Instance.ApplyOffset) return;
+        if (!PluginConfig.Instance.ApplyOffset || !_offsetHelper.IsSupported) return;
         
         var node = __instance.node;
         
@@ -27,11 +27,11 @@ public class VRControllerPatch: IAffinity
         {
             case XRNode.LeftHand:
                 offset = new Pose(PluginConfig.Instance.LeftOffsetPosition, PluginConfig.Instance.LeftOffsetRotation);
-                controllerPose = _offsetHelper.LeftSteamVRPose;
+                controllerPose = _offsetHelper.LeftRuntimePose;
                 break;
             case XRNode.RightHand:
                 offset = new Pose(PluginConfig.Instance.RightOffsetPosition, PluginConfig.Instance.RightOffsetRotation);
-                controllerPose = _offsetHelper.RightSteamVRPose;
+                controllerPose = _offsetHelper.RightRuntimePose;
                 break;
             default:
                 return;

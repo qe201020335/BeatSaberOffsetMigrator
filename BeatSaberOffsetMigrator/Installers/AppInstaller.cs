@@ -1,4 +1,7 @@
+using System;
 using BeatSaberOffsetMigrator.Configuration;
+using BeatSaberOffsetMigrator.InputHelper;
+using UnityEngine.XR;
 using Zenject;
 
 namespace BeatSaberOffsetMigrator.Installers
@@ -15,7 +18,19 @@ namespace BeatSaberOffsetMigrator.Installers
         public override void InstallBindings()
         {
             Container.BindInstance(_config);
-            Container.BindInterfacesAndSelfTo<OpenVRInputHelper>().AsSingle();
+            
+            if (XRSettings.loadedDeviceName.IndexOf("openvr", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                Container.BindInterfacesTo<OpenVRInputHelper>().AsSingle();
+            }
+            else if (XRSettings.loadedDeviceName.IndexOf("oculus", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                Container.BindInterfacesTo<OculusVRInputHelper>().AsSingle();
+            }
+            else
+            {
+                Container.BindInterfacesTo<UnsupportedVRInputHelper>().AsSingle();
+            }
         }
     }
 }
