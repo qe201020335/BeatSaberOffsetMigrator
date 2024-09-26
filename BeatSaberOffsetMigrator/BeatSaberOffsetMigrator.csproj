@@ -22,9 +22,6 @@
     <DisableZipRelease>True</DisableZipRelease>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Oculus.VR">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Oculus.VR.dll</HintPath>
-    </Reference>
     <Reference Include="EasyOffset">
       <HintPath>$(BeatSaberDir)\Plugins\EasyOffset.dll</HintPath>
       <Private>false</Private>
@@ -59,6 +56,10 @@
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.XR.OpenXR">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Unity.XR.OpenXR.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">

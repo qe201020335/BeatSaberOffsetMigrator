@@ -8,6 +8,7 @@ using SiraUtil.Logging;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.XR.OpenXR;
 using Zenject;
 
 namespace BeatSaberOffsetMigrator.UI
@@ -169,13 +170,13 @@ namespace BeatSaberOffsetMigrator.UI
 
             if (!OffsetSupported)
             {
-                _infoText.text = "Current runtime: <color=#FF0000>Unsupported</color>";
+                _infoText.text = $"Current runtime: {OpenXRRuntime.name} <color=#FF0000>Unsupported</color>";
                 return;
             }
 
             if (_config.ApplyOffset)
             {
-                _infoText.text = $"Current runtime: {_vrInputHelper.RuntimeName}\n" + 
+                _infoText.text = $"Current runtime: {OpenXRRuntime.name} using helper {_vrInputHelper.GetType().Name}\n" + 
                                  "Offset is applied, disable offset to see live numbers \n" +
                                  $"L: {new Pose(_config.LeftOffsetPosition, _config.LeftOffsetRotation).Format()}\n" +
                                  $"R: {new Pose(_config.RightOffsetPosition, _config.RightOffsetRotation).Format()}";
@@ -186,7 +187,7 @@ namespace BeatSaberOffsetMigrator.UI
         {
             if (!_parsed || _config.ApplyOffset || !OffsetSupported) return;
 
-            _infoText.text = $"Current runtime: {_vrInputHelper.RuntimeName}\n" + 
+            _infoText.text = $"Current runtime: {OpenXRRuntime.name} using helper {_vrInputHelper.GetType().Name}\n" + 
                              $"L Real: {_offsetHelper.LeftRuntimePose.Format()}\nR Real: {_offsetHelper.RightRuntimePose.Format()}\n" +
                              $"L Game: {_offsetHelper.LeftGamePose.Format()}\nR Game: {_offsetHelper.RightGamePose.Format()}\n" +
                              $"L Diff: {_offsetHelper.LeftOffset.Format()}\nR Diff: {_offsetHelper.RightOffset.Format()}";
