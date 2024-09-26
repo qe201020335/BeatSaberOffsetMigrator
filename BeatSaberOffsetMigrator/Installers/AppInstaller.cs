@@ -23,11 +23,10 @@ namespace BeatSaberOffsetMigrator.Installers
             {
                 Container.BindInterfacesTo<OpenVRInputHelper>().AsSingle();
             }
-            // TODO: Implement OculusVR support
-            // else if (XRSettings.loadedDeviceName.IndexOf("oculus", StringComparison.OrdinalIgnoreCase) >= 0)
-            // {
-            //     
-            // }
+            else if (XRSettings.loadedDeviceName.IndexOf("oculus", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                Container.BindInterfacesTo<OculusVRInputHelper>().AsSingle();
+            }
             else
             {
                 Container.BindInterfacesTo<UnsupportedVRInputHelper>().AsSingle();
