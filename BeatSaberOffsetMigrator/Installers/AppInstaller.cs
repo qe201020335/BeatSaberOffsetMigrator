@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.InputHelper;
+using IPA.Loader;
 using UnityEngine.XR.OpenXR;
 using Zenject;
 
@@ -8,6 +10,8 @@ namespace BeatSaberOffsetMigrator.Installers
 {
     internal class AppInstaller : Installer
     {
+        private const string OpenVRLibId = "OpenVR";
+        
         private readonly PluginConfig _config;
 
         public AppInstaller(PluginConfig config)
@@ -23,7 +27,17 @@ namespace BeatSaberOffsetMigrator.Installers
             
             if (OpenXRRuntime.name.IndexOf("steamvr", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                Container.BindInterfacesTo<OpenVRInputHelper>().AsSingle();
+                if (PluginManager.EnabledPlugins.Any(p => p.Id == OpenVRLibId))
+                {
+                    Container.BindInterfacesTo<OpenVRInputHelper>().AsSingle();
+                }
+                else
+                {
+                    Container.BindInterfacesTo<UnsupportedVRInputHelper>().AsSingle().OnInstantiated<UnsupportedVRInputHelper>((_, instance )=>
+                    {
+                        instance.Reason = "OpenVR Library not found";
+                    });
+                }
             }
             else if (OpenXRRuntime.name.IndexOf("oculus", StringComparison.OrdinalIgnoreCase) >= 0)
             {

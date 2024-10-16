@@ -170,7 +170,11 @@ namespace BeatSaberOffsetMigrator.UI
 
             if (!OffsetSupported)
             {
-                _infoText.text = $"Current runtime: {OpenXRRuntime.name} <color=#FF0000>Unsupported</color>";
+                _infoText.text = $"Current runtime: {(string.IsNullOrWhiteSpace(OpenXRRuntime.name) ? "Unknown" : OpenXRRuntime.name)}";
+                if (_vrInputHelper is UnsupportedVRInputHelper unsupported)
+                {
+                    _infoText.text += $"\n<color=#FF0000>{unsupported.Reason}</color>";
+                }
                 return;
             }
 

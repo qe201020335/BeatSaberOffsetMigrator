@@ -8,6 +8,8 @@ public class UnsupportedVRInputHelper: IVRInputHelper
     
     public bool Supported => false;
     
+    public string Reason { get; set; } = "Unsupported runtime";
+    
     public Pose GetLeftVRControllerPose()
     {
         return Pose.identity;
