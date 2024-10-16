@@ -9,6 +9,15 @@
         "SteamAppId": "620980"
       }
     },
+    "Beat Saber FPFC": {
+      "commandName": "Executable",
+      "executablePath": "$(BeatSaberDir)\\Beat Saber.exe",
+      "commandLineArgs": "fpfc --verbose --trace",
+      "workingDirectory": "$(BeatSaberDir)",
+      "environmentVariables": {
+        "SteamAppId": "620980"
+      }
+    },
     "BS Oculus": {
       "commandName": "Executable",
       "executablePath": "$(BeatSaberDir)\\Beat Saber.exe",

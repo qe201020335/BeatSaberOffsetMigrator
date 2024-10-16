@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using IPA.Loader;
 using UnityEngine;
 
 namespace BeatSaberOffsetMigrator;
@@ -23,5 +25,10 @@ public static class Utils
         }
 
         return angle;
+    }
+    
+    public static bool IsModInstalled(string id)
+    {
+        return PluginManager.EnabledPlugins.Any(p => p.Id == id);
     }
 }

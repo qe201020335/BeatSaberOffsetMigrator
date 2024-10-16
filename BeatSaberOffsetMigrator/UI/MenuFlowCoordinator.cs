@@ -36,6 +36,7 @@ namespace BeatSaberOffsetMigrator.UI
 
         protected override void BackButtonWasPressed(ViewController topViewController)
         {
+            if (!_viewController.AllowClose) return;
             base.BackButtonWasPressed(topViewController);
             _mainFlowCoordinator.DismissFlowCoordinator(this);
         }
