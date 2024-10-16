@@ -27,7 +27,7 @@ namespace BeatSaberOffsetMigrator.Installers
             
             if (OpenXRRuntime.name.IndexOf("steamvr", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                if (PluginManager.EnabledPlugins.Any(p => p.Id == OpenVRLibId))
+                if (Utils.IsModInstalled(OpenVRLibId))
                 {
                     Container.BindInterfacesTo<OpenVRInputHelper>().AsSingle();
                 }

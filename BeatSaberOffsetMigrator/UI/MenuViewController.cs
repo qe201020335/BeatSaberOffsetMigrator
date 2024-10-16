@@ -215,7 +215,9 @@ namespace BeatSaberOffsetMigrator.UI
             }
             else
             {
-                ExportModalText = "Click export to export the saved offset to EasyOffset";
+                ExportModalText = "After pressing the export button, put your controllers " +
+                                  "on somewhere stable and with good tracking. Offset will " +
+                                  "be exported to EasyOffset 10 sec after pressing the button.";
             }
             
             parserParams.EmitEvent("show_export");
@@ -244,7 +246,13 @@ namespace BeatSaberOffsetMigrator.UI
             CurExportState = ExportState.Exporting;
             _exportButton.interactable = false;
             _closeExportModalButton.interactable = false;
-
+            
+            for (var i = 10; i > 0; i--)
+            {
+                ExportButtonText = $"Export in {i}";
+                yield return new WaitForSeconds(1);
+            }
+            
             yield return null;
             if (EasyOffsetExporter.ExportToEastOffset())
             {
@@ -255,6 +263,7 @@ namespace BeatSaberOffsetMigrator.UI
                 ExportModalText = "Failed to export";
             }
 
+            ExportButtonText = "Export";
             _closeExportModalButton.interactable = true;
             CurExportState = ExportState.ExportedOrFailed;
         }
