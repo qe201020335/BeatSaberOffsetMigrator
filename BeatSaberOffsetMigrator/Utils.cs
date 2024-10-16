@@ -16,7 +16,7 @@ public static class Utils
     
     private static float ClampAngle(float angle)
     {
-        angle = angle + 360 % 360;
+        angle = (angle + 360) % 360;
         if (angle > 180)
         {
             angle -= 360;
