@@ -38,11 +38,13 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable, ITi
     {
         LoadControllers();
         _vrPlatformHelper.inputFocusWasCapturedEvent += OnInputFocusCaptured;
+        Application.onBeforeRender += (this as ITickable).Tick;
     }
 
     void IDisposable.Dispose()
     {
         _vrPlatformHelper.inputFocusWasCapturedEvent -= OnInputFocusCaptured;
+        Application.onBeforeRender -= (this as ITickable).Tick;
     }
 
     void ITickable.Tick()

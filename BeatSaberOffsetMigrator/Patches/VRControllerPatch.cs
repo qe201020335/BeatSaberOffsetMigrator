@@ -12,15 +12,35 @@ public class VRControllerPatch: IAffinity
 {
     [Inject]
     private readonly OffsetHelper _offsetHelper = null!;
-    
+
     [AffinityPostfix]
     [AffinityPatch(typeof(VRController), nameof(VRController.Update))]
     private void Postfix(VRController __instance)
     {
-        if (!PluginConfig.Instance.ApplyOffset || !_offsetHelper.IsSupported) return;
-        
-        var node = __instance.node;
-        
+        var viewTransform = __instance.viewAnchorTransform;
+        if (PluginConfig.Instance.ApplyOffset && _offsetHelper.IsSupported)
+        {
+            viewTransform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            ApplyOffset(__instance.transform, __instance.node);
+        }
+
+        if (_offsetHelper.IsSupported)
+        {
+            var pose = new Pose(viewTransform.position, viewTransform.rotation);
+            switch (__instance.node)
+            {
+                case XRNode.LeftHand:
+                    _offsetHelper.LeftGamePose = pose;
+                    break;
+                case XRNode.RightHand:
+                    _offsetHelper.RightGamePose = pose;
+                    break;
+            }
+        }
+    }
+    
+    private void ApplyOffset(Transform transform, XRNode node)
+    {
         Pose offset;
         Pose controllerPose;
         switch (node)
@@ -37,8 +57,6 @@ public class VRControllerPatch: IAffinity
                 return;
         }
         
-        __instance.viewAnchorTransform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-        var transform = __instance.transform;
         transform.SetLocalPositionAndRotation(controllerPose.position, controllerPose.rotation);
         // transform.rotation = controllerPose.rotation;
         // transform.position = controllerPose.position;

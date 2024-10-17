@@ -1,5 +1,6 @@
 ﻿using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.InputHelper;
+using SiraUtil.Affinity;
 using SiraUtil.Logging;
 using SiraUtil.Services;
 using UnityEngine;
@@ -20,15 +21,15 @@ public class OffsetHelper: MonoBehaviour
 
     private IVRInputHelper _vrInputHelper = null!;
     
-    internal Pose LeftGamePose { get; private set; }
+    internal Pose LeftGamePose { get; set; }
     
-    internal Pose RightGamePose { get; private set; }
+    internal Pose RightGamePose { get; set; }
     
     internal bool IsSupported => _vrInputHelper.Supported;
+
+    internal Pose LeftRuntimePose => _vrInputHelper.GetLeftVRControllerPose();
     
-    internal Pose LeftRuntimePose { get; private set; }
-    
-    internal Pose RightRuntimePose { get; private set; }
+    internal Pose RightRuntimePose => _vrInputHelper.GetRightVRControllerPose();
     
     internal Pose LeftOffset => CalculateOffset(LeftRuntimePose, LeftGamePose);
     internal Pose RightOffset => CalculateOffset(RightRuntimePose, RightGamePose);
@@ -56,23 +57,6 @@ public class OffsetHelper: MonoBehaviour
             rotation = invRot * to.rotation
         };
         
-        // _logger.Debug($"Offset: {offset.position}{offset.rotation}");
         return offset;
-    }
-
-    private void LateUpdate()
-    {
-        LeftRuntimePose = _vrInputHelper.GetLeftVRControllerPose();
-        RightRuntimePose = _vrInputHelper.GetRightVRControllerPose();
-
-        var leftLoc = _leftController.viewAnchorTransform.position;
-        var leftRot = _leftController.viewAnchorTransform.rotation;
-        LeftGamePose = new Pose(leftLoc, leftRot);
-
-        var rightLoc = _rightController.viewAnchorTransform.position;
-        var rightRot = _rightController.viewAnchorTransform.rotation;
-        RightGamePose = new Pose(rightLoc, rightRot);
-        
-        // _logger.Debug($"L:{leftPose.pos}{leftPose.rot} {leftLoc}{leftRot} R:{rightPose.pos}{rightPose.rot} {rightLoc}{rightRot}");
     }
 }
