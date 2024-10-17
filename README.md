@@ -33,25 +33,30 @@ This offset can then be imported by [EasyOffset](https://github.com/Reezonate/Ea
 - OpenVR API (Only for 1.29.4+ on SteamVR)
 
 ## Things to Note
+### Terminology
+- **Newer versions**: Refers to versions of the game that uses OpenXR (1.29.4+)
+- **Older versions**: Refers to versions of the game before 1.29.4 (1.29.1 and below)
+
 ### Limitations
 - Only supports SteamVR and OculusVR. Does not support other OpenXR runtimes.
 - Not tested with Room offset
 - Does not support menu pointer smoothing mods
 - Logic only applies in the menu
+- On newer versions with OculusVR, re-centering is not supported
 
-### Terminology
-- **Newer versions**: Refers to versions of the game that uses OpenXR (1.29.4+)
-- **Older versions**: Refers to versions of the game before 1.29.4 (1.29.1 and below)
 
 ## How To Use
 > [!IMPORTANT]  
 > Due to the game migrated to OpenXR on 1.29.4+, all base game poses are sampled from Unity's XR plugin. 
-> This mean the timing of the mod reading the poses from runtime and using them in game is out of sync.
+> This means the timing of the mod reading the poses from runtime and using them in-game is out of sync.
 > 
-> To counter this, on newer versions, the mod will add a 10 seconds delay before saving or exporting the offset. 
+> To counter this, on newer versions, the mod will add a 10-second delay before saving or exporting the offset. 
 > This is to give enough time for the player to put or hold still the controller on something stable and not moving.
 
-A typical use case is to migrate the offset from older versions to newer versions (1.29.1 and 1.38.0 will be used as example).
+> [!WARNING]
+> On newer versions, if you are using OculusVR, **DO NOT** re-center/reset your view after you have launched the game!
+
+A typical use case is to migrate the offset from older versions to newer versions (1.29.1 and 1.38.0 will be used as examples).
 
 ### Record Offset (For example, on 1.29.1)
 1. Grab a [release](https://github.com/qe201020335/BeatSaberOffsetMigrator/releases) for your game version and install it
