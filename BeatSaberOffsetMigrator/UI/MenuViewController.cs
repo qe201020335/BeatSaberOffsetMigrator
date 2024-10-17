@@ -19,9 +19,21 @@ namespace BeatSaberOffsetMigrator.UI
     {
         internal enum ExportState
         {
+            /// <summary>
+            /// Export/Save have not begun
+            /// </summary>
             Idle,
+            /// <summary>
+            /// Cannot start exporting or saving offset
+            /// </summary>
             CannotExport,
+            /// <summary>
+            /// Exporting/Saving offset
+            /// </summary>
             Exporting,
+            /// <summary>
+            /// Failed to export/saved offset
+            /// </summary>
             ExportedOrFailed
         }
         
@@ -52,18 +64,26 @@ namespace BeatSaberOffsetMigrator.UI
                     case ExportState.Idle:
                         _exportButton.interactable = true;
                         _closeExportModalButton.interactable = true;
+                        _saveButton.interactable = true;
+                        _closeSaveModalButton.interactable = true;
                         break;
                     case ExportState.CannotExport:
                         _exportButton.interactable = false;
                         _closeExportModalButton.interactable = true;
+                        _saveButton.interactable = false;
+                        _closeSaveModalButton.interactable = true;
                         break;
                     case ExportState.Exporting:
                         _exportButton.interactable = false;
-                        _closeExportModalButton.interactable = true;
+                        _closeExportModalButton.interactable = false;
+                        _saveButton.interactable = false;
+                        _closeSaveModalButton.interactable = false;
                         break;
                     case ExportState.ExportedOrFailed:
                         _exportButton.interactable = false;
                         _closeExportModalButton.interactable = true;
+                        _saveButton.interactable = false;
+                        _closeSaveModalButton.interactable = true;
                         break;
                 }
             }
@@ -111,12 +131,37 @@ namespace BeatSaberOffsetMigrator.UI
                 NotifyPropertyChanged();
             }
         }
+        
+        private string _saveModalText = "Save current offset";
+        [UIValue("save_modal_text")]
+        public string SaveModalText
+        {
+            get => _saveModalText;
+            private set
+            {
+                _saveModalText = value;
+                NotifyPropertyChanged();
+            }
+        }
+        
+        private string _saveButtonText = "Save";
+        [UIValue("save_button_text")]
+        public string SaveButtonText
+        {
+            get => _saveButtonText;
+            private set
+            {
+                _saveButtonText = value;
+                NotifyPropertyChanged();
+            }
+        }
+        
 
         [UIComponent("info_text")]
         private TMP_Text _infoText = null!;
 
-        [UIComponent("save_button")]
-        private Button _saveButton = null!;
+        [UIComponent("save_modal_button")]
+        private Button _saveModalButton = null!;
 
         [UIComponent("export_modal_button")]
         private Button _exportModalButton = null!;
@@ -127,6 +172,9 @@ namespace BeatSaberOffsetMigrator.UI
         [UIComponent("close_export_modal_button")]
         private Button _closeExportModalButton = null!;
         
+        [UIComponent("save_button")]
+        private Button _saveButton = null!;
+        
         [UIComponent("close_save_modal_button")]
         private Button _closeSaveModalButton = null!;
 
@@ -135,21 +183,6 @@ namespace BeatSaberOffsetMigrator.UI
         {
             _parsed = true;
             RefreshState();
-        }
-
-        [UIAction("save_offset")]
-        private void OnSaveOffsetPressed()
-        {
-            if (_modalShowing) return;
-            var leftOffset = _offsetHelper.LeftOffset;
-            var rightOffset = _offsetHelper.RightOffset;
-            _config.LeftOffsetPosition = leftOffset.position;
-            _config.LeftOffsetRotation = leftOffset.rotation;
-            _config.RightOffsetPosition = rightOffset.position;
-            _config.RightOffsetRotation = rightOffset.rotation;
-            
-            parserParams.EmitEvent("show_save");
-            _modalShowing = true;
         }
 
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
@@ -165,7 +198,7 @@ namespace BeatSaberOffsetMigrator.UI
         {
             if (!_parsed) return;
             
-            _saveButton.interactable = !_config.ApplyOffset && OffsetSupported;
+            _saveModalButton.interactable = !_config.ApplyOffset && OffsetSupported;
             _exportModalButton.interactable = _config.ApplyOffset && OffsetSupported;
 
             if (!OffsetSupported)
@@ -195,6 +228,50 @@ namespace BeatSaberOffsetMigrator.UI
                              $"L Real: {_offsetHelper.LeftRuntimePose.Format()}\nR Real: {_offsetHelper.RightRuntimePose.Format()}\n" +
                              $"L Game: {_offsetHelper.LeftGamePose.Format()}\nR Game: {_offsetHelper.RightGamePose.Format()}\n" +
                              $"L Diff: {_offsetHelper.LeftOffset.Format()}\nR Diff: {_offsetHelper.RightOffset.Format()}";
+        }
+
+        [UIAction("open_save")]
+        private void OpenSaveModal()
+        {
+            if (CurExportState != ExportState.Idle) return;
+            SaveButtonText = "Save";
+            SaveModalText = "After pressing the save button, put your controllers " +
+                            "on somewhere stable and with good tracking. Offset will " +
+                            "be saved 10 sec after pressing the button.";
+            
+            parserParams.EmitEvent("show_save");
+            _modalShowing = true;
+        }
+        
+        [UIAction("save_offset")]
+        private void OnSavePressed()
+        {
+            if (CurExportState != ExportState.Idle) return;
+
+            StartCoroutine(Save());
+        }
+        
+        private IEnumerator Save()
+        {
+            CurExportState = ExportState.Exporting;
+            
+            for (var i = 10; i > 0; i--)
+            {
+                SaveButtonText = $"Save in {i}";
+                yield return new WaitForSeconds(1);
+            }
+            
+            yield return null;
+
+            var leftOffset = _offsetHelper.LeftOffset;
+            var rightOffset = _offsetHelper.RightOffset;
+            _config.LeftOffsetPosition = leftOffset.position;
+            _config.LeftOffsetRotation = leftOffset.rotation;
+            _config.RightOffsetPosition = rightOffset.position;
+            _config.RightOffsetRotation = rightOffset.rotation;
+            
+            SaveButtonText = "Saved";
+            CurExportState = ExportState.ExportedOrFailed;
         }
 
         [UIAction("open_export")]
@@ -244,8 +321,6 @@ namespace BeatSaberOffsetMigrator.UI
         private IEnumerator Export()
         {
             CurExportState = ExportState.Exporting;
-            _exportButton.interactable = false;
-            _closeExportModalButton.interactable = false;
             
             for (var i = 10; i > 0; i--)
             {
@@ -263,8 +338,7 @@ namespace BeatSaberOffsetMigrator.UI
                 ExportModalText = "Failed to export";
             }
 
-            ExportButtonText = "Export";
-            _closeExportModalButton.interactable = true;
+            ExportButtonText = "Exported";
             CurExportState = ExportState.ExportedOrFailed;
         }
     }
