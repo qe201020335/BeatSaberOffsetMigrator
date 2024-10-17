@@ -65,7 +65,7 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable, ITi
             var c = _vrSystem.GetTrackedDeviceClass(i);
             if (c != ETrackedDeviceClass.Invalid && c != ETrackedDeviceClass.Max)
             {
-                _logger.Debug($"Found device class {c} at index {i}");
+                _logger.Trace($"Found device class {c} at index {i}");
             }
         }
         
