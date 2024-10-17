@@ -1,9 +1,6 @@
-using System;
 using System.Collections;
-using System.ComponentModel;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Parser;
-using BeatSaberMarkupLanguage.Settings;
 using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.InputHelper;
@@ -53,19 +50,19 @@ namespace BeatSaberOffsetMigrator.UI
                 {
                     case ExportState.Idle:
                         _exportButton.interactable = true;
-                        _closeModalButton.interactable = true;
+                        _closeExportModalButton.interactable = true;
                         break;
                     case ExportState.CannotExport:
                         _exportButton.interactable = false;
-                        _closeModalButton.interactable = true;
+                        _closeExportModalButton.interactable = true;
                         break;
                     case ExportState.Exporting:
                         _exportButton.interactable = false;
-                        _closeModalButton.interactable = true;
+                        _closeExportModalButton.interactable = true;
                         break;
                     case ExportState.ExportedOrFailed:
                         _exportButton.interactable = false;
-                        _closeModalButton.interactable = true;
+                        _closeExportModalButton.interactable = true;
                         break;
                 }
             }
@@ -91,7 +88,7 @@ namespace BeatSaberOffsetMigrator.UI
         private bool OffsetSupported => _vrInputHelper.Supported;
         
         private string _exportModalText = "Export to EasyOffset";
-        [UIValue("export_model_text")]
+        [UIValue("export_modal_text")]
         public string ExportModalText
         {
             get => _exportModalText;
@@ -126,8 +123,11 @@ namespace BeatSaberOffsetMigrator.UI
         [UIComponent("export_button")]
         private Button _exportButton = null!;
         
-        [UIComponent("close_modal_button")]
-        private Button _closeModalButton = null!;
+        [UIComponent("close_export_modal_button")]
+        private Button _closeExportModalButton = null!;
+        
+        [UIComponent("close_save_modal_button")]
+        private Button _closeSaveModalButton = null!;
 
         [UIAction("#post-parse")]
         private void OnParsed()
@@ -139,12 +139,16 @@ namespace BeatSaberOffsetMigrator.UI
         [UIAction("save_offset")]
         private void OnSaveOffsetPressed()
         {
+            if (_modalShowing) return;
             var leftOffset = _offsetHelper.LeftOffset;
             var rightOffset = _offsetHelper.RightOffset;
             _config.LeftOffsetPosition = leftOffset.position;
             _config.LeftOffsetRotation = leftOffset.rotation;
             _config.RightOffsetPosition = rightOffset.position;
             _config.RightOffsetRotation = rightOffset.rotation;
+            
+            parserParams.EmitEvent("show_save");
+            _modalShowing = true;
         }
 
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
@@ -221,7 +225,7 @@ namespace BeatSaberOffsetMigrator.UI
             StartCoroutine(Export());
         }
 
-        [UIAction("close_model")]
+        [UIAction("close_modal")]
         private void OnCloseModalPressed()
         {
             if (CurExportState is not (ExportState.Idle or ExportState.CannotExport or ExportState.ExportedOrFailed)) return;
@@ -234,7 +238,7 @@ namespace BeatSaberOffsetMigrator.UI
         {
             CurExportState = ExportState.Exporting;
             _exportButton.interactable = false;
-            _closeModalButton.interactable = false;
+            _closeExportModalButton.interactable = false;
 
             yield return null;
             if (EasyOffsetExporter.ExportToEastOffset())
@@ -246,7 +250,7 @@ namespace BeatSaberOffsetMigrator.UI
                 ExportModalText = "Failed to export";
             }
 
-            _closeModalButton.interactable = true;
+            _closeExportModalButton.interactable = true;
             CurExportState = ExportState.ExportedOrFailed;
         }
     }
