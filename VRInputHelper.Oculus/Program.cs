@@ -11,7 +11,7 @@ namespace VRInputHelper.Oculus
         
         private readonly OVRHelperSharedMemoryManager _sharedMemoryManager = OVRHelperSharedMemoryManager.CreateWriteOnly();
 
-        private const int Delay = 1000 / 120; // 120Hz
+        private readonly TimeSpan Delay = TimeSpan.FromMilliseconds(1000.0 / 360); // 360Hz (should be enough, also multiple of 72, 90, 120)
         
         private Program(OvrSession session)
         {
@@ -26,7 +26,7 @@ namespace VRInputHelper.Oculus
                 var a = _session.GetSessionStatus(out var sessionStatus);
                 if (a < 0)
                 {
-                    Console.WriteLine($"Failed to get session status, error code: {a}");
+                    Console.Error.WriteLine($"Failed to get session status, error code: {a}");
                 }
                 if (sessionStatus.ShouldQuit == OvrBool.True) break;
                 if (sessionStatus.ShouldRecenter == OvrBool.True)
@@ -70,14 +70,14 @@ namespace VRInputHelper.Oculus
             var clientCode = OvrClient.TryInitialize(new OvrInitParams { Flags = OvrInitFlags.Invisible }, out var ovrClient);
             if (clientCode < 0)
             {
-                Console.WriteLine($"Failed to initialize OVR client, error code: {clientCode}");
+                Console.Error.WriteLine($"Failed to initialize OVR client, error code: {clientCode}");
                 return;
             }
             
             var sessionCode = ovrClient.TryCreateSession(out var session);
             if (sessionCode < 0)
             {
-                Console.WriteLine($"Failed to create OVR session, error code: {sessionCode}");
+                Console.Error.WriteLine($"Failed to create OVR session, error code: {sessionCode}");
                 ovrClient.Dispose();
                 return;
             }

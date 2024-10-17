@@ -19,7 +19,7 @@ public class OVRHelperSharedMemoryManager
     private OVRHelperSharedMemoryManager(bool readOnly)
     {
         _readOnly = readOnly;
-        var access = readOnly ? MemoryMappedFileAccess.Read : MemoryMappedFileAccess.ReadWrite;
+        var access = MemoryMappedFileAccess.ReadWrite;  // use readwrite to allow both side to create the file if it doesn't exist
         _memoryMappedFile = MemoryMappedFile.CreateOrOpen(MemoryMappedFileName, _size, access);
         _memoryMappedViewAccessor = _memoryMappedFile.CreateViewAccessor(0, 0, access);
     }
@@ -42,7 +42,7 @@ public class OVRHelperSharedMemoryManager
     
     public void Write(ref ControllerPose pose)
     {
-        // if (_readOnly) throw new InvalidOperationException("Cannot write to read-only memory mapped file");
+        if (_readOnly) throw new InvalidOperationException("Cannot write to read-only memory mapped file");
         _memoryMappedViewAccessor.Write(0, ref pose);
     }
     

@@ -134,4 +134,7 @@
     <None Remove="UI\BSML\MenuView.bsml" />
     <EmbeddedResource Include="UI\BSML\MenuView.bsml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VRInputHelper.Oculus\VRInputHelper.Oculus.csproj" />
+  </ItemGroup>
 </Project>
