@@ -1,8 +1,5 @@
 # BeatSaberOffsetMigrator
-A simple mod to migrate controller settings between versions. 
-
-> [!NOTE]  
-> Currently only supports SteamVR. OculusVR support is WIP.
+A simple mod to migrate controller settings between versions.
 
 ## The Idea
 ### The Runtime-to-Saber Offset
@@ -25,7 +22,7 @@ flowchart LR;
 ```
 
 ### Applying the Offset
-Re-applying the offset is as simple as overwriting the in-game saber pose with (controller pose + offset).
+Re-applying the offset is as simple as overwriting the in-game saber pose with (runtime controller pose + offset).
 
 This offset can then be imported by [EasyOffset](https://github.com/Reezonate/EasyOffset) via its universal import feature.
 
@@ -33,39 +30,58 @@ This offset can then be imported by [EasyOffset](https://github.com/Reezonate/Ea
 - BSIPA
 - BSML
 - SiraUtil
-- OpenVR API (Only for 1.29.4+)
+- OpenVR API (Only for 1.29.4+ on SteamVR)
+
+## Things to Note
+### Limitations
+- Only supports SteamVR and OculusVR. Does not support other OpenXR runtimes.
+- Not tested with Room offset
+- Does not support menu pointer smoothing mods
+- Logic only applies in the menu
+
+### Terminology
+- **Newer versions**: Refers to versions of the game that uses OpenXR (1.29.4+)
+- **Older versions**: Refers to versions of the game before 1.29.4 (1.29.1 and below)
 
 ## How To Use
+> [!IMPORTANT]  
+> Due to the game migrated to OpenXR on 1.29.4+, all base game poses are sampled from Unity's XR plugin. 
+> This mean the timing of the mod reading the poses from runtime and using them in game is out of sync.
+> 
+> To counter this, on newer versions, the mod will add a 10 seconds delay before saving or exporting the offset. 
+> This is to give enough time for the player to put or hold still the controller on something stable and not moving.
+
+A typical use case is to migrate the offset from older versions to newer versions (1.29.1 and 1.38.0 will be used as example).
+
 ### Record Offset (For example, on 1.29.1)
 1. Grab a [release](https://github.com/qe201020335/BeatSaberOffsetMigrator/releases) for your game version and install it
 2. Make sure all your controller offset mods and settings are working correctly
 3. Disable all menu pointer smoothing mods
 4. Make sure the base game Room Offset is all zero
-5. Click the `OFFSET HELPER` button found on the main menu
+5. Click the `OFFSET HELPER` button found in the main menu
 6. You should see the pose of your controllers and in-game sabers
-    - The "Diff" values should stay the same and not change as you move your controller slowly.
+    - On older versions, the "Diff" values should not change as you move your controllers.
+    - On newer versions, due to the timing issue mentioned above, moving the controllers will cause the diff values to fluctuate.
 7. Press `Save Offset` to save the current offset.
 
-### Restore Offset (For example, on 1.37.3)
+### Restore Offset (For example, on 1.38.0)
 1. Grab a [release](https://github.com/qe201020335/BeatSaberOffsetMigrator/releases) for your game version and install it
-2. Copy the configuration file from the "source" game to the "target" game
+2. Copy the configuration file from the game you just saved the offset to the game you want to restore the offset
     - The configuration file location is `UserData\BeatSaberOffsetMigrator.json`
-    - "Source" game is the one you use to save the offset from
-    - "Target" game is the one you want to migrate your offset to
-3. Install [EasyOffset](https://github.com/Reezonate/EasyOffset) 
+    - In the example, copy the file from your 1.29.1 game to your 1.38.0 game
+3. Install [EasyOffset](https://github.com/Reezonate/EasyOffset) using your mod installer or manually
 4. Disable EasyOffset in the mod settings menu
 5. Disable all menu pointer smoothing mods
 6. Make sure base-game controller settings and room offset are all zero
 7. Click the `OFFSET HELPER` button found on the main menu
 8. You should see the pose of your controllers and in-game sabers
-    - The "Diff" values should stay the same and not change as you move your controller slowly.
-    - Due to some small latency, the Diff values may vary ~0.1 as you move your controller.
+   - On older versions, the "Diff" values should not change as you move your controllers.
+   - On newer versions, due to the timing issue mentioned above, moving the controllers will cause the diff values to fluctuate.
 9. Toggle on the `Apply Offset` option and see if your sabers are in the correct place like before
     - If the offsets are clearly wrong, contact me @qe201020335 on Discord
-10. In the EasyOffset mod settings menu click the `Universal Import` button to import the offset and enable EasyOffset
-    - See EasyOffset's [readme](https://github.com/Reezonate/EasyOffset?tab=readme-ov-file#from-any-source) for details
-11. In EasyOffset's controller settings menu save the current offset to a profile
-12. Toggle off the `Apply Offset` option in the `OFFSET HELPER` menu
+10. Click the `Export Offset` button and the offset will be exported into EasyOffset 
+11. Toggle off the `Apply Offset` option and enable EasyOffset in the mod settings menu
+12. In EasyOffset's controller settings menu save the current offset to a profile
 13. Uninstall `BeatSaberOffsetMigrator` by deleting `Plugins\BeatSaberOffsetMigrator.dll`
 
 > [!NOTE]  
