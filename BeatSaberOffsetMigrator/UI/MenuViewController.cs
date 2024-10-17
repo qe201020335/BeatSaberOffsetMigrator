@@ -235,9 +235,9 @@ namespace BeatSaberOffsetMigrator.UI
         {
             if (CurExportState != ExportState.Idle) return;
             SaveButtonText = "Save";
-            SaveModalText = "After pressing the save button, put your controllers " +
-                            "on somewhere stable and with good tracking. Offset will " +
-                            "be saved 10 sec after pressing the button.";
+            SaveModalText = "After pressing the save button, try holding your controller still " +
+                            "or put it somewhere stable with good tracking. " +
+                            "Offset will be saved 10 seconds after pressing the button.";
             
             parserParams.EmitEvent("show_save");
             _modalShowing = true;
@@ -292,9 +292,9 @@ namespace BeatSaberOffsetMigrator.UI
             }
             else
             {
-                ExportModalText = "After pressing the export button, put your controllers " +
-                                  "on somewhere stable and with good tracking. Offset will " +
-                                  "be exported to EasyOffset 10 sec after pressing the button.";
+                ExportModalText = "After pressing the export button, try holding your controller still " +
+                                  "or put it somewhere stable with good tracking. " + 
+                                  "Offset will be exported to EasyOffset 10 seconds after pressing the button.";
             }
             
             parserParams.EmitEvent("show_export");
