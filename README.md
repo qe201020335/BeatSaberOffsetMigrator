@@ -1,5 +1,5 @@
 # BeatSaberOffsetMigrator
-A simple mod to migrate controller settings between versions.
+A mod to migrate controller settings between versions.
 
 ## The Idea
 ### The Runtime-to-Saber Offset
