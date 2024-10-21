@@ -3,7 +3,7 @@ A simple mod to migrate controller settings between versions.
 
 ## The Idea
 ### The Runtime-to-Saber Offset
-Controller poses are read directly from VR runtime, OpenVR at the moment, thus the reading will not be affected by the *internal* offsets done by Unity, Unity plugins and the game devs.
+Controller poses are read directly from VR runtime, OpenVR or OculusVR, thus the reading will not be affected by the *internal* offsets done by Unity, Unity plugins and the game devs.
 Hence this controller pose is the source of truth.
 
 The offset is then calculated using the controller poses and the in-game saber poses (the menu pointer). This will include the offset done by all the other controller settings mod.
