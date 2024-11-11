@@ -55,6 +55,10 @@ This offset can then be imported by [EasyOffset](https://github.com/Reezonate/Ea
 
 > [!WARNING]
 > On newer versions, if you are using OculusVR, **DO NOT** re-center/reset your view after you have launched the game!
+>
+> Also please avoid completely putting the controllers down. They will go to sleep very quickly.
+> If they do, the readings will be wrong. Pushing them against your body usually works great.
+
 
 A typical use case is to migrate the offset from older versions to newer versions (1.29.1 and 1.38.0 will be used as examples).
 
