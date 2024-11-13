@@ -49,6 +49,9 @@ namespace BeatSaberOffsetMigrator.UI
         [Inject]
         private readonly IVRInputHelper _vrInputHelper = null!;
         
+        [Inject]
+        private readonly EasyOffsetExporter _easyOffsetExporter = null!;
+        
         private bool _parsed = false;
         private bool _modalShowing = false;     
         private ExportState _curExportState = ExportState.Idle;
@@ -204,13 +207,21 @@ namespace BeatSaberOffsetMigrator.UI
             if (!OffsetSupported)
             {
                 _infoText.text = $"Current runtime: {(string.IsNullOrWhiteSpace(OpenXRRuntime.name) ? "Unknown" : OpenXRRuntime.name)}";
-                if (_vrInputHelper is UnsupportedVRInputHelper unsupported)
-                {
-                    _infoText.text += $"\n<color=#FF0000>{unsupported.Reason}</color>";
-                }
+                _infoText.text += $"\n<color=#FF0000>{_vrInputHelper.ReasonIfNotWorking}</color>";
+            }
+        }
+        
+        private void LateUpdate()
+        {
+            if (!_parsed || !OffsetSupported) return;
+            
+            if (!_vrInputHelper.Working)
+            {
+                _infoText.text = $"Current runtime: {OpenXRRuntime.name} using helper {_vrInputHelper.GetType().Name}\n" + 
+                                 $"<color=#FF0000>{_vrInputHelper.ReasonIfNotWorking}</color>";
                 return;
             }
-
+            
             if (_config.ApplyOffset)
             {
                 _infoText.text = $"Current runtime: {OpenXRRuntime.name} using helper {_vrInputHelper.GetType().Name}\n" + 
@@ -218,16 +229,13 @@ namespace BeatSaberOffsetMigrator.UI
                                  $"L: {new Pose(_config.LeftOffsetPosition, _config.LeftOffsetRotation).Format()}\n" +
                                  $"R: {new Pose(_config.RightOffsetPosition, _config.RightOffsetRotation).Format()}";
             }
-        }
-        
-        private void LateUpdate()
-        {
-            if (!_parsed || _config.ApplyOffset || !OffsetSupported) return;
-
-            _infoText.text = $"Current runtime: {OpenXRRuntime.name} using helper {_vrInputHelper.GetType().Name}\n" + 
-                             $"L Real: {_offsetHelper.LeftRuntimePose.Format()}\nR Real: {_offsetHelper.RightRuntimePose.Format()}\n" +
-                             $"L Game: {_offsetHelper.LeftGamePose.Format()}\nR Game: {_offsetHelper.RightGamePose.Format()}\n" +
-                             $"L Diff: {_offsetHelper.LeftOffset.Format()}\nR Diff: {_offsetHelper.RightOffset.Format()}";
+            else
+            {
+                _infoText.text = $"Current runtime: {OpenXRRuntime.name} using helper {_vrInputHelper.GetType().Name}\n" + 
+                                 $"L Real: {_offsetHelper.LeftRuntimePose.Format()}\nR Real: {_offsetHelper.RightRuntimePose.Format()}\n" +
+                                 $"L Game: {_offsetHelper.LeftGamePose.Format()}\nR Game: {_offsetHelper.RightGamePose.Format()}\n" +
+                                 $"L Diff: {_offsetHelper.LeftOffset.Format()}\nR Diff: {_offsetHelper.RightOffset.Format()}";
+            }
         }
 
         [UIAction("open_save")]
@@ -235,9 +243,18 @@ namespace BeatSaberOffsetMigrator.UI
         {
             if (CurExportState != ExportState.Idle) return;
             SaveButtonText = "Save";
-            SaveModalText = "After pressing the save button, try holding your controller still " +
-                            "or put it somewhere stable with good tracking. " +
-                            "Offset will be saved 10 seconds after pressing the button.";
+            if (!_offsetHelper.IsWorking)
+            {
+                SaveModalText = "Controllers are not Tracking.";
+                CurExportState = ExportState.CannotExport;
+            }
+            else
+            {
+                SaveModalText = "After pressing the save button, try holding your controller still " +
+                                "or put it somewhere stable with good tracking. " +
+                                "Offset will be saved 10 seconds after pressing the button.";
+            }
+            
             
             parserParams.EmitEvent("show_save");
             _modalShowing = true;
@@ -262,15 +279,24 @@ namespace BeatSaberOffsetMigrator.UI
             }
             
             yield return null;
-
-            var leftOffset = _offsetHelper.LeftOffset;
-            var rightOffset = _offsetHelper.RightOffset;
-            _config.LeftOffsetPosition = leftOffset.position;
-            _config.LeftOffsetRotation = leftOffset.rotation;
-            _config.RightOffsetPosition = rightOffset.position;
-            _config.RightOffsetRotation = rightOffset.rotation;
+            if (!_offsetHelper.IsWorking)
+            {
+                SaveModalText = "Controllers are not tracking\nCannot save";
+                SaveButtonText = "Save";
+            }
+            else
+            {
+                var leftOffset = _offsetHelper.LeftOffset;
+                var rightOffset = _offsetHelper.RightOffset;
+                _config.LeftOffsetPosition = leftOffset.position;
+                _config.LeftOffsetRotation = leftOffset.rotation;
+                _config.RightOffsetPosition = rightOffset.position;
+                _config.RightOffsetRotation = rightOffset.rotation;
             
-            SaveButtonText = "Saved";
+                SaveModalText = "Offset saved successfully";
+                SaveButtonText = "Saved";
+            }
+
             CurExportState = ExportState.ExportedOrFailed;
         }
 
@@ -280,14 +306,19 @@ namespace BeatSaberOffsetMigrator.UI
             if (CurExportState != ExportState.Idle) return;
             
             ExportButtonText = "Export";
-            if (!EasyOffsetExporter.IsEasyOffsetInstalled)
+            if (!_easyOffsetExporter.IsEasyOffsetInstalled)
             {
                 ExportModalText = "EasyOffset is not installed.";
                 CurExportState = ExportState.CannotExport;
             }
-            else if (!EasyOffsetExporter.IsEasyOffsetDisabled)
+            else if (!_easyOffsetExporter.IsEasyOffsetDisabled)
             {
                 ExportModalText = "EasyOffset needs to be disabled first.";
+                CurExportState = ExportState.CannotExport;
+            }
+            else if (!_offsetHelper.IsWorking)
+            {
+                ExportModalText = "Controllers are not Tracking.";
                 CurExportState = ExportState.CannotExport;
             }
             else
@@ -312,7 +343,7 @@ namespace BeatSaberOffsetMigrator.UI
         [UIAction("close_modal")]
         private void OnCloseModalPressed()
         {
-            if (CurExportState is not (ExportState.Idle or ExportState.CannotExport or ExportState.ExportedOrFailed)) return;
+            if (CurExportState is ExportState.Exporting) return;
             parserParams.EmitEvent("hide");
             _modalShowing = false;
             CurExportState = ExportState.Idle;
@@ -328,17 +359,23 @@ namespace BeatSaberOffsetMigrator.UI
                 yield return new WaitForSeconds(1);
             }
             
+            ExportButtonText = "Export";
+            
             yield return null;
-            if (EasyOffsetExporter.ExportToEastOffset())
+            if (!_offsetHelper.IsWorking)
+            {
+                ExportModalText = "Controllers are not tracking\nCannot export";
+            }
+            else if (_easyOffsetExporter.ExportToEastOffset())
             {
                 ExportModalText = "Exported successfully";
+                ExportButtonText = "Exported";
             }
             else
             {
                 ExportModalText = "Failed to export";
             }
 
-            ExportButtonText = "Exported";
             CurExportState = ExportState.ExportedOrFailed;
         }
     }

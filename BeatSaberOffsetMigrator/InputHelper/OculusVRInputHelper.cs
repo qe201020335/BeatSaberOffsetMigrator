@@ -14,11 +14,30 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
     public string RuntimeName => "OculusVR";
     public bool Supported => true;
     
+    private bool _working;
+    
+    public bool Working
+    {
+        get => _working;
+        private set
+        {
+            _working = value;
+            if (value)
+            {
+                ReasonIfNotWorking = "";
+            }
+        }
+    }
+
+    public string ReasonIfNotWorking { get; private set; } = "";
+    
     private readonly SiraLog _logger;
     
     private readonly OVRHelperSharedMemoryManager _sharedMemoryManager;
     
-    private readonly string _helperPath = Path.Combine(UnityGame.UserDataPath, @"BeatSaberOffsetMigrator\Helper\VRInputHelper.Oculus.exe");
+    private const string HelperName = "VRInputHelper.Oculus.exe";
+    
+    private readonly string _helperPath = Path.Combine(UnityGame.UserDataPath, @"BeatSaberOffsetMigrator\Helper", HelperName);
     
     private Pose _leftPose = Pose.identity;
     
@@ -27,6 +46,10 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
     private ControllerPose _poses;
     
     private Process? _helperProcess;
+
+    private bool _helperRunning = false;
+    
+    private bool _disposing = false;
     
     public OculusVRInputHelper(SiraLog logger)
     {
@@ -65,10 +88,17 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
         
         process.Exited += (sender, args) =>
         {
+            _helperRunning = false;
             _logger.Info("[VRInputHelper.Oculus] Process exited");
+            if (!_disposing)
+            {
+                Working = false;
+                ReasonIfNotWorking = "Helper process exited. \nCheck logs for details before restarting the game.";
+            }
         };
-
+        
         process.Start();
+        _helperRunning = true;
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
         _helperProcess = process;
@@ -76,39 +106,88 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
 
     private void CleanUpHelper()
     {
-        _helperProcess?.Kill();
-        _helperProcess?.Dispose();
+        var process = _helperProcess;
         _helperProcess = null;
+        _helperRunning = false;
+        if (process != null)
+        {
+            if (!process.HasExited)
+            {
+                process.Kill();
+            }
+            process.Dispose();
+        }
     }
     
     void IInitializable.Initialize()
     {
-        StartHelper();
+        try
+        {
+            // kill any existing helper if exists, should not happen but just in case
+            var psi = new ProcessStartInfo
+            {
+                FileName = "taskkill",
+                Arguments = $"/f /im {HelperName}",
+                UseShellExecute = true,
+                CreateNoWindow = true,
+            };
+            Process.Start(psi);
+        }
+        catch (Exception e)
+        {
+            _logger.Critical("Failed to taskkill");
+            _logger.Critical(e);
+        }
+
+        try
+        {
+            StartHelper();
+        }
+        catch (Exception e)
+        {
+            _logger.Error("Failed to start helper process");
+            _logger.Error(e);
+            Working = false;
+            ReasonIfNotWorking = "Failed to start helper process. \nCheck logs for details before restarting the game.";
+            CleanUpHelper();
+        }
         Application.onBeforeRender += (this as ITickable).Tick;
     }
     
     void IDisposable.Dispose()
     {
-        CleanUpHelper();
+        _disposing = true;
         Application.onBeforeRender -= (this as ITickable).Tick;
+        CleanUpHelper();
     }
     
     void ITickable.Tick()
     {
+        if (!_helperRunning) return;
         _sharedMemoryManager.Read(ref _poses);
-        if (_poses.valid != 1) return;
-        
-        _leftPose = new Pose
+
+        if (_poses.valid == 1)
         {
-            position = new Vector3(_poses.lposx, _poses.lposy, _poses.lposz),
-            rotation = new Quaternion(_poses.lrotx, _poses.lroty, _poses.lrotz, _poses.lrotw)
-        };
+            Working = true;
+            _leftPose = new Pose
+            {
+                position = new Vector3(_poses.lposx, _poses.lposy, _poses.lposz),
+                rotation = new Quaternion(_poses.lrotx, _poses.lroty, _poses.lrotz, _poses.lrotw)
+            };
         
-        _rightPose = new Pose
+            _rightPose = new Pose
+            {
+                position = new Vector3(_poses.rposx, _poses.rposy, _poses.rposz),
+                rotation = new Quaternion(_poses.rrotx, _poses.rroty, _poses.rrotz, _poses.rrotw)
+            };
+        }
+        else
         {
-            position = new Vector3(_poses.rposx, _poses.rposy, _poses.rposz),
-            rotation = new Quaternion(_poses.rrotx, _poses.rroty, _poses.rrotz, _poses.rrotw)
-        };
+            Working = false;
+            ReasonIfNotWorking = "Not all controllers are tracking normally!";
+            _leftPose = Pose.identity;
+            _rightPose = Pose.identity;
+        }
     }
     
     public Pose GetLeftVRControllerPose()

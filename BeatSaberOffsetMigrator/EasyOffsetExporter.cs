@@ -1,17 +1,25 @@
 ﻿using System;
+using Zenject;
 
 namespace BeatSaberOffsetMigrator;
 
 public class EasyOffsetExporter
 {
-    private static readonly Lazy<bool> _isEasyOffsetInstalled = new Lazy<bool>(() => Utils.IsModInstalled("EasyOffset"));
+    [Inject]
+    private readonly OffsetHelper _offsetHelper = null!;
 
-    public static bool IsEasyOffsetInstalled => _isEasyOffsetInstalled.Value;
+    public bool IsEasyOffsetInstalled { get; } = Utils.IsModInstalled("EasyOffset");
 
-    public static bool IsEasyOffsetDisabled => !EasyOffset.PluginConfig.Enabled;
+    public bool IsEasyOffsetDisabled => !EasyOffset.PluginConfig.Enabled;
 
-    public static bool ExportToEastOffset()
+    public bool ExportToEastOffset()
     {
+        if (!_offsetHelper.IsWorking)
+        {
+            Plugin.Log.Warn("OffsetHelper is not working, cannot export to EasyOffset");
+            return false;
+        }
+        
         try
         {
             var result = EasyOffset.ConfigMigration.UniversalImport();

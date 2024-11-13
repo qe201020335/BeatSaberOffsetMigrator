@@ -10,28 +10,55 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable, ITi
 {
     private readonly SiraLog _logger;
 
-    private readonly CVRSystem _vrSystem;
+    private readonly CVRSystem? _vrSystem;
 
-    private readonly CVRCompositor _vrCompositor;
+    private readonly CVRCompositor? _vrCompositor;
 
-    private readonly IVRPlatformHelper _vrPlatformHelper;
+    [Inject]
+    private readonly IVRPlatformHelper _vrPlatformHelper = null!;
     
     private readonly TrackedDevicePose_t[] _poses = new TrackedDevicePose_t[OpenVR.k_unMaxTrackedDeviceCount];
     private readonly TrackedDevicePose_t[] _gamePoses = new TrackedDevicePose_t[OpenVR.k_unMaxTrackedDeviceCount];
 
-    private uint LeftControllerIndex { get; set; }
-    private uint RightControllerIndex { get; set; }
+    private uint _leftControllerIndex = OpenVR.k_unTrackedDeviceIndexInvalid;
+    private uint _rightControllerIndex = OpenVR.k_unTrackedDeviceIndexInvalid;
+    private bool _controllersFound = false;
 
     public string RuntimeName => "OpenVR (Steam VR)";
     public bool Supported => true;
+
+    private bool _working = true;
     
-    private OpenVRInputHelper(SiraLog logger, IVRPlatformHelper platformHelper)
+    public bool Working
     {
-        OpenVRHelper.Initialize();
+        get => _working;
+        private set
+        {
+            _working = value;
+            if (value)
+            {
+                ReasonIfNotWorking = "";
+            }
+        }
+    }
+
+    public string ReasonIfNotWorking { get; private set; } = "";
+    
+    
+    private OpenVRInputHelper(SiraLog logger)
+    {
         _logger = logger;
-        _vrSystem = OpenVR.System;
-        _vrCompositor = OpenVR.Compositor;
-        _vrPlatformHelper = platformHelper;
+        if (!OpenVRHelper.Initialize())
+        {
+            _logger.Error("Failed to initialize OpenVR");
+            Working = false;
+            ReasonIfNotWorking = "Failed to initialize OpenVR\nCheck logs for details";
+        }
+        else
+        {
+            _vrSystem = OpenVR.System;
+            _vrCompositor = OpenVR.Compositor;
+        }
     }
 
     void IInitializable.Initialize()
@@ -49,9 +76,20 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable, ITi
 
     void ITickable.Tick()
     {
+        if (_vrSystem == null || !_controllersFound) return;
         _vrSystem.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, 0, _poses);
+        if ( _poses[_leftControllerIndex].eTrackingResult != ETrackingResult.Running_OK 
+             || _poses[_rightControllerIndex].eTrackingResult != ETrackingResult.Running_OK)
+        {
+            Working = false;
+            ReasonIfNotWorking = "Not all controllers are tracking normally!";
+        }
+        else
+        {
+            Working = true;
+        }
     }
-
+    
     private void OnInputFocusCaptured()
     {
         _logger.Debug("Input focused, loading controllers");
@@ -61,6 +99,12 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable, ITi
     private void LoadControllers()
     {
         _logger.Info("Loading controllers");
+        if (_vrSystem == null || _vrCompositor == null)
+        {
+            _logger.Warn("OpenVR not initialized");
+            return;
+        }
+        
         _logger.Debug($"Current tracking space: {_vrCompositor.GetTrackingSpace()}");
         for (uint i = 0; i < 64; i++)
         {
@@ -71,30 +115,34 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable, ITi
             }
         }
         
-        var leftIndex = _vrSystem.GetTrackedDeviceIndexForControllerRole(ETrackedControllerRole.LeftHand);
-        var rightIndex = _vrSystem.GetTrackedDeviceIndexForControllerRole(ETrackedControllerRole.RightHand);
+        _leftControllerIndex = _vrSystem.GetTrackedDeviceIndexForControllerRole(ETrackedControllerRole.LeftHand);
+        _rightControllerIndex = _vrSystem.GetTrackedDeviceIndexForControllerRole(ETrackedControllerRole.RightHand);
 
-        if (leftIndex == OpenVR.k_unTrackedDeviceIndexInvalid || rightIndex == OpenVR.k_unTrackedDeviceIndexInvalid)
+        if (_leftControllerIndex == OpenVR.k_unTrackedDeviceIndexInvalid || _rightControllerIndex == OpenVR.k_unTrackedDeviceIndexInvalid)
         {
+            _leftControllerIndex = OpenVR.k_unTrackedDeviceIndexInvalid;
+            _rightControllerIndex = OpenVR.k_unTrackedDeviceIndexInvalid;
             _logger.Warn("Not enough controllers!");
-            return;
+            _controllersFound = false;
+            Working = false;
+            ReasonIfNotWorking = "Not all controllers are detected! Open and close SteamVR menu to refresh.";
         }
-
-        LeftControllerIndex = leftIndex;
-        RightControllerIndex = rightIndex;
-        
-        _logger.Notice($"Found index for controllers! {LeftControllerIndex} {RightControllerIndex}");
+        else
+        {
+            _controllersFound = true;
+            _logger.Notice($"Found index for controllers! {_leftControllerIndex} {_rightControllerIndex}");
+        }
     }
     
     public Pose GetLeftVRControllerPose()
     {
-        var m = _poses[LeftControllerIndex].mDeviceToAbsoluteTracking;
+        var m = _poses[_leftControllerIndex].mDeviceToAbsoluteTracking;
         return new Pose(m.GetPosition(), m.GetRotation());
     }
 
     public Pose GetRightVRControllerPose()
     {
-        var m = _poses[RightControllerIndex].mDeviceToAbsoluteTracking;
+        var m = _poses[_rightControllerIndex].mDeviceToAbsoluteTracking;
         return new Pose(m.GetPosition(), m.GetRotation());
     }
 }

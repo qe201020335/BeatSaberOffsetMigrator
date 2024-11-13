@@ -12,6 +12,9 @@ namespace VRInputHelper.Oculus
         private readonly OVRHelperSharedMemoryManager _sharedMemoryManager = OVRHelperSharedMemoryManager.CreateWriteOnly();
 
         private readonly TimeSpan Delay = TimeSpan.FromMilliseconds(1000.0 / 360); // 360Hz (should be enough, also multiple of 72, 90, 120)
+
+        private const OvrStatusBits TrackedFlags = OvrStatusBits.OrientationTracked | OvrStatusBits.OrientationValid | 
+                                                   OvrStatusBits.PositionTracked | OvrStatusBits.PositionValid;
         
         private Program(OvrSession session)
         {
@@ -34,30 +37,44 @@ namespace VRInputHelper.Oculus
                     Console.WriteLine("Recentering tracking origin");
                     _session.RecenterTrackingOrigin(OvrTrackingOrigin.FloorLevel);
                 }
+
+                var state = _session.GetTrackingState(0, OvrBool.False);
+                var status = state.HandStatusFlags;
                 
-                var poses = _session.GetTrackingState(0, OvrBool.False).HandPoses;
-                var controllerPose = new ControllerPose
+                ControllerPose controllerPose;
+                if (status.Item0.HasFlag(TrackedFlags) && status.Item1.HasFlag(TrackedFlags))
                 {
-                    valid = 1,
-                    lposx = poses.Item0.ThePose.Position.X,
-                    lposy = poses.Item0.ThePose.Position.Y,
-                    lposz = - poses.Item0.ThePose.Position.Z,
-                    lrotx = - poses.Item0.ThePose.Orientation.X,
-                    lroty = - poses.Item0.ThePose.Orientation.Y,
-                    lrotz = poses.Item0.ThePose.Orientation.Z,
-                    lrotw = poses.Item0.ThePose.Orientation.W,
-                    rposx = poses.Item1.ThePose.Position.X,
-                    rposy = poses.Item1.ThePose.Position.Y,
-                    rposz = - poses.Item1.ThePose.Position.Z,
-                    rrotx = - poses.Item1.ThePose.Orientation.X,
-                    rroty = - poses.Item1.ThePose.Orientation.Y,
-                    rrotz = poses.Item1.ThePose.Orientation.Z,
-                    rrotw = poses.Item1.ThePose.Orientation.W
-                };
+                    var poses = state.HandPoses;
+                    controllerPose = new ControllerPose
+                    {
+                        valid = 1,
+                        lposx = poses.Item0.ThePose.Position.X,
+                        lposy = poses.Item0.ThePose.Position.Y,
+                        lposz = - poses.Item0.ThePose.Position.Z,
+                        lrotx = - poses.Item0.ThePose.Orientation.X,
+                        lroty = - poses.Item0.ThePose.Orientation.Y,
+                        lrotz = poses.Item0.ThePose.Orientation.Z,
+                        lrotw = poses.Item0.ThePose.Orientation.W,
+                        rposx = poses.Item1.ThePose.Position.X,
+                        rposy = poses.Item1.ThePose.Position.Y,
+                        rposz = - poses.Item1.ThePose.Position.Z,
+                        rrotx = - poses.Item1.ThePose.Orientation.X,
+                        rroty = - poses.Item1.ThePose.Orientation.Y,
+                        rrotz = poses.Item1.ThePose.Orientation.Z,
+                        rrotw = poses.Item1.ThePose.Orientation.W
+                    };
+                    
+                    // Console.WriteLine($"({controllerPose.lposx}, {controllerPose.lposy}, {controllerPose.lposz}), ({controllerPose.rposx}, {controllerPose.rposy}, {controllerPose.rposz})");
+                    
+                }
+                else
+                {
+                    Console.WriteLine("Not all controllers are tracking normally!");
+                    controllerPose = new ControllerPose { valid = 0 };
+                }
                 
                 _sharedMemoryManager.Write(ref controllerPose);
                 
-                //Console.WriteLine($"({controllerPose.lposx}, {controllerPose.lposy}, {controllerPose.lposz}), ({controllerPose.rposx}, {controllerPose.rposy}, {controllerPose.rposz})");
                 
                 Thread.Sleep(Delay);
             }
