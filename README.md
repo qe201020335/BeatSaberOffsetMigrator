@@ -1,4 +1,7 @@
 # BeatSaberOffsetMigrator
+[![en](https://img.shields.io/badge/lang-en-blue.svg?style=for-the-badge)](/README.md)
+[![zh](https://img.shields.io/badge/语言-中文-red.svg?style=for-the-badge)](/README.zh.md)
+
 A mod to migrate controller settings between versions.
 
 ## The Idea
