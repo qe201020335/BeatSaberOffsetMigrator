@@ -93,6 +93,14 @@ A typical use case is to migrate the offset from older versions to newer version
    - On 1.29.4+, to ensure the offset is saved accurately, the controllers must be completely still at the end of the 10-second delay.
    - The Quest controllers will go to sleep very quickly after being put down. Please try pushing them against your body instead.
 
+### Verify Offset Is Recorded Correctly
+After saving the offset, it is recommended to verify the offset is saved correctly before restoring it on another version.
+1. Save the offset if not already, see the steps above
+2. Without disabling other controller offset mods or settings, toggle on the `Apply Offset` option
+3. Toggle it on and off to see if the sabers position/rotation changes
+   - The offset is saved correctly if the sabers do not move as the `Apply Offset` option is toggled 
+   - On newer versions, due to the timing issue mentioned above, if the controllers are not physically still, the sabers will move slightly as the `Apply Offset` option is toggled
+
 ### Restore Offset (For example, on 1.38.0)
 0. Make sure you have read the [notes](#things-to-note) and [warnings](#how-to-use) above
 1. Grab a [release](https://github.com/qe201020335/BeatSaberOffsetMigrator/releases) for your game version and install it
