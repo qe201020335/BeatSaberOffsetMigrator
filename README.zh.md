@@ -47,6 +47,21 @@ flowchart LR;
 - 手柄偏移逻辑仅在游戏菜单中生效
 - 在新版本的 OculusVR 环境中，不支持重置视野
 
+### 我正在使用哪个运行时？
+#### 1.29.1 及以下版本
+- 如果运行游戏时在 VR 中可以使用 SteamVR 的菜单，那么您正在使用 SteamVR
+- 如果您使用 Oculus 设备玩 Oculus PC 版本的游戏，并且未运行 SteamVR，那么您正在使用 OculusVR
+- 如果使用了 `-vrmode oculus` 参数，那么您正在使用 OculusVR
+
+#### 1.29.4 及以上版本
+由于游戏迁移到了 OpenXR，所使用的运行时将是默认的 OpenXR 运行时。您可以设置默认的运行时：
+- SteamVR：SteamVR -> 设置 -> OpenXR
+- OculusVR：Meta Quest Link 桌面应用 -> 设置 -> 通用 -> OpenXR Runtime
+- 不支持其他运行时（例如 VDXR）。
+
+> [!IMPORTANT]  
+> 两个游戏版本必须使用相同的运行时，以确保偏移可以正确迁移。
+
 ## 如何使用
 > [!IMPORTANT]  
 > 游戏在 1.29.4+ 版本迁移到了 OpenXR，因此所有游戏内姿态都由 Unity 的 XR 插件采样得到。

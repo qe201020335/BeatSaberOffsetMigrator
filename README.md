@@ -47,6 +47,20 @@ This offset can then be imported by [EasyOffset](https://github.com/Reezonate/Ea
 - Logic only applies in the menu
 - On newer versions with OculusVR, re-centering is not supported
 
+### What Runtime Am I Using?
+#### 1.29.1 and below
+- If SteamVR is running while you are playing, and you can use SteamVR's menu in VR, you are using SteamVR
+- If you are playing the Oculus PC version with an Oculus device, and SteamVR is not running, you are using OculusVR
+- If you are using `-vrmode oculus`, you are using OculusVR
+
+#### 1.29.4 and above
+Due to the game migrating to OpenXR, the runtime used will be the default OpenXR runtime. You can set which runtime is the default:
+- SteamVR: SteamVR -> settings -> OpenXR
+- OculusVR: Meta Quest Link PC app -> Settings -> General -> OpenXR Runtime
+- Other runtimes such as VDXR are not supported.
+
+> [!IMPORTANT]
+> The same runtime must be used for both versions of the game to ensure the offset can be migrated correctly.
 
 ## How To Use
 > [!IMPORTANT]  
