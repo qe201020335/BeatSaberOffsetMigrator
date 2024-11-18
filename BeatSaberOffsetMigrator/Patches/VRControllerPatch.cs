@@ -1,4 +1,5 @@
-﻿using BeatSaberOffsetMigrator.Configuration;
+﻿using System.Collections.Generic;
+using BeatSaberOffsetMigrator.Configuration;
 using HarmonyLib;
 using SiraUtil.Affinity;
 using UnityEngine;
@@ -13,21 +14,38 @@ public class VRControllerPatch: IAffinity
     [Inject]
     private readonly OffsetHelper _offsetHelper = null!;
 
+    // TODO: check different hands
+    private Dictionary<XRNode, bool> _wasApplying = new Dictionary<XRNode, bool>(2);
+
     [AffinityPostfix]
     [AffinityPatch(typeof(VRController), nameof(VRController.Update))]
     private void Postfix(VRController __instance)
     {
-        var viewTransform = __instance.viewAnchorTransform;
-        if (PluginConfig.Instance.ApplyOffset && _offsetHelper.IsSupported)
+        if (!_offsetHelper.IsSupported)
         {
+            // Don't do anything if the VR system is not supported
+            return;
+        }
+        
+        var viewTransform = __instance.viewAnchorTransform;
+        var xrnode = __instance.node;
+        if (PluginConfig.Instance.ApplyOffset && _offsetHelper.IsWorking)
+        {
+            _wasApplying[xrnode] = true;
             viewTransform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             ApplyOffset(__instance.transform, __instance.node);
         }
-
-        if (_offsetHelper.IsSupported)
+        else 
         {
+            if (_wasApplying.TryGetValue(xrnode, out var previous) && previous)
+            {
+                _wasApplying[xrnode] = false;
+                //Reset the offset
+                __instance.UpdateAnchorOffsetPose();
+            }
+
             var pose = new Pose(viewTransform.position, viewTransform.rotation);
-            switch (__instance.node)
+            switch (xrnode)
             {
                 case XRNode.LeftHand:
                     _offsetHelper.LeftGamePose = pose;

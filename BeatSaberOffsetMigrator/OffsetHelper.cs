@@ -26,6 +26,8 @@ public class OffsetHelper: MonoBehaviour
     internal Pose RightGamePose { get; set; }
     
     internal bool IsSupported => _vrInputHelper.Supported;
+    
+    internal bool IsWorking => _vrInputHelper.Working;
 
     internal Pose LeftRuntimePose => _vrInputHelper.GetLeftVRControllerPose();
     
