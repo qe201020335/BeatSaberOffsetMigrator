@@ -69,7 +69,8 @@ Due to the game migrating to OpenXR, the runtime used will be the default OpenXR
 > 
 > To counter this, on newer versions, the mod will add a 10-second delay before saving or exporting the offset. 
 > This is to give enough time for the player to put or hold still the controller on something stable and not moving.
->
+
+> [!WARNING]
 > If you are using Quest, please avoid completely putting the controllers down. They will go to sleep very quickly.
 > If they do, the readings will be wrong. Pushing them against your body usually works great.
 
@@ -88,6 +89,7 @@ A typical use case is to migrate the offset from older versions to newer version
     - On older versions, the "Diff" values should not change as you move your controllers.
     - On newer versions, due to the timing issue mentioned above, moving the controllers will cause the diff values to fluctuate.
 7. Press `Save Offset` to save the current offset.
+    - On 1.29.4+, in order to make sure the offset is saved accurately, the controllers must be completely still at the end of the 10-second delay.
 
 ### Restore Offset (For example, on 1.38.0)
 1. Grab a [release](https://github.com/qe201020335/BeatSaberOffsetMigrator/releases) for your game version and install it
@@ -104,7 +106,8 @@ A typical use case is to migrate the offset from older versions to newer version
    - On newer versions, due to the timing issue mentioned above, moving the controllers will cause the diff values to fluctuate.
 9. Toggle on the `Apply Offset` option and see if your sabers are in the correct place like before
     - If the offsets are clearly wrong, contact me @qe201020335 on Discord
-10. Click the `Export Offset` button and the offset will be exported into EasyOffset 
+10. Click the `Export Offset` button and the offset will be exported into EasyOffset
+    - On 1.29.4+, in order to make sure the offset is exported accurately, the controllers must be completely still at the end of the 10-second delay. 
 11. Toggle off the `Apply Offset` option and enable EasyOffset in the mod settings menu
 12. In EasyOffset's controller settings menu save the current offset to a profile
 13. Uninstall `BeatSaberOffsetMigrator` by deleting `Plugins\BeatSaberOffsetMigrator.dll`
