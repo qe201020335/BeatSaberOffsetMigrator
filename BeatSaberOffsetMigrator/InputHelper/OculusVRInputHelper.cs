@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using BeatSaberOffsetMigrator.Shared;
 using IPA.Utilities;
+using IPA.Utilities.Async;
 using SiraUtil.Logging;
 using UnityEngine;
 using Zenject;
@@ -60,6 +62,7 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
 
     private void StartHelper()
     {
+        _logger.Info("Launching helper process");
         var psi = new ProcessStartInfo
         {
             FileName = _helperPath,
@@ -71,7 +74,8 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
         
         var process = new Process
         {
-            StartInfo = psi
+            StartInfo = psi,
+            EnableRaisingEvents = true
         };
         
         process.OutputDataReceived += (sender, args) =>
@@ -89,10 +93,11 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
         process.Exited += (sender, args) =>
         {
             _helperRunning = false;
-            _logger.Info("[VRInputHelper.Oculus] Process exited");
+            _logger.Notice("[VRInputHelper.Oculus] Process exited");
+            Working = false;
             if (!_disposing)
             {
-                Working = false;
+                _logger.Warn("Helper process exited unexpectedly");
                 ReasonIfNotWorking = "Helper process exited. \nCheck logs for details before restarting the game.";
             }
         };
@@ -118,11 +123,15 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
             process.Dispose();
         }
     }
-    
-    void IInitializable.Initialize()
+
+    private async Task KillExistingAndStartNewHelper()
     {
+        Working = false;
+        ReasonIfNotWorking = "Starting helper process...";
+        
         try
         {
+            _logger.Debug("Killing existing helper process if it exists");
             // kill any existing helper if exists, should not happen but just in case
             var psi = new ProcessStartInfo
             {
@@ -131,14 +140,27 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
                 UseShellExecute = true,
                 CreateNoWindow = true,
             };
-            Process.Start(psi);
+            var process = new Process
+            {
+                StartInfo = psi,
+                EnableRaisingEvents = true
+            };
+            process.Exited += (sender, args) =>
+            {
+                _logger.Debug("taskkill exited");
+                process.Dispose();
+            };
+            process.Start();
         }
         catch (Exception e)
         {
-            _logger.Critical("Failed to taskkill");
+            _logger.Critical("Failed to taskkill existing helper process");
             _logger.Critical(e);
         }
-
+        
+        _logger.Debug("Waiting for 3 second before starting new helper process");
+        await Task.Delay(3000);
+        
         try
         {
             StartHelper();
@@ -151,6 +173,11 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
             ReasonIfNotWorking = "Failed to start helper process. \nCheck logs for details before restarting the game.";
             CleanUpHelper();
         }
+    }
+    
+    void IInitializable.Initialize()
+    {
+        UnityMainThreadTaskScheduler.Factory.StartNew(KillExistingAndStartNewHelper);
         Application.onBeforeRender += (this as ITickable).Tick;
     }
     

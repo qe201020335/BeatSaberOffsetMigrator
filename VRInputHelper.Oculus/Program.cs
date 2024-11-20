@@ -69,7 +69,9 @@ namespace VRInputHelper.Oculus
                 }
                 else
                 {
+#if DEBUG
                     Console.WriteLine("Not all controllers are tracking normally!");
+#endif
                     controllerPose = new ControllerPose { valid = 0 };
                 }
                 
@@ -78,6 +80,9 @@ namespace VRInputHelper.Oculus
                 
                 Thread.Sleep(Delay);
             }
+            
+            var invalid = new ControllerPose { valid = 0 };
+            _sharedMemoryManager.Write(ref invalid);
         }
         
         public static void Main(string[] args)
@@ -99,13 +104,17 @@ namespace VRInputHelper.Oculus
                 return;
             }
             
+            var program = new Program(session);
+            
             AppDomain.CurrentDomain.ProcessExit += (sender, eventArgs) =>
             {
+                var invalid = new ControllerPose { valid = 0 };
+                program._sharedMemoryManager.Write(ref invalid);
                 session.Dispose();
                 ovrClient.Dispose();
             };
             
-            new Program(session).Run();
+            program.Run();
         }
     }
 }
