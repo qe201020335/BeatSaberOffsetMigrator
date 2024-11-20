@@ -80,18 +80,21 @@ Due to the game migrating to OpenXR, the runtime used will be the default OpenXR
 A typical use case is to migrate the offset from older versions to newer versions (1.29.1 and 1.38.0 will be used as examples).
 
 ### Record Offset (For example, on 1.29.1)
+0. Make sure you have read the [notes](#things-to-note) and [warnings](#how-to-use) above
 1. Grab a [release](https://github.com/qe201020335/BeatSaberOffsetMigrator/releases) for your game version and install it
 2. Make sure all your controller offset mods and settings are working correctly
 3. Disable all menu pointer smoothing mods
 4. Make sure the base game Room Offset is all zero
 5. Click the `OFFSET HELPER` button found in the main menu
 6. You should see the pose of your controllers and in-game sabers
-    - On older versions, the "Diff" values should not change as you move your controllers.
-    - On newer versions, due to the timing issue mentioned above, moving the controllers will cause the diff values to fluctuate.
+   - On older versions, the "Diff" values should not change as you move your controllers.
+   - On newer versions, due to the timing issue mentioned above, moving the controllers will cause the diff values to fluctuate.
 7. Press `Save Offset` to save the current offset.
-    - On 1.29.4+, in order to make sure the offset is saved accurately, the controllers must be completely still at the end of the 10-second delay.
+   - On 1.29.4+, to ensure the offset is saved accurately, the controllers must be completely still at the end of the 10-second delay.
+   - The Quest controllers will go to sleep very quickly after being put down. Please try pushing them against your body instead.
 
 ### Restore Offset (For example, on 1.38.0)
+0. Make sure you have read the [notes](#things-to-note) and [warnings](#how-to-use) above
 1. Grab a [release](https://github.com/qe201020335/BeatSaberOffsetMigrator/releases) for your game version and install it
 2. Copy the configuration file from the game you just saved the offset to the game you want to restore the offset
     - The configuration file location is `UserData\BeatSaberOffsetMigrator.json`
@@ -107,7 +110,8 @@ A typical use case is to migrate the offset from older versions to newer version
 9. Toggle on the `Apply Offset` option and see if your sabers are in the correct place like before
     - If the offsets are clearly wrong, contact me @qe201020335 on Discord
 10. Click the `Export Offset` button and the offset will be exported into EasyOffset
-    - On 1.29.4+, in order to make sure the offset is exported accurately, the controllers must be completely still at the end of the 10-second delay. 
+    - On 1.29.4+, to ensure the offset is exported accurately, the controllers must be completely still at the end of the 10-second delay. 
+    - The Quest controllers will go to sleep very quickly after being put down. Please try pushing them against your body instead.
 11. Toggle off the `Apply Offset` option and enable EasyOffset in the mod settings menu
 12. In EasyOffset's controller settings menu save the current offset to a profile
 13. Uninstall `BeatSaberOffsetMigrator` by deleting `Plugins\BeatSaberOffsetMigrator.dll`

@@ -80,6 +80,7 @@ flowchart LR;
 从旧版本迁移偏移到新版本是本模组的典型用例（以 1.29.1 和 1.38.0 为例）
 
 ### 记录偏移（例如，在 1.29.1）
+0. 请确保已阅读上方的[注意事项](#things-to-note)和[警告](#how-to-use)
 1. 从 [Releases](https://github.com/qe201020335/BeatSaberOffsetMigrator/releases) 下载适合游戏版本的文件并安装
 2. 确保所有手柄偏移模组和手柄设置正常工作
 3. 禁用所有菜单指针平滑模组
@@ -90,8 +91,10 @@ flowchart LR;
     - 在新版本中，由于上述的时间同步问题，移动手柄会导致差值波动。
 7. 点击 `Save Offset` 按钮保存当前偏移
     - 在 1.29.4+ 版本中，为确保偏移准确保存，控制器必须在 10 秒延迟结束时完全静止。
+    - Quest 控制器在被放下后会很快进入休眠状态。将控制器靠在身体上通常是个好方法。
 
 ### 还原偏移（例如，在 1.38.0）
+0. 请确保已阅读上方的[注意事项](#注意事项)和[警告](#如何使用)
 1. 从 [Releases](https://github.com/qe201020335/BeatSaberOffsetMigrator/releases) 下载适合游戏版本的文件并安装
 2. 将配置文件从保存偏移的游戏复制到需要恢复偏移的游戏中：
     - 配置文件位置为 `UserData\BeatSaberOffsetMigrator.json`
@@ -107,6 +110,7 @@ flowchart LR;
 9. 打开 `Apply Offset` 选项，检查光剑是否处于像原来一样的正确位置
 10. 点击 `Export Offset` 按钮，将偏移导出到 EasyOffset
     - 在 1.29.4+ 版本中，为确保偏移准确导出，控制器必须在 10 秒延迟结束时完全静止。
+    - Quest 控制器在被放下后会很快进入休眠状态。将控制器靠在身体上通常是个好方法。
 11. 关闭 `Apply Offset` 选项，并在模组设置菜单中启用 EasyOffset
 12. 在 EasyOffset 的手柄设置菜单中，将当前的偏移设置保存到一个配置文件。
 13. 删除 `Plugins\BeatSaberOffsetMigrator.dll` 文件以卸载 `BeatSaberOffsetMigrator`
