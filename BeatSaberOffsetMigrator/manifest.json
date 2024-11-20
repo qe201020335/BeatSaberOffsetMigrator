@@ -5,10 +5,10 @@
   "author": "qe201020335",
   "version": "0.3.0",
   "description": "",
-  "gameVersion": "1.39.1",
+  "gameVersion": "1.37.1",
   "dependsOn": {
     "BSIPA": "^4.2.0",
-    "BeatSaberMarkupLanguage": "^1.12.0",
+    "BeatSaberMarkupLanguage": "^1.11.0",
     "SiraUtil": "^3.0.0"
   },
   "features": {

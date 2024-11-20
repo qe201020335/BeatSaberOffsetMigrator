@@ -144,7 +144,7 @@ public class MainViewController : BSMLAutomaticViewController
     {
         object[] list = [Localization.Get("BSOM_MAIN_EO_PRESET_NONE"), .._easyOffsetManager.GetPresets()];
         _presetNames = list;
-        _presetList.Values = list;
+        _presetList.values = list;
         _presetList.UpdateChoices();
         _presetList.ReceiveValue();
     }
