@@ -7,7 +7,7 @@ using Zenject;
 
 namespace BeatSaberOffsetMigrator.UI
 {
-    public class MenuButtonManager : IInitializable
+    public class MenuButtonManager : IInitializable, IDisposable
     {
         private readonly MenuButton _menuButton;
         
@@ -32,6 +32,11 @@ namespace BeatSaberOffsetMigrator.UI
         public void Initialize()
         {
             _menuButtons.RegisterButton(_menuButton);
+        }
+        
+        public void Dispose()
+        {
+            _menuButtons.UnregisterButton(_menuButton);
         }
         
         private void OnMenuButtonClick()
