@@ -14,7 +14,6 @@ public class VRControllerPatch: IAffinity
     [Inject]
     private readonly OffsetHelper _offsetHelper = null!;
 
-    // TODO: check different hands
     private Dictionary<XRNode, bool> _wasApplying = new Dictionary<XRNode, bool>(2);
 
     [AffinityPostfix]
