@@ -1,13 +1,15 @@
 using System;
 using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.InputHelper;
-using UnityEngine.XR;
+using UnityEngine.XR.OpenXR;
 using Zenject;
 
 namespace BeatSaberOffsetMigrator.Installers
 {
     internal class AppInstaller : Installer
     {
+        private const string OpenVRLibId = "OpenVR";
+        
         private readonly PluginConfig _config;
 
         public AppInstaller(PluginConfig config)
@@ -19,11 +21,23 @@ namespace BeatSaberOffsetMigrator.Installers
         {
             Container.BindInstance(_config);
             
-            if (XRSettings.loadedDeviceName.IndexOf("openvr", StringComparison.OrdinalIgnoreCase) >= 0)
+            Plugin.Log.Notice("Current OpenXR runtime: " + OpenXRRuntime.name);
+            
+            if (OpenXRRuntime.name.IndexOf("steamvr", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                Container.BindInterfacesTo<OpenVRInputHelper>().AsSingle();
+                if (Utils.IsModInstalled(OpenVRLibId))
+                {
+                    Container.BindInterfacesTo<OpenVRInputHelper>().AsSingle();
+                }
+                else
+                {
+                    Container.BindInterfacesTo<UnsupportedVRInputHelper>().AsSingle().OnInstantiated<UnsupportedVRInputHelper>((_, instance )=>
+                    {
+                        instance.ReasonIfNotWorking = "OpenVR API Library not installed";
+                    });
+                }
             }
-            else if (XRSettings.loadedDeviceName.IndexOf("oculus", StringComparison.OrdinalIgnoreCase) >= 0)
+            else if (OpenXRRuntime.name.IndexOf("oculus", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 Container.BindInterfacesTo<OculusVRInputHelper>().AsSingle();
             }

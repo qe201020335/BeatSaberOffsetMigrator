@@ -22,8 +22,9 @@
     <DisableZipRelease>True</DisableZipRelease>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Oculus.VR">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Oculus.VR.dll</HintPath>
+    <Reference Include="BeatSaber.ViewSystem">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatSaber.ViewSystem.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="EasyOffset">
       <HintPath>$(BeatSaberDir)\Plugins\EasyOffset.dll</HintPath>
@@ -53,12 +54,16 @@
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\IPA.Loader.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SteamVR">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\SteamVR.dll</HintPath>
+    <Reference Include="OpenVR">
+      <HintPath>$(BeatSaberDir)\Libs\OpenVR.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.XR.OpenXR">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Unity.XR.OpenXR.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
@@ -128,5 +133,8 @@
     <EmbeddedResource Include="manifest.json" />
     <None Remove="UI\BSML\MenuView.bsml" />
     <EmbeddedResource Include="UI\BSML\MenuView.bsml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VRInputHelper.Oculus\VRInputHelper.Oculus.csproj" />
   </ItemGroup>
 </Project>

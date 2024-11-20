@@ -1,4 +1,5 @@
-﻿using BeatSaberOffsetMigrator.Configuration;
+﻿using System.Collections.Generic;
+using BeatSaberOffsetMigrator.Configuration;
 using HarmonyLib;
 using SiraUtil.Affinity;
 using UnityEngine;
@@ -12,15 +13,52 @@ public class VRControllerPatch: IAffinity
 {
     [Inject]
     private readonly OffsetHelper _offsetHelper = null!;
-    
+
+    // TODO: check different hands
+    private Dictionary<XRNode, bool> _wasApplying = new Dictionary<XRNode, bool>(2);
+
     [AffinityPostfix]
     [AffinityPatch(typeof(VRController), nameof(VRController.Update))]
     private void Postfix(VRController __instance)
     {
-        if (!PluginConfig.Instance.ApplyOffset || !_offsetHelper.IsSupported) return;
+        if (!_offsetHelper.IsSupported)
+        {
+            // Don't do anything if the VR system is not supported
+            return;
+        }
         
-        var node = __instance.node;
-        
+        var viewTransform = __instance.viewAnchorTransform;
+        var xrnode = __instance.node;
+        if (PluginConfig.Instance.ApplyOffset && _offsetHelper.IsWorking)
+        {
+            _wasApplying[xrnode] = true;
+            viewTransform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            ApplyOffset(__instance.transform, __instance.node);
+        }
+        else 
+        {
+            if (_wasApplying.TryGetValue(xrnode, out var previous) && previous)
+            {
+                _wasApplying[xrnode] = false;
+                //Reset the offset
+                __instance.UpdateAnchorOffsetPose();
+            }
+
+            var pose = new Pose(viewTransform.position, viewTransform.rotation);
+            switch (xrnode)
+            {
+                case XRNode.LeftHand:
+                    _offsetHelper.LeftGamePose = pose;
+                    break;
+                case XRNode.RightHand:
+                    _offsetHelper.RightGamePose = pose;
+                    break;
+            }
+        }
+    }
+    
+    private void ApplyOffset(Transform transform, XRNode node)
+    {
         Pose offset;
         Pose controllerPose;
         switch (node)
@@ -37,9 +75,9 @@ public class VRControllerPatch: IAffinity
                 return;
         }
         
-        var transform = __instance.transform;
-        transform.rotation = controllerPose.rotation;
-        transform.position = controllerPose.position;
+        transform.SetLocalPositionAndRotation(controllerPose.position, controllerPose.rotation);
+        // transform.rotation = controllerPose.rotation;
+        // transform.position = controllerPose.position;
         transform.Translate(offset.position);
         transform.Rotate(offset.rotation.eulerAngles);
     }

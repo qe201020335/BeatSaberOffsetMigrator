@@ -6,7 +6,7 @@ using Zenject;
 
 namespace BeatSaberOffsetMigrator.UI
 {
-    public class MenuButtonManager : IInitializable, IDisposable
+    public class MenuButtonManager : IInitializable
     {
         private readonly MenuButton _menuButton;
         
@@ -16,8 +16,8 @@ namespace BeatSaberOffsetMigrator.UI
         [Inject]
         private readonly MenuFlowCoordinator _menuFlowCoordinator = null!;
         
-        // [Inject]
-        // private readonly MenuButtons _menuButtons = null!;
+        [Inject]
+        private readonly MenuButtons _menuButtons = null!;
         
         [Inject]
         private readonly SiraLog _logger = null!;
@@ -30,12 +30,7 @@ namespace BeatSaberOffsetMigrator.UI
 
         public void Initialize()
         {
-            MenuButtons.instance.RegisterButton(_menuButton);
-        }
-
-        public void Dispose()
-        {
-            MenuButtons.instance.UnregisterButton(_menuButton);
+            _menuButtons.RegisterButton(_menuButton);
         }
         
         private void OnMenuButtonClick()

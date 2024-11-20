@@ -4,28 +4,31 @@
         <text id="info_text" italics="false"/>
     </horizontal>
     <horizontal spacing="8">
-        <button id="save_button" text="Save Offset" on-click="save_offset"/>
+        <button id="save_modal_button" text="Save Offset" on-click="open_save"/>
         <button id="export_modal_button" text="Export Offset" on-click="open_export"/>
     </horizontal>
 
-    <modal id="save_modal" size-delta-x="60" size-delta-y="45" show-event="show_save" hide-event="hide" click-off-closes="false" move-to-center="true" >
-        <vertical pref-width="60" horizontal-fit="PreferredSize" pref-height="45" vertical-fit="PreferredSize" spacing="2" background="round-rect-panel">
+    <modal id="save_modal" size-delta-x="100" size-delta-y="40" show-event="show_save" hide-event="hide" click-off-closes="false" move-to-center="true" >
+        <vertical pref-width="100" horizontal-fit="PreferredSize" pref-height="40" vertical-fit="PreferredSize" spacing="1" background="round-rect-panel">
             <horizontal>
                 <text text="Save Offset" font-size="6" align="Center"/>
             </horizontal>
-            <horizontal>
-                <text text="Offset saved!" bold="false" align="Center" word-wrapping="true"/>
+            <horizontal pad-left="4" pad-right="4">
+                <text text="~save_modal_text" bold="false" align="Center" word-wrapping="true"/>
             </horizontal>
-            <button id="close_save_modal_button" text="Close" on-click="close_modal"/>
+            <horizontal pref-width="50" horizontal-fit="PreferredSize">
+                <button id="close_save_modal_button" text="Close" on-click="close_modal"/>
+                <action-button id="save_button" text="~save_button_text" on-click="save_offset"/>
+            </horizontal>
         </vertical>
     </modal>
     
-    <modal id="export_modal" size-delta-x="80" size-delta-y="60" show-event="show_export" hide-event="hide" click-off-closes="false" move-to-center="true" >
-        <vertical pref-width="80" horizontal-fit="PreferredSize" pref-height="60" vertical-fit="PreferredSize" spacing="2" background="round-rect-panel">
+    <modal id="export_modal" size-delta-x="100" size-delta-y="40" show-event="show_export" hide-event="hide" click-off-closes="false" move-to-center="true" >
+        <vertical pref-width="100" horizontal-fit="PreferredSize" pref-height="40" vertical-fit="PreferredSize" spacing="1" background="round-rect-panel">
             <horizontal>
                 <text text="Export Offset" font-size="6" align="Center"/>
             </horizontal>
-            <horizontal>
+            <horizontal pad-left="4" pad-right="4">
                 <text text="~export_modal_text" bold="false" align="Center" word-wrapping="true"/>
             </horizontal>
             <horizontal pref-width="50" horizontal-fit="PreferredSize">

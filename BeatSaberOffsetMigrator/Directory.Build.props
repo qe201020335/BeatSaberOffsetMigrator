@@ -5,4 +5,11 @@
     <ImportBSMTTargets>True</ImportBSMTTargets>
     <BSMTProjectType>BSIPA</BSMTProjectType>
   </PropertyGroup>
+  <ItemGroup>
+    <OutputCopy Include="$(OutDir)VRInputHelper.Oculus.exe" OutputPath="UserData\BeatSaberOffsetMigrator\Helper\VRInputHelper.Oculus.exe" />
+    <OutputCopy Include="$(OutDir)nkast.LibOVR.dll" OutputPath="UserData\BeatSaberOffsetMigrator\Helper\nkast.LibOVR.dll" />
+    <OutputCopy Include="$(OutDir)nkast.LibOVR.Native.dll" OutputPath="UserData\BeatSaberOffsetMigrator\Helper\nkast.LibOVR.Native.dll" />
+    <OutputCopy Include="$(OutDir)$(TargetFileName)" OutputPath="Plugins\$(TargetFileName)" />
+    <OutputCopy Include="$(OutDir)$(TargetName).pdb" OutputPath="Plugins\$(TargetName).pdb" />
+  </ItemGroup>
 </Project>

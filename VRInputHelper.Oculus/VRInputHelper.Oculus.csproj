@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VRInputHelper.Oculus</RootNamespace>
+    <AssemblyName>VRInputHelper.Oculus</AssemblyName>
+    <TargetFramework>net48</TargetFramework>
+    <DebugSymbols>true</DebugSymbols>
+    <LangVersion>10</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System"/>
+    <Reference Include="System.Core"/>
+    <Reference Include="System.Data"/>
+    <Reference Include="System.Xml"/>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="nkast.LibOVR" Version="2.1.0" Publicize="true"/>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\BeatSaberOffsetMigrator\Shared\ControllerPose.cs">
+      <Link>Shared\ControllerPose.cs</Link>
+    </Compile>
+    <Compile Include="..\BeatSaberOffsetMigrator\Shared\OVRHelperSharedMemoryManager.cs">
+      <Link>Shared\OVRHelperSharedMemoryManager.cs</Link>
+    </Compile>
+  </ItemGroup>
+</Project>

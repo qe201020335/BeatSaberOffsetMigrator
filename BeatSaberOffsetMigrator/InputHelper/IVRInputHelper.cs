@@ -8,6 +8,10 @@ public interface IVRInputHelper
     
     bool Supported { get; }
     
+    bool Working { get; }
+    
+    string ReasonIfNotWorking { get; }
+    
     Pose GetLeftVRControllerPose();
     
     Pose GetRightVRControllerPose();
