@@ -22,10 +22,6 @@
     <DisableZipRelease>True</DisableZipRelease>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BeatSaber.ViewSystem">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatSaber.ViewSystem.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
     <Reference Include="EasyOffset">
       <HintPath>$(BeatSaberDir)\Plugins\EasyOffset.dll</HintPath>
       <Private>false</Private>
