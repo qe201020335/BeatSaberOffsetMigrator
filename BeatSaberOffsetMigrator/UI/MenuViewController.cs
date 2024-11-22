@@ -109,6 +109,9 @@ namespace BeatSaberOffsetMigrator.UI
                 RefreshState();
             }
         }
+        
+        [UIValue("RecordUnityOffset")]
+        private bool RecordUnityOffset { get; set; } = false;
 
         [UIValue("supported")]
         private bool OffsetSupported => _vrInputHelper.Supported;
@@ -288,13 +291,20 @@ namespace BeatSaberOffsetMigrator.UI
             }
             else
             {
-                var leftOffset = _offsetHelper.LeftOffset;
-                var rightOffset = _offsetHelper.RightOffset;
-                _config.LeftOffsetPosition = leftOffset.position;
-                _config.LeftOffsetRotation = leftOffset.rotation;
-                _config.RightOffsetPosition = rightOffset.position;
-                _config.RightOffsetRotation = rightOffset.rotation;
-            
+                if (RecordUnityOffset)
+                {
+                    _offsetHelper.SaveUnityOffset();
+                }
+                else
+                {
+                    var leftOffset = _offsetHelper.LeftOffset;
+                    var rightOffset = _offsetHelper.RightOffset;
+                    _config.LeftOffsetPosition = leftOffset.position;
+                    _config.LeftOffsetRotation = leftOffset.rotation;
+                    _config.RightOffsetPosition = rightOffset.position;
+                    _config.RightOffsetRotation = rightOffset.rotation;
+                }
+
                 SaveModalText = "Offset saved successfully";
                 SaveButtonText = "Saved";
             }

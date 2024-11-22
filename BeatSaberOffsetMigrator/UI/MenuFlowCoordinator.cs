@@ -16,6 +16,9 @@ namespace BeatSaberOffsetMigrator.UI
 
         [Inject]
         private MenuViewController _viewController = null!;
+        
+        [Inject]
+        private RightViewController _rightViewController = null!;
 
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
@@ -25,7 +28,7 @@ namespace BeatSaberOffsetMigrator.UI
                 {
                     SetTitle("Offset Helper");
                     showBackButton = true;
-                    ProvideInitialViewControllers(_viewController);
+                    ProvideInitialViewControllers(_viewController, rightScreenViewController: _rightViewController);
                 }
             }
             catch (Exception ex)

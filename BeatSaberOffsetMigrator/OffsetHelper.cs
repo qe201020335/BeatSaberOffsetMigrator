@@ -4,6 +4,7 @@ using SiraUtil.Affinity;
 using SiraUtil.Logging;
 using SiraUtil.Services;
 using UnityEngine;
+using UnityEngine.XR;
 using Zenject;
 
 namespace BeatSaberOffsetMigrator;
@@ -20,6 +21,8 @@ public class OffsetHelper: MonoBehaviour
     private VRController _rightController = null!;
 
     private IVRInputHelper _vrInputHelper = null!;
+    
+    private IVRPlatformHelper _vrPlatformHelper = null!;
     
     internal Pose LeftGamePose { get; set; }
     
@@ -38,13 +41,14 @@ public class OffsetHelper: MonoBehaviour
 
 
     [Inject]
-    private void Init(SiraLog logger, PluginConfig config, IMenuControllerAccessor controllerAccessor, IVRInputHelper vrInputHelper)
+    private void Init(SiraLog logger, PluginConfig config, IMenuControllerAccessor controllerAccessor, IVRInputHelper vrInputHelper, IVRPlatformHelper vrPlatformHelper)
     {
         _logger = logger;
         _config = config;
         _leftController = controllerAccessor.LeftController;
         _rightController = controllerAccessor.RightController;
         _vrInputHelper = vrInputHelper;
+        _vrPlatformHelper = vrPlatformHelper;
         
         _logger.Debug("OffsetHelper initialized");
     }
@@ -61,4 +65,31 @@ public class OffsetHelper: MonoBehaviour
         
         return offset;
     }
+
+    internal bool UnityOffsetSaved { get; private set; }
+    internal Pose UnityOffsetL { get; private set; }
+    internal Pose UnityOffsetR { get; private set; }
+    
+    internal void SaveUnityOffset()
+    {
+        if (!_vrPlatformHelper.GetNodePose(XRNode.LeftHand, _leftController.nodeIdx, out var leftPos, out var leftRot) ||
+            !_vrPlatformHelper.GetNodePose(XRNode.RightHand, _rightController.nodeIdx, out var rightPos, out var rightRot))
+        {
+            _logger.Error("Failed to get node pose");
+            UnityOffsetSaved = false;
+            UnityOffsetL = default;
+            UnityOffsetR = default;
+            return;
+        }
+
+        var unityL = new Pose(leftPos, leftRot);
+        var unityR = new Pose(rightPos, rightRot);
+        
+        UnityOffsetL = CalculateOffset(LeftRuntimePose, unityL);
+        UnityOffsetR = CalculateOffset(RightRuntimePose, unityR);
+        
+        UnityOffsetSaved = true;
+    }
+    
+    
 }

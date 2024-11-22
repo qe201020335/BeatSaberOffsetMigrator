@@ -14,6 +14,8 @@ public class VRControllerPatch: IAffinity
     [Inject]
     private readonly OffsetHelper _offsetHelper = null!;
 
+    internal bool UseGeneratedOffset { get; set; } = false;
+
     private Dictionary<XRNode, bool> _wasApplying = new Dictionary<XRNode, bool>(2);
 
     [AffinityPostfix]
