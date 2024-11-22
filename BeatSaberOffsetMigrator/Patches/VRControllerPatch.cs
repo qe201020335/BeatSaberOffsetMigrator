@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using BeatSaberOffsetMigrator.Configuration;
+using BeatSaberOffsetMigrator.EO;
+using BeatSaberOffsetMigrator.Utils;
 using HarmonyLib;
 using SiraUtil.Affinity;
 using UnityEngine;
@@ -13,6 +15,9 @@ public class VRControllerPatch: IAffinity
 {
     [Inject]
     private readonly OffsetHelper _offsetHelper = null!;
+
+    [Inject]
+    private readonly EasyOffsetManager _easyOffsetManager = null!;
 
     internal bool UseGeneratedOffset { get; set; } = false;
 
@@ -34,7 +39,14 @@ public class VRControllerPatch: IAffinity
         {
             _wasApplying[xrnode] = true;
             viewTransform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-            ApplyOffset(__instance.transform, __instance.node);
+            if (UseGeneratedOffset)
+            {
+                ApplyGeneratedOffset(__instance, xrnode);
+            }
+            else
+            {
+                ApplyOffset(__instance.transform, xrnode);
+            }
         }
         else 
         {
@@ -44,17 +56,17 @@ public class VRControllerPatch: IAffinity
                 //Reset the offset
                 __instance.UpdateAnchorOffsetPose();
             }
-
-            var pose = new Pose(viewTransform.position, viewTransform.rotation);
-            switch (xrnode)
-            {
-                case XRNode.LeftHand:
-                    _offsetHelper.LeftGamePose = pose;
-                    break;
-                case XRNode.RightHand:
-                    _offsetHelper.RightGamePose = pose;
-                    break;
-            }
+        }
+        
+        var pose = new Pose(viewTransform.position, viewTransform.rotation);
+        switch (xrnode)
+        {
+            case XRNode.LeftHand:
+                _offsetHelper.LeftGamePose = pose;
+                break;
+            case XRNode.RightHand:
+                _offsetHelper.RightGamePose = pose;
+                break;
         }
     }
     
@@ -77,9 +89,17 @@ public class VRControllerPatch: IAffinity
         }
         
         transform.SetLocalPositionAndRotation(controllerPose.position, controllerPose.rotation);
-        // transform.rotation = controllerPose.rotation;
-        // transform.position = controllerPose.position;
-        transform.Translate(offset.position);
-        transform.Rotate(offset.rotation.eulerAngles);
+        transform.Offset(offset);
+    }
+    
+    private void ApplyGeneratedOffset(VRController vrController, XRNode node)
+    {
+        if (vrController._vrPlatformHelper.GetNodePose(node, vrController.nodeIdx, out var pos, out var rot))
+        {
+            var transform = vrController.transform;
+            transform.SetLocalPositionAndRotation(pos, rot);
+            _offsetHelper.RevertUnityOffset(transform, node);
+            _easyOffsetManager.ApplyOffset(transform, node);
+        }
     }
 }

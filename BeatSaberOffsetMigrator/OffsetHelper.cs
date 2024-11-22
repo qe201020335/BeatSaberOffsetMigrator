@@ -1,5 +1,6 @@
 ﻿using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.InputHelper;
+using BeatSaberOffsetMigrator.Utils;
 using SiraUtil.Affinity;
 using SiraUtil.Logging;
 using SiraUtil.Services;
@@ -9,7 +10,7 @@ using Zenject;
 
 namespace BeatSaberOffsetMigrator;
 
-public class OffsetHelper: MonoBehaviour
+public class OffsetHelper
 {
 
     private SiraLog _logger = null!;
@@ -67,8 +68,8 @@ public class OffsetHelper: MonoBehaviour
     }
 
     internal bool UnityOffsetSaved { get; private set; }
-    internal Pose UnityOffsetL { get; private set; }
-    internal Pose UnityOffsetR { get; private set; }
+    internal Pose UnityOffsetL { get; private set; } = Pose.identity;
+    internal Pose UnityOffsetR { get; private set; } = Pose.identity;
     
     internal void SaveUnityOffset()
     {
@@ -76,9 +77,7 @@ public class OffsetHelper: MonoBehaviour
             !_vrPlatformHelper.GetNodePose(XRNode.RightHand, _rightController.nodeIdx, out var rightPos, out var rightRot))
         {
             _logger.Error("Failed to get node pose");
-            UnityOffsetSaved = false;
-            UnityOffsetL = default;
-            UnityOffsetR = default;
+            ResetUnityOffset();
             return;
         }
 
@@ -91,5 +90,31 @@ public class OffsetHelper: MonoBehaviour
         UnityOffsetSaved = true;
     }
     
+    internal void RevertUnityOffset(Transform t, XRNode node)
+    {
+        if (!UnityOffsetSaved) return;
+        Pose offset;
+        switch (node)
+        {
+            case XRNode.LeftHand:
+                offset = UnityOffsetL;
+                break;
+            case XRNode.RightHand:
+                offset = UnityOffsetR;
+                break;
+            default:
+                return;
+        }
+
+        var reversed = CalculateOffset(offset, Pose.identity);
+        t.Offset(reversed);
+    }
+    
+    internal void ResetUnityOffset()
+    {
+        UnityOffsetSaved = false;
+        UnityOffsetL = Pose.identity;
+        UnityOffsetR = Pose.identity;
+    }
     
 }

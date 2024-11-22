@@ -5,6 +5,7 @@ using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.EO;
 using BeatSaberOffsetMigrator.InputHelper;
+using BeatSaberOffsetMigrator.Patches;
 using BeatSaberOffsetMigrator.Utils;
 using SiraUtil.Logging;
 using TMPro;
@@ -53,6 +54,9 @@ namespace BeatSaberOffsetMigrator.UI
         
         [Inject]
         private readonly EasyOffsetExporter _easyOffsetExporter = null!;
+        
+        [Inject]
+        private readonly VRControllerPatch _vrControllerPatch = null!;
         
         private bool _parsed = false;
         private bool _modalShowing = false;     
@@ -227,7 +231,15 @@ namespace BeatSaberOffsetMigrator.UI
                 return;
             }
             
-            if (_config.ApplyOffset)
+            if (_config.ApplyOffset && _vrControllerPatch.UseGeneratedOffset)
+            {
+                _infoText.text = $"Current runtime: {OpenXRRuntime.name} using helper {_vrInputHelper.GetType().Name}\n" + 
+                                 "Applying Generated Offset \n" + 
+                                 $"L Real: {_offsetHelper.LeftRuntimePose.Format()}\nR Real: {_offsetHelper.RightRuntimePose.Format()}\n" +
+                                 $"L Game: {_offsetHelper.LeftGamePose.Format()}\nR Game: {_offsetHelper.RightGamePose.Format()}\n" +
+                                 $"L Diff: {_offsetHelper.LeftOffset.Format()}\nR Diff: {_offsetHelper.RightOffset.Format()}";
+            }
+            else if (_config.ApplyOffset)
             {
                 _infoText.text = $"Current runtime: {OpenXRRuntime.name} using helper {_vrInputHelper.GetType().Name}\n" + 
                                  "Offset is applied, disable offset to see live numbers \n" +

@@ -25,6 +25,9 @@ namespace BeatSaberOffsetMigrator
             Log = logger;
 
             PluginConfig.Instance = config.Generated<PluginConfig>();
+            
+            // always make it false at game start so a broken config won't make saber inaccessible
+            PluginConfig.Instance.ApplyOffset = false;
 
             zenjector.UseLogger(logger);
             zenjector.UseMetadataBinder<Plugin>();

@@ -1,10 +1,10 @@
-﻿<vertical child-control-height='false' spacing="2" pad-top="2" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
-  <bool-setting text="Use OpenXR Offset" value="UseXROffset" apply-on-change="true" bind-value="true" interactable="~supported"/>
-<!--  <dropdown-list-setting text="EasyOffset Preset" value="preset-list-choice" choices="preset-list-items" apply-on-change="true" bind-value="true"/>-->
+﻿<vertical child-control-height='false' spacing="1" pad-top="2" pad-left="4" pad-right="4" bg="round-rect-panel" bg-color="#0000007F" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+  <bool-setting text="Use Generated Offset" value="UseGenOffset" apply-on-change="true" bind-value="true" interactable="~supported"/>
+  <dropdown-list-setting text="EasyOffset Preset" value="preset-list-choice" choices="preset-list-items" apply-on-change="true" bind-value="true"/>
   <horizontal vertical-fit="PreferredSize" preferred-height="40">
     <text id="info_text" italics="false"/>
   </horizontal>
-<!--  <horizontal spacing="8">-->
-<!--    <button id="load_preset_button" text="Load Preset" on-click="load_preset"/>-->
-<!--  </horizontal>-->
+  <horizontal spacing="8">
+    <button text="Reset Unity Offset" on-click="reset_unity_offset"/>
+  </horizontal>
 </vertical>

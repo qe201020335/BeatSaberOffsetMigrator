@@ -23,4 +23,11 @@ public static class PoseUtils
 
         return angle;
     }
+        
+    public static Transform Offset(this Transform transform, Pose offset)
+    {
+        transform.Translate(offset.position);
+        transform.Rotate(offset.rotation.eulerAngles);
+        return transform;
+    }
 }
