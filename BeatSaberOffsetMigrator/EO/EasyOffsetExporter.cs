@@ -1,14 +1,15 @@
 ﻿using System;
+using BeatSaberOffsetMigrator.Utils;
 using Zenject;
 
-namespace BeatSaberOffsetMigrator;
+namespace BeatSaberOffsetMigrator.EO;
 
 public class EasyOffsetExporter
 {
     [Inject]
     private readonly OffsetHelper _offsetHelper = null!;
 
-    public bool IsEasyOffsetInstalled { get; } = Utils.IsModInstalled("EasyOffset");
+    public bool IsEasyOffsetInstalled { get; } = ModUtils.IsModInstalled("EasyOffset");
 
     public bool IsEasyOffsetDisabled => !EasyOffset.PluginConfig.Enabled;
 

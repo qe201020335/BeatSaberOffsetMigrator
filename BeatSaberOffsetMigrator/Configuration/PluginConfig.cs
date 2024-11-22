@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using BeatSaberOffsetMigrator.Utils;
 using IPA.Config.Stores;
 using IPA.Config.Stores.Attributes;
 using UnityEngine;
@@ -25,14 +26,14 @@ namespace BeatSaberOffsetMigrator.Configuration
         public virtual Quaternion LeftOffsetRotation
         {
             get => Quaternion.Euler(LeftOffsetRotationEuler);
-            set => LeftOffsetRotationEuler = Utils.ClampAngle(value.eulerAngles);
+            set => LeftOffsetRotationEuler = PoseUtils.ClampAngle(value.eulerAngles);
         }
         
         [Ignore]
         public virtual Quaternion RightOffsetRotation
         {
             get => Quaternion.Euler(RightOffsetRotationEuler);
-            set => RightOffsetRotationEuler = Utils.ClampAngle(value.eulerAngles);
+            set => RightOffsetRotationEuler = PoseUtils.ClampAngle(value.eulerAngles);
         }
     }
 }

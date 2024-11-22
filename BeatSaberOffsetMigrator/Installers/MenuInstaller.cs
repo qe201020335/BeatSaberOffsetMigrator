@@ -1,3 +1,4 @@
+using BeatSaberOffsetMigrator.EO;
 using BeatSaberOffsetMigrator.Patches;
 using BeatSaberOffsetMigrator.UI;
 using Zenject;

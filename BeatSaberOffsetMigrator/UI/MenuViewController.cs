@@ -3,7 +3,9 @@ using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberOffsetMigrator.Configuration;
+using BeatSaberOffsetMigrator.EO;
 using BeatSaberOffsetMigrator.InputHelper;
+using BeatSaberOffsetMigrator.Utils;
 using SiraUtil.Logging;
 using TMPro;
 using UnityEngine;
@@ -384,7 +386,7 @@ namespace BeatSaberOffsetMigrator.UI
     {
         public static string Format(this Pose pose)
         {
-            var euler = Utils.ClampAngle(pose.rotation.eulerAngles);
+            var euler = PoseUtils.ClampAngle(pose.rotation.eulerAngles);
             return $"({pose.position.x:F3}, {pose.position.y:F3}, {pose.position.z:F3}) " + 
                    $"({euler.x:F1}, {euler.y:F1}, {euler.z:F1})";
         }

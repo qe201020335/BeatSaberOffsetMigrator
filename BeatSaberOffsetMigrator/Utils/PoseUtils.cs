@@ -1,11 +1,8 @@
-﻿using System;
-using System.Linq;
-using IPA.Loader;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace BeatSaberOffsetMigrator;
+namespace BeatSaberOffsetMigrator.Utils;
 
-public static class Utils
+public static class PoseUtils
 {
     public static Vector3 ClampAngle(Vector3 euler)
     {
@@ -25,10 +22,5 @@ public static class Utils
         }
 
         return angle;
-    }
-    
-    public static bool IsModInstalled(string id)
-    {
-        return PluginManager.EnabledPlugins.Any(p => p.Id == id);
     }
 }

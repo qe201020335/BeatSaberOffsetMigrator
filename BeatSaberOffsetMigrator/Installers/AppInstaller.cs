@@ -1,6 +1,7 @@
 using System;
 using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.InputHelper;
+using BeatSaberOffsetMigrator.Utils;
 using UnityEngine.XR.OpenXR;
 using Zenject;
 
@@ -25,7 +26,7 @@ namespace BeatSaberOffsetMigrator.Installers
             
             if (OpenXRRuntime.name.IndexOf("steamvr", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                if (Utils.IsModInstalled(OpenVRLibId))
+                if (ModUtils.IsModInstalled(OpenVRLibId))
                 {
                     Container.BindInterfacesTo<OpenVRInputHelper>().AsSingle();
                 }
