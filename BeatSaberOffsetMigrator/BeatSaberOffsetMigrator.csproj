@@ -131,10 +131,10 @@
   <ItemGroup>
     <None Remove="manifest.json" />
     <EmbeddedResource Include="manifest.json" />
-    <None Remove="UI\BSML\MenuView.bsml" />
-    <EmbeddedResource Include="UI\BSML\MenuView.bsml" />
-    <None Remove="UI\BSML\RightView.bsml" />
-    <EmbeddedResource Include="UI\BSML\RightView.bsml" />
+    <None Remove="UI\BSML\MainView.bsml" />
+    <EmbeddedResource Include="UI\BSML\MainView.bsml" />
+    <None Remove="UI\BSML\AdvanceView.bsml" />
+    <EmbeddedResource Include="UI\BSML\AdvanceView.bsml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VRInputHelper.Oculus\VRInputHelper.Oculus.csproj" />

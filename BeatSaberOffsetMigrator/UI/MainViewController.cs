@@ -10,9 +10,9 @@ using Zenject;
 
 namespace BeatSaberOffsetMigrator.UI;
 
-[ViewDefinition("BeatSaberOffsetMigrator.UI.BSML.RightView.bsml")]
-[HotReload(RelativePathToLayout = @"BSML\RightView.bsml")]
-public class RightViewController : BSMLAutomaticViewController
+[ViewDefinition("BeatSaberOffsetMigrator.UI.BSML.MainView.bsml")]
+[HotReload(RelativePathToLayout = @"BSML\MainView.bsml")]
+public class MainViewController : BSMLAutomaticViewController
 {
     [Inject]
     private readonly SiraLog _logger = null!;

@@ -15,10 +15,10 @@ namespace BeatSaberOffsetMigrator.UI
         private MainFlowCoordinator _mainFlowCoordinator = null!;
 
         [Inject]
-        private MenuViewController _viewController = null!;
+        private AdvanceViewController _advanceViewController = null!;
         
         [Inject]
-        private RightViewController _rightViewController = null!;
+        private MainViewController _mainViewController = null!;
 
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
@@ -28,7 +28,7 @@ namespace BeatSaberOffsetMigrator.UI
                 {
                     SetTitle("Offset Helper");
                     showBackButton = true;
-                    ProvideInitialViewControllers(_viewController, rightScreenViewController: _rightViewController);
+                    ProvideInitialViewControllers(_mainViewController, rightScreenViewController: _advanceViewController);
                 }
             }
             catch (Exception ex)
@@ -39,7 +39,7 @@ namespace BeatSaberOffsetMigrator.UI
 
         protected override void BackButtonWasPressed(ViewController topViewController)
         {
-            if (!_viewController.AllowClose) return;
+            if (!_advanceViewController.AllowClose) return;
             base.BackButtonWasPressed(topViewController);
             _mainFlowCoordinator.DismissFlowCoordinator(this);
         }

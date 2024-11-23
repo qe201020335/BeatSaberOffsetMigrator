@@ -16,9 +16,9 @@ using Zenject;
 
 namespace BeatSaberOffsetMigrator.UI
 {
-    [ViewDefinition("BeatSaberOffsetMigrator.UI.BSML.MenuView.bsml")]
-    [HotReload(RelativePathToLayout = @"BSML\MenuView.bsml")]
-    internal class MenuViewController : BSMLAutomaticViewController
+    [ViewDefinition("BeatSaberOffsetMigrator.UI.BSML.AdvanceView.bsml")]
+    [HotReload(RelativePathToLayout = @"BSML\AdvanceView.bsml")]
+    internal class AdvanceViewController : BSMLAutomaticViewController
     {
         internal enum ExportState
         {
