@@ -1,9 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using BeatSaberOffsetMigrator.Configuration;
+using BeatSaberOffsetMigrator.EO;
 using BeatSaberOffsetMigrator.InputHelper;
+using BeatSaberOffsetMigrator.Models;
 using BeatSaberOffsetMigrator.Utils;
-using SiraUtil.Affinity;
+using Newtonsoft.Json;
 using SiraUtil.Logging;
 using SiraUtil.Services;
 using UnityEngine;
@@ -14,17 +20,20 @@ namespace BeatSaberOffsetMigrator;
 
 public class OffsetHelper
 {
-    private SiraLog _logger;
+    private readonly SiraLog _logger;
     
-    private PluginConfig _config;
-
-    private VRController _leftController = null!;
-
-    private VRController _rightController = null!;
-
-    private IVRInputHelper _vrInputHelper = null!;
+    [Inject]
+    private readonly PluginConfig _config = null!;
     
-    private IVRPlatformHelper _vrPlatformHelper = null!;
+    private readonly VRController _leftController;
+
+    private readonly VRController _rightController;
+
+    [Inject]
+    private readonly IVRInputHelper _vrInputHelper = null!;
+    
+    [Inject]
+    private readonly IVRPlatformHelper _vrPlatformHelper = null!;
     
     internal Pose LeftGamePose { get; set; }
     
@@ -41,30 +50,40 @@ public class OffsetHelper
     internal Pose LeftOffset => CalculateOffset(LeftRuntimePose, LeftGamePose);
     internal Pose RightOffset => CalculateOffset(RightRuntimePose, RightGamePose);
     
-    internal bool UnityOffsetSaved { get; private set; }
     internal Pose UnityOffsetL { get; private set; } = Pose.identity;
     internal Pose UnityOffsetR { get; private set; } = Pose.identity;
     private Pose UnityOffsetLReversed { get; set; } = Pose.identity;
     private Pose UnityOffsetRReversed { get; set; } = Pose.identity;
+    
+    private readonly IReadOnlyDictionary<string, Offset> _deviceOffsetTable;
+    
+    internal string SelectedDeviceOffset { get; private set; } = "Custom";
 
-
-    [Inject]
-    private void Init(SiraLog logger, PluginConfig config, IMenuControllerAccessor controllerAccessor, IVRInputHelper vrInputHelper, IVRPlatformHelper vrPlatformHelper)
+    private OffsetHelper(SiraLog logger, IMenuControllerAccessor controllerAccessor)
     {
         _logger = logger;
-        _config = config;
         _leftController = controllerAccessor.LeftController;
         _rightController = controllerAccessor.RightController;
-        _vrInputHelper = vrInputHelper;
-        _vrPlatformHelper = vrPlatformHelper;
 
-        // TODO load device specific offset
-        var leftUnityOffset = _config.LeftUnityOffset;
-        var rightUnityOffset = _config.RightUnityOffset;
-        UnityOffsetSaved = leftUnityOffset != Pose.identity || rightUnityOffset != Pose.identity;
-        SetUnityOffset(leftUnityOffset, rightUnityOffset);
-        
-        _logger.Debug("OffsetHelper initialized");
+        try
+        {
+            _logger.Debug("Loading device offset table");
+            using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("BeatSaberOffsetMigrator.DeviceOffsetTable.json");
+            using var textReader = new StreamReader(stream!);
+            using var jsonReader = new JsonTextReader(textReader);
+            var serializer = new JsonSerializer();
+            var table = serializer.Deserialize<Dictionary<string, Offset>>(jsonReader);
+            // shouldn't really happen
+            _deviceOffsetTable = table ?? throw new Exception("Deserialized table is null");
+        }
+        catch (Exception e)
+        {
+            _logger.Error("Failed to load device offset table: " + e.Message);
+            _logger.Error(e);
+            _deviceOffsetTable = new Dictionary<string, Offset>();
+        }
+
+        SetSelectedDevice("Custom");
     }
 
     private Pose CalculateOffset(Pose from, Pose to)
@@ -82,11 +101,36 @@ public class OffsetHelper
 
     private void SetUnityOffset(Pose left, Pose right)
     {
-        _logger.Debug($"Using Offsets: \nL: {left.Format()}\nR: {right.Format()}");
+        _logger.Debug($"Using Offsets L: {left.Format()}, R: {right.Format()}");
         UnityOffsetL = left;
         UnityOffsetR = right;
         UnityOffsetLReversed = CalculateOffset(left, Pose.identity);
         UnityOffsetRReversed = CalculateOffset(right, Pose.identity);
+    }
+
+    internal string[] GetDeviceList() => [.._deviceOffsetTable.Keys.OrderBy(name => name), "Custom"];
+
+    internal bool SetSelectedDevice(string device)
+    {
+        if (device == SelectedDeviceOffset) return true;
+        if (device == "Custom")
+        {
+            SetUnityOffset(_config.UnityOffset.Left, _config.UnityOffset.Right);
+            SelectedDeviceOffset = device;
+            return true;
+        }
+        
+        if (!_deviceOffsetTable.TryGetValue(device, out var offset))
+        {
+            SetUnityOffset(_config.UnityOffset.Left, _config.UnityOffset.Right);
+            SelectedDeviceOffset = "Custom";
+            _logger.Warn($"Device offset {device} not found");
+            return false;
+        }
+        
+        SelectedDeviceOffset = device;
+        SetUnityOffset(offset.Left, offset.Right);
+        return true;
     }
     
     internal IEnumerator SaveUnityOffset()
@@ -116,15 +160,12 @@ public class OffsetHelper
         var offsetL = CalculateOffset(LeftRuntimePose, unityL);
         var offsetR = CalculateOffset(RightRuntimePose, unityR);
         
-        _config.LeftUnityOffset = offsetL;
-        _config.RightUnityOffset = offsetR;
+        _config.UnityOffset = new Offset(offsetL, offsetR);
         SetUnityOffset(offsetL, offsetR);
-        UnityOffsetSaved = true;
     }
     
     internal void RevertUnityOffset(Transform t, XRNode node)
     {
-        if (!UnityOffsetSaved) return;
         Pose offset;
         switch (node)
         {
@@ -143,9 +184,7 @@ public class OffsetHelper
     
     internal void ResetUnityOffset()
     {
-        UnityOffsetSaved = false;
-        _config.LeftUnityOffset = Pose.identity;
-        _config.RightUnityOffset = Pose.identity;
+        _config.UnityOffset = Offset.Identity;
         UnityOffsetLReversed = Pose.identity;
         UnityOffsetRReversed = Pose.identity;
     }

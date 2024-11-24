@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.ViewControllers;
@@ -90,42 +91,62 @@ public class MainViewController : BSMLAutomaticViewController
         }
     }
 
+    [UIValue("controller-list-items")]
+    private object[] _controllerList => _offsetHelper.GetDeviceList();
+    
+    [UIValue("controller-list-choice")]
+    private string SelectedController
+    {
+        get => _offsetHelper.SelectedDeviceOffset;
+        set
+        {
+            if (!_offsetHelper.SetSelectedDevice(value))
+            {
+                NotifyPropertyChanged();
+            }
+            
+            NotifyPropertyChanged(nameof(IsCustomController));
+        }
+    }
+    
+    [UIValue("custom-device")]
+    private bool IsCustomController => _offsetHelper.SelectedDeviceOffset == "Custom";
+
     [UIAction("#post-parse")]
     private void OnParsed()
     {
         _parsed = true;
+        
+        if (!_offsetHelper.IsSupported)
+        {
+            _infoText.text = "<color=red>Current runtime is not supported</color>";
+        }
         
         EnableAdvance = false; // will also reset the value in the VRControllerPatch
     }
 
     private void Update()
     {
-        if (!_parsed) return;
+        if (!_parsed || !OffsetSupported) return;
 
         var builder = new StringBuilder(256);
         // Should use events and not polling, but I am too lazy
-        if (_offsetHelper.UnityOffsetSaved)
+        if (_offsetHelper.SelectedDeviceOffset == "Custom")
         {
-            builder.Append("Unity offset:\n" +
+            builder.Append("Using custom Unity offset:\n" +
                            $"L: {_offsetHelper.UnityOffsetL.Format()}\n" +
-                           $"R: {_offsetHelper.UnityOffsetR.Format()}");
+                           $"R: {_offsetHelper.UnityOffsetR.Format()}\n");
         }
-        else
-        {
-            builder.Append("Unity offset not recorded");
-        }
-        
-        builder.Append("\n");
         if (_easyOffsetManager.CurrentPresetName != string.Empty)
         {
-            builder.Append($"Current preset: {_easyOffsetManager.CurrentPresetName}\n");
+            builder.Append($"Using EasyOffset preset: {_easyOffsetManager.CurrentPresetName}\n");
             var preset = _easyOffsetManager.CurrentPreset!;
             builder.Append($"L: {preset.LeftOffset.Format()}\n" +
                            $"R: {preset.RightOffset.Format()}");
         }
         else
         {
-            builder.Append("No preset selected or failed to load.");
+            builder.Append("No EasyOffset preset selected or failed to load.");
         }
         
         _infoText.text = builder.ToString();

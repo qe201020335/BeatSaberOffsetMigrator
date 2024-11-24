@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using BeatSaberOffsetMigrator.Models;
 using BeatSaberOffsetMigrator.Utils;
 using IPA.Config.Stores;
 using IPA.Config.Stores.Attributes;
@@ -26,13 +27,7 @@ namespace BeatSaberOffsetMigrator.Configuration
 
         public virtual int OffsetSampleCount { get; set; }= 32;
         
-        protected virtual Vector3 LeftUnityOffsetPosition { get; set; } = Vector3.zero;
-        
-        protected virtual Vector3 LeftUnityOffsetRotationEuler { get; set; } = Vector3.zero;
-        
-        protected virtual Vector3 RightUnityOffsetPosition { get; set; } = Vector3.zero;
-        
-        protected virtual Vector3 RightUnityOffsetRotationEuler { get; set; } = Vector3.zero;
+        public virtual Offset UnityOffset { get; set; } = Offset.Identity;
         
         [Ignore]
         public Pose LeftOffset
@@ -53,28 +48,6 @@ namespace BeatSaberOffsetMigrator.Configuration
             {
                 RightOffsetPosition = value.position;
                 RightOffsetRotationEuler = PoseUtils.ClampAngle(value.rotation.eulerAngles);
-            }
-        }
-
-        [Ignore]
-        public Pose LeftUnityOffset
-        {
-            get => new Pose(LeftUnityOffsetPosition, Quaternion.Euler(LeftUnityOffsetRotationEuler));
-            set
-            {
-                LeftUnityOffsetPosition = value.position;
-                LeftUnityOffsetRotationEuler = PoseUtils.ClampAngle(value.rotation.eulerAngles);
-            }
-        }
-        
-        [Ignore]
-        public Pose RightUnityOffset
-        {
-            get => new Pose(RightUnityOffsetPosition, Quaternion.Euler(RightUnityOffsetRotationEuler));
-            set
-            {
-                RightUnityOffsetPosition = value.position;
-                RightUnityOffsetRotationEuler = PoseUtils.ClampAngle(value.rotation.eulerAngles);
             }
         }
 

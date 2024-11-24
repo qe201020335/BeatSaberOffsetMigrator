@@ -1,4 +1,4 @@
-<vertical child-control-height='false' spacing="2" pad-top="2" pad-left="4" pad-right="4" bg="round-rect-panel" bg-color="#0000007F" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+<vertical child-control-height='false' child-expand-height="false" spacing="2" pad-top="2" pad-left="4" pad-right="4" bg="round-rect-panel" bg-color="#0000007F" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
     <horizontal pad="0">
         <text align="Center" text="Advance Migration" font-size="6" italics="false"/>
     </horizontal>
