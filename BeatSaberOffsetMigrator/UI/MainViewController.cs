@@ -137,6 +137,15 @@ public class MainViewController : BSMLAutomaticViewController
                            $"L: {_offsetHelper.UnityOffsetL.Format()}\n" +
                            $"R: {_offsetHelper.UnityOffsetR.Format()}\n");
         }
+        else if (_offsetHelper.SelectedDeviceOffset == "None")
+        {
+            builder.Append("No unity offset selected.\n");
+        }
+        else
+        {
+            builder.Append($"Using Unity offset for {_offsetHelper.SelectedDeviceOffset}\n");
+        }
+        
         if (_easyOffsetManager.CurrentPresetName != string.Empty)
         {
             builder.Append($"Using EasyOffset preset: {_easyOffsetManager.CurrentPresetName}\n");

@@ -22,8 +22,7 @@ public class OffsetHelper
 {
     private readonly SiraLog _logger;
     
-    [Inject]
-    private readonly PluginConfig _config = null!;
+    private readonly PluginConfig _config;
     
     private readonly VRController _leftController;
 
@@ -57,11 +56,12 @@ public class OffsetHelper
     
     private readonly IReadOnlyDictionary<string, Offset> _deviceOffsetTable;
     
-    internal string SelectedDeviceOffset { get; private set; } = "Custom";
+    internal string SelectedDeviceOffset { get; private set; } = "None";
 
-    private OffsetHelper(SiraLog logger, IMenuControllerAccessor controllerAccessor)
+    private OffsetHelper(SiraLog logger, PluginConfig config, IMenuControllerAccessor controllerAccessor)
     {
         _logger = logger;
+        _config = config;
         _leftController = controllerAccessor.LeftController;
         _rightController = controllerAccessor.RightController;
 
@@ -83,7 +83,7 @@ public class OffsetHelper
             _deviceOffsetTable = new Dictionary<string, Offset>();
         }
 
-        SetSelectedDevice("Custom");
+        SetSelectedDevice("None");
     }
 
     private Pose CalculateOffset(Pose from, Pose to)
@@ -108,7 +108,7 @@ public class OffsetHelper
         UnityOffsetRReversed = CalculateOffset(right, Pose.identity);
     }
 
-    internal string[] GetDeviceList() => [.._deviceOffsetTable.Keys.OrderBy(name => name), "Custom"];
+    internal string[] GetDeviceList() => ["None", .._deviceOffsetTable.Keys.OrderBy(name => name), "Custom"];
 
     internal bool SetSelectedDevice(string device)
     {
@@ -119,11 +119,18 @@ public class OffsetHelper
             SelectedDeviceOffset = device;
             return true;
         }
+
+        if (device == "None")
+        {
+            SetUnityOffset(Pose.identity, Pose.identity);
+            SelectedDeviceOffset = device;
+            return true;
+        }
         
         if (!_deviceOffsetTable.TryGetValue(device, out var offset))
         {
-            SetUnityOffset(_config.UnityOffset.Left, _config.UnityOffset.Right);
-            SelectedDeviceOffset = "Custom";
+            SetUnityOffset(Pose.identity, Pose.identity);
+            SelectedDeviceOffset = "None";
             _logger.Warn($"Device offset {device} not found");
             return false;
         }
