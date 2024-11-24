@@ -24,6 +24,8 @@ namespace BeatSaberOffsetMigrator.Configuration
         
         protected virtual Vector3 RightOffsetRotationEuler { get; set; } = Vector3.zero;
 
+        public virtual int OffsetSampleCount { get; set; }= 32;
+        
         protected virtual Vector3 LeftUnityOffsetPosition { get; set; } = Vector3.zero;
         
         protected virtual Vector3 LeftUnityOffsetRotationEuler { get; set; } = Vector3.zero;
@@ -31,7 +33,6 @@ namespace BeatSaberOffsetMigrator.Configuration
         protected virtual Vector3 RightUnityOffsetPosition { get; set; } = Vector3.zero;
         
         protected virtual Vector3 RightUnityOffsetRotationEuler { get; set; } = Vector3.zero;
-        
         
         [Ignore]
         public Pose LeftOffset

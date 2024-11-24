@@ -1,4 +1,6 @@
-﻿using BeatSaberOffsetMigrator.Configuration;
+﻿using System.Collections;
+using System.Collections.Generic;
+using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.InputHelper;
 using BeatSaberOffsetMigrator.Utils;
 using SiraUtil.Affinity;
@@ -12,10 +14,9 @@ namespace BeatSaberOffsetMigrator;
 
 public class OffsetHelper
 {
-
-    private SiraLog _logger = null!;
+    private SiraLog _logger;
     
-    private PluginConfig _config = null!;
+    private PluginConfig _config;
 
     private VRController _leftController = null!;
 
@@ -88,18 +89,29 @@ public class OffsetHelper
         UnityOffsetRReversed = CalculateOffset(right, Pose.identity);
     }
     
-    internal void SaveUnityOffset()
+    internal IEnumerator SaveUnityOffset()
     {
-        if (!_vrPlatformHelper.GetNodePose(XRNode.LeftHand, _leftController.nodeIdx, out var leftPos, out var leftRot) ||
-            !_vrPlatformHelper.GetNodePose(XRNode.RightHand, _rightController.nodeIdx, out var rightPos, out var rightRot))
+        var count = _config.OffsetSampleCount;
+        var leftPoses = new List<Pose>(count);
+        var rightPoses = new List<Pose>(count);
+        for (int i = 0; i < count; i++)
         {
-            _logger.Error("Failed to get node pose");
-            ResetUnityOffset();
-            return;
+            if (!_vrPlatformHelper.GetNodePose(XRNode.LeftHand, _leftController.nodeIdx, out var leftPos, out var leftRot) ||
+                !_vrPlatformHelper.GetNodePose(XRNode.RightHand, _rightController.nodeIdx, out var rightPos, out var rightRot))
+            {
+                _logger.Error("Failed to get node pose");
+                ResetUnityOffset();
+                yield break;
+            }
+            
+            leftPoses.Add(new Pose(leftPos, leftRot));
+            rightPoses.Add(new Pose(rightPos, rightRot));
+            yield return null;
         }
+        
 
-        var unityL = new Pose(leftPos, leftRot);
-        var unityR = new Pose(rightPos, rightRot);
+        var unityL = AveragePose(leftPoses);
+        var unityR = AveragePose(rightPoses);
         
         var offsetL = CalculateOffset(LeftRuntimePose, unityL);
         var offsetR = CalculateOffset(RightRuntimePose, unityR);
@@ -138,4 +150,27 @@ public class OffsetHelper
         UnityOffsetRReversed = Pose.identity;
     }
     
+    private Pose AveragePose(List<Pose> poses)
+    {
+        var count = poses.Count;
+
+        if (count == 0) return Pose.identity;
+        
+        double posx = 0, posy = 0, posz = 0, rotx = 0, roty = 0, rotz = 0, rotw = 0;
+        foreach (var pose in poses)
+        {
+            posx += pose.position.x;
+            posy += pose.position.y;
+            posz += pose.position.z;
+            rotx += pose.rotation.x;
+            roty += pose.rotation.y;
+            rotz += pose.rotation.z;
+            rotw += pose.rotation.w;
+        }
+        
+        var avgPos = new Vector3((float)(posx / count), (float)(posy / count), (float)(posz / count));
+        var avgRot = new Quaternion((float)(rotx / count), (float)(roty / count), (float)(rotz / count), (float)(rotw / count));
+        
+        return new Pose(avgPos, avgRot);
+    }
 }

@@ -316,7 +316,9 @@ namespace BeatSaberOffsetMigrator.UI
             {
                 if (RecordUnityOffset)
                 {
-                    _offsetHelper.SaveUnityOffset();
+                    SaveModalText = "Sampling Unity Offset";
+                    SaveButtonText = "Saving";
+                    yield return _offsetHelper.SaveUnityOffset();
                 }
                 else
                 {
