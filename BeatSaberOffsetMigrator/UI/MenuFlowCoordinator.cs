@@ -37,10 +37,12 @@ namespace BeatSaberOffsetMigrator.UI
             catch (Exception ex)
             {
                 _logger.Error(ex);
+                return;
             }
 
             _mainViewController.PropertyChanged += OnMainViewControllerPropertiesChanged;
             _advanceViewController.PropertyChanged += OnAdvanceViewControllerPropertiesChanged;
+            RefreshAdvanceViewControllerState();
         }
 
         protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
@@ -55,14 +57,7 @@ namespace BeatSaberOffsetMigrator.UI
             switch (e.PropertyName)
             {
                 case nameof(_mainViewController.EnableAdvance):
-                    if (_mainViewController.EnableAdvance)
-                    {
-                        SetRightScreenViewController(_advanceViewController, ViewController.AnimationType.In);
-                    }
-                    else if (_allowDismiss)
-                    {
-                        SetRightScreenViewController(null, ViewController.AnimationType.Out);
-                    }
+                    RefreshAdvanceViewControllerState();
                     break;
             }
         }
@@ -74,6 +69,18 @@ namespace BeatSaberOffsetMigrator.UI
                 case nameof(_advanceViewController.ModalShowing):
                     _allowDismiss = !_advanceViewController.ModalShowing;
                     break;
+            }
+        }
+
+        private void RefreshAdvanceViewControllerState()
+        {
+            if (_mainViewController.EnableAdvance)
+            {
+                SetRightScreenViewController(_advanceViewController, ViewController.AnimationType.In);
+            }
+            else if (_allowDismiss)
+            {
+                SetRightScreenViewController(null, ViewController.AnimationType.Out);
             }
         }
 
