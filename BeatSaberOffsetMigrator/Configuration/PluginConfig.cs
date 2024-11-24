@@ -1,7 +1,9 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using BeatSaberOffsetMigrator.Utils;
 using IPA.Config.Stores;
 using IPA.Config.Stores.Attributes;
+using IPA.Utilities.Async;
 using UnityEngine;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
@@ -34,6 +36,28 @@ namespace BeatSaberOffsetMigrator.Configuration
         {
             get => Quaternion.Euler(RightOffsetRotationEuler);
             set => RightOffsetRotationEuler = PoseUtils.ClampAngle(value.eulerAngles);
+        }
+
+        internal event Action? ConfigDidChange;
+
+        private void HandleConfigChanged()
+        {
+            Plugin.Log.Trace("Config changed, broadcasting event");
+            var listener = ConfigDidChange;
+            UnityMainThreadTaskScheduler.Factory.StartNew(() =>
+            {
+                listener?.Invoke();
+            });
+        }
+        
+        public virtual void Changed()
+        {
+            HandleConfigChanged();
+        }
+
+        public virtual void OnReload()
+        {
+            HandleConfigChanged();
         }
     }
 }

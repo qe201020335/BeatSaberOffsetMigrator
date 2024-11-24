@@ -102,17 +102,6 @@ namespace BeatSaberOffsetMigrator.UI
         
         [UIParams]
         private BSMLParserParams parserParams = null!;
-
-        [UIValue("ApplyOffset")]
-        private bool ApplyOffset
-        {
-            get => _config.ApplyOffset;
-            set
-            {
-                _config.ApplyOffset = value;
-                RefreshState();
-            }
-        }
         
         [UIValue("RecordUnityOffset")]
         private bool RecordUnityOffset { get; set; } = false;
@@ -204,6 +193,19 @@ namespace BeatSaberOffsetMigrator.UI
             {
                 RefreshState();
             }
+
+            _config.ConfigDidChange += OnConfigChanged;
+        }
+
+        protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
+        {
+            base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
+            _config.ConfigDidChange -= OnConfigChanged;
+        }
+
+        private void OnConfigChanged()
+        {
+            RefreshState();
         }
 
         private void RefreshState()

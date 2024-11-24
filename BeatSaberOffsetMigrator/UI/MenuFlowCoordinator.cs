@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using BeatSaberMarkupLanguage;
 using HMUI;
 using SiraUtil.Logging;
@@ -28,12 +29,35 @@ namespace BeatSaberOffsetMigrator.UI
                 {
                     SetTitle("Offset Helper");
                     showBackButton = true;
-                    ProvideInitialViewControllers(_mainViewController, rightScreenViewController: _advanceViewController);
+                    ProvideInitialViewControllers(_mainViewController);
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
+            }
+
+            _mainViewController.PropertyChanged += OnMainViewControllerPropertiesChanged;
+        }
+
+        protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
+        {
+            base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
+            _mainViewController.PropertyChanged -= OnMainViewControllerPropertiesChanged;
+        }
+        
+        private void OnMainViewControllerPropertiesChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(_mainViewController.EnableAdvance))
+            {
+                if (_mainViewController.EnableAdvance)
+                {
+                    SetRightScreenViewController(_advanceViewController, ViewController.AnimationType.In);
+                }
+                else
+                {
+                    SetRightScreenViewController(null, ViewController.AnimationType.Out);
+                }
             }
         }
 

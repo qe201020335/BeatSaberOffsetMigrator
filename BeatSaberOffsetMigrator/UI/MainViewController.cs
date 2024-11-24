@@ -2,6 +2,7 @@
 using System.Text;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.ViewControllers;
+using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.EO;
 using BeatSaberOffsetMigrator.Patches;
 using SiraUtil.Logging;
@@ -16,6 +17,9 @@ public class MainViewController : BSMLAutomaticViewController
 {
     [Inject]
     private readonly SiraLog _logger = null!;
+    
+    [Inject]
+    private readonly PluginConfig _config = null!;
 
     [Inject]
     private readonly OffsetHelper _offsetHelper = null!;
@@ -27,6 +31,16 @@ public class MainViewController : BSMLAutomaticViewController
     private readonly VRControllerPatch _vrControllerPatch = null!;
 
     private bool _parsed = false;
+    
+    [UIValue("ApplyOffset")]
+    private bool ApplyOffset
+    {
+        get => _config.ApplyOffset;
+        set
+        {
+            _config.ApplyOffset = value;
+        }
+    }
 
     [UIComponent("info_text")]
     private TMP_Text _infoText = null!;
@@ -34,11 +48,21 @@ public class MainViewController : BSMLAutomaticViewController
     [UIValue("supported")]
     private bool OffsetSupported => _offsetHelper.IsSupported;
 
-    [UIValue("UseGenOffset")]
-    private bool UseXROffset
+    private bool _enableAdvance = false;
+
+    [UIValue("EnableAdvance")]
+    public bool EnableAdvance
     {
-        get => _vrControllerPatch.UseGeneratedOffset;
-        set => _vrControllerPatch.UseGeneratedOffset = value;
+        get => _enableAdvance;
+        set
+        {
+            _vrControllerPatch.UseGeneratedOffset = !value;
+            if (_enableAdvance != value)
+            {
+                _enableAdvance = value;
+                NotifyPropertyChanged();
+            }
+        }
     }
 
     [UIValue("preset-list-items")]
@@ -69,6 +93,8 @@ public class MainViewController : BSMLAutomaticViewController
     private void OnParsed()
     {
         _parsed = true;
+        
+        EnableAdvance = false; // will also reset the value in the VRControllerPatch
     }
 
     private void Update()
