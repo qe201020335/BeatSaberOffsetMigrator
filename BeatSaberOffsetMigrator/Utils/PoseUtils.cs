@@ -30,4 +30,11 @@ public static class PoseUtils
         transform.Rotate(offset.rotation.eulerAngles);
         return transform;
     }
+    
+    public static string Format(this Pose pose)
+    {
+        var euler = ClampAngle(pose.rotation.eulerAngles);
+        return $"({pose.position.x:F3}, {pose.position.y:F3}, {pose.position.z:F3}) " + 
+               $"({euler.x:F1}, {euler.y:F1}, {euler.z:F1})";
+    }
 }

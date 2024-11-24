@@ -39,6 +39,12 @@ public class OffsetHelper
     
     internal Pose LeftOffset => CalculateOffset(LeftRuntimePose, LeftGamePose);
     internal Pose RightOffset => CalculateOffset(RightRuntimePose, RightGamePose);
+    
+    internal bool UnityOffsetSaved { get; private set; }
+    internal Pose UnityOffsetL { get; private set; } = Pose.identity;
+    internal Pose UnityOffsetR { get; private set; } = Pose.identity;
+    private Pose UnityOffsetLReversed { get; set; } = Pose.identity;
+    private Pose UnityOffsetRReversed { get; set; } = Pose.identity;
 
 
     [Inject]
@@ -50,6 +56,12 @@ public class OffsetHelper
         _rightController = controllerAccessor.RightController;
         _vrInputHelper = vrInputHelper;
         _vrPlatformHelper = vrPlatformHelper;
+
+        // TODO load device specific offset
+        var leftUnityOffset = _config.LeftUnityOffset;
+        var rightUnityOffset = _config.RightUnityOffset;
+        UnityOffsetSaved = leftUnityOffset != Pose.identity || rightUnityOffset != Pose.identity;
+        SetUnityOffset(leftUnityOffset, rightUnityOffset);
         
         _logger.Debug("OffsetHelper initialized");
     }
@@ -67,9 +79,14 @@ public class OffsetHelper
         return offset;
     }
 
-    internal bool UnityOffsetSaved { get; private set; }
-    internal Pose UnityOffsetL { get; private set; } = Pose.identity;
-    internal Pose UnityOffsetR { get; private set; } = Pose.identity;
+    private void SetUnityOffset(Pose left, Pose right)
+    {
+        _logger.Debug($"Using Offsets: \nL: {left.Format()}\nR: {right.Format()}");
+        UnityOffsetL = left;
+        UnityOffsetR = right;
+        UnityOffsetLReversed = CalculateOffset(left, Pose.identity);
+        UnityOffsetRReversed = CalculateOffset(right, Pose.identity);
+    }
     
     internal void SaveUnityOffset()
     {
@@ -84,9 +101,12 @@ public class OffsetHelper
         var unityL = new Pose(leftPos, leftRot);
         var unityR = new Pose(rightPos, rightRot);
         
-        UnityOffsetL = CalculateOffset(LeftRuntimePose, unityL);
-        UnityOffsetR = CalculateOffset(RightRuntimePose, unityR);
+        var offsetL = CalculateOffset(LeftRuntimePose, unityL);
+        var offsetR = CalculateOffset(RightRuntimePose, unityR);
         
+        _config.LeftUnityOffset = offsetL;
+        _config.RightUnityOffset = offsetR;
+        SetUnityOffset(offsetL, offsetR);
         UnityOffsetSaved = true;
     }
     
@@ -97,24 +117,25 @@ public class OffsetHelper
         switch (node)
         {
             case XRNode.LeftHand:
-                offset = UnityOffsetL;
+                offset = UnityOffsetLReversed;
                 break;
             case XRNode.RightHand:
-                offset = UnityOffsetR;
+                offset = UnityOffsetRReversed;
                 break;
             default:
                 return;
         }
 
-        var reversed = CalculateOffset(offset, Pose.identity);
-        t.Offset(reversed);
+        t.Offset(offset);
     }
     
     internal void ResetUnityOffset()
     {
         UnityOffsetSaved = false;
-        UnityOffsetL = Pose.identity;
-        UnityOffsetR = Pose.identity;
+        _config.LeftUnityOffset = Pose.identity;
+        _config.RightUnityOffset = Pose.identity;
+        UnityOffsetLReversed = Pose.identity;
+        UnityOffsetRReversed = Pose.identity;
     }
     
 }

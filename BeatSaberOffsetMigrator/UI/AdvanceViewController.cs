@@ -59,7 +59,18 @@ namespace BeatSaberOffsetMigrator.UI
         private readonly VRControllerPatch _vrControllerPatch = null!;
         
         private bool _parsed = false;
-        private bool _modalShowing = false;     
+
+        private bool _modalShowing = false;
+        public bool ModalShowing
+        {
+            get => _modalShowing;
+            set
+            {
+                _modalShowing = value;
+                NotifyPropertyChanged();
+            }
+        }
+        
         private ExportState _curExportState = ExportState.Idle;
         
         private ExportState CurExportState
@@ -97,8 +108,6 @@ namespace BeatSaberOffsetMigrator.UI
                 }
             }
         }
-        
-        public bool AllowClose => !_modalShowing;
         
         [UIParams]
         private BSMLParserParams parserParams = null!;
@@ -245,8 +254,8 @@ namespace BeatSaberOffsetMigrator.UI
             {
                 _infoText.text = $"Current runtime: {OpenXRRuntime.name} using helper {_vrInputHelper.GetType().Name}\n" + 
                                  "Offset is applied, disable offset to see live numbers \n" +
-                                 $"L: {new Pose(_config.LeftOffsetPosition, _config.LeftOffsetRotation).Format()}\n" +
-                                 $"R: {new Pose(_config.RightOffsetPosition, _config.RightOffsetRotation).Format()}";
+                                 $"L: {_config.LeftOffset.Format()}\n" +
+                                 $"R: {_config.RightOffset.Format()}";
             }
             else
             {
@@ -276,7 +285,7 @@ namespace BeatSaberOffsetMigrator.UI
             
             
             parserParams.EmitEvent("show_save");
-            _modalShowing = true;
+            ModalShowing = true;
         }
         
         [UIAction("save_offset")]
@@ -311,12 +320,8 @@ namespace BeatSaberOffsetMigrator.UI
                 }
                 else
                 {
-                    var leftOffset = _offsetHelper.LeftOffset;
-                    var rightOffset = _offsetHelper.RightOffset;
-                    _config.LeftOffsetPosition = leftOffset.position;
-                    _config.LeftOffsetRotation = leftOffset.rotation;
-                    _config.RightOffsetPosition = rightOffset.position;
-                    _config.RightOffsetRotation = rightOffset.rotation;
+                    _config.LeftOffset = _offsetHelper.LeftOffset;
+                    _config.RightOffset = _offsetHelper.RightOffset;
                 }
 
                 SaveModalText = "Offset saved successfully";
@@ -355,7 +360,7 @@ namespace BeatSaberOffsetMigrator.UI
             }
             
             parserParams.EmitEvent("show_export");
-            _modalShowing = true;
+            ModalShowing = true;
         }
 
         [UIAction("export_offset")]
@@ -371,7 +376,7 @@ namespace BeatSaberOffsetMigrator.UI
         {
             if (CurExportState is ExportState.Exporting) return;
             parserParams.EmitEvent("hide");
-            _modalShowing = false;
+            ModalShowing = false;
             CurExportState = ExportState.Idle;
         }
         
@@ -403,16 +408,6 @@ namespace BeatSaberOffsetMigrator.UI
             }
 
             CurExportState = ExportState.ExportedOrFailed;
-        }
-    }
-
-    public static class FormatExtensions
-    {
-        public static string Format(this Pose pose)
-        {
-            var euler = PoseUtils.ClampAngle(pose.rotation.eulerAngles);
-            return $"({pose.position.x:F3}, {pose.position.y:F3}, {pose.position.z:F3}) " + 
-                   $"({euler.x:F1}, {euler.y:F1}, {euler.z:F1})";
         }
     }
 }

@@ -21,6 +21,8 @@ namespace BeatSaberOffsetMigrator.UI
         [Inject]
         private MainViewController _mainViewController = null!;
 
+        private bool _allowDismiss = true;
+
         protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
             try
@@ -38,32 +40,46 @@ namespace BeatSaberOffsetMigrator.UI
             }
 
             _mainViewController.PropertyChanged += OnMainViewControllerPropertiesChanged;
+            _advanceViewController.PropertyChanged += OnAdvanceViewControllerPropertiesChanged;
         }
 
         protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
         {
             base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
             _mainViewController.PropertyChanged -= OnMainViewControllerPropertiesChanged;
+            _advanceViewController.PropertyChanged -= OnAdvanceViewControllerPropertiesChanged;
         }
         
         private void OnMainViewControllerPropertiesChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(_mainViewController.EnableAdvance))
+            switch (e.PropertyName)
             {
-                if (_mainViewController.EnableAdvance)
-                {
-                    SetRightScreenViewController(_advanceViewController, ViewController.AnimationType.In);
-                }
-                else
-                {
-                    SetRightScreenViewController(null, ViewController.AnimationType.Out);
-                }
+                case nameof(_mainViewController.EnableAdvance):
+                    if (_mainViewController.EnableAdvance)
+                    {
+                        SetRightScreenViewController(_advanceViewController, ViewController.AnimationType.In);
+                    }
+                    else if (_allowDismiss)
+                    {
+                        SetRightScreenViewController(null, ViewController.AnimationType.Out);
+                    }
+                    break;
+            }
+        }
+        
+        private void OnAdvanceViewControllerPropertiesChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(_advanceViewController.ModalShowing):
+                    _allowDismiss = !_advanceViewController.ModalShowing;
+                    break;
             }
         }
 
         protected override void BackButtonWasPressed(ViewController topViewController)
         {
-            if (!_advanceViewController.AllowClose) return;
+            if (!_allowDismiss) return;
             base.BackButtonWasPressed(topViewController);
             _mainFlowCoordinator.DismissFlowCoordinator(this);
         }

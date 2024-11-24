@@ -5,6 +5,7 @@ using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.EO;
 using BeatSaberOffsetMigrator.Patches;
+using BeatSaberOffsetMigrator.Utils;
 using SiraUtil.Logging;
 using TMPro;
 using Zenject;

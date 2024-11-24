@@ -14,6 +14,9 @@ namespace BeatSaberOffsetMigrator.Patches;
 public class VRControllerPatch: IAffinity
 {
     [Inject]
+    private readonly PluginConfig _config = null!;
+    
+    [Inject]
     private readonly OffsetHelper _offsetHelper = null!;
 
     [Inject]
@@ -77,11 +80,11 @@ public class VRControllerPatch: IAffinity
         switch (node)
         {
             case XRNode.LeftHand:
-                offset = new Pose(PluginConfig.Instance.LeftOffsetPosition, PluginConfig.Instance.LeftOffsetRotation);
+                offset = _config.LeftOffset;
                 controllerPose = _offsetHelper.LeftRuntimePose;
                 break;
             case XRNode.RightHand:
-                offset = new Pose(PluginConfig.Instance.RightOffsetPosition, PluginConfig.Instance.RightOffsetRotation);
+                offset = _config.RightOffset;
                 controllerPose = _offsetHelper.RightRuntimePose;
                 break;
             default:

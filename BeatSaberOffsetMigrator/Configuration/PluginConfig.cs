@@ -16,26 +16,65 @@ namespace BeatSaberOffsetMigrator.Configuration
 
         public virtual bool ApplyOffset { get; set; } = false;
 
-        public virtual Vector3 LeftOffsetPosition { get; set; } = Vector3.zero;
+        protected virtual Vector3 LeftOffsetPosition { get; set; } = Vector3.zero;
         
         protected virtual Vector3 LeftOffsetRotationEuler { get; set; } = Vector3.zero;
        
-        public virtual Vector3 RightOffsetPosition { get; set; } = Vector3.zero;
+        protected virtual Vector3 RightOffsetPosition { get; set; } = Vector3.zero;
         
         protected virtual Vector3 RightOffsetRotationEuler { get; set; } = Vector3.zero;
+
+        protected virtual Vector3 LeftUnityOffsetPosition { get; set; } = Vector3.zero;
+        
+        protected virtual Vector3 LeftUnityOffsetRotationEuler { get; set; } = Vector3.zero;
+        
+        protected virtual Vector3 RightUnityOffsetPosition { get; set; } = Vector3.zero;
+        
+        protected virtual Vector3 RightUnityOffsetRotationEuler { get; set; } = Vector3.zero;
+        
         
         [Ignore]
-        public virtual Quaternion LeftOffsetRotation
+        public Pose LeftOffset
         {
-            get => Quaternion.Euler(LeftOffsetRotationEuler);
-            set => LeftOffsetRotationEuler = PoseUtils.ClampAngle(value.eulerAngles);
+            get => new Pose(LeftOffsetPosition, Quaternion.Euler(LeftOffsetRotationEuler));
+            set
+            {
+                LeftOffsetPosition = value.position;
+                LeftOffsetRotationEuler = PoseUtils.ClampAngle(value.rotation.eulerAngles);
+            }
         }
         
         [Ignore]
-        public virtual Quaternion RightOffsetRotation
+        public Pose RightOffset
         {
-            get => Quaternion.Euler(RightOffsetRotationEuler);
-            set => RightOffsetRotationEuler = PoseUtils.ClampAngle(value.eulerAngles);
+            get => new Pose(RightOffsetPosition, Quaternion.Euler(RightOffsetRotationEuler));
+            set
+            {
+                RightOffsetPosition = value.position;
+                RightOffsetRotationEuler = PoseUtils.ClampAngle(value.rotation.eulerAngles);
+            }
+        }
+
+        [Ignore]
+        public Pose LeftUnityOffset
+        {
+            get => new Pose(LeftUnityOffsetPosition, Quaternion.Euler(LeftUnityOffsetRotationEuler));
+            set
+            {
+                LeftUnityOffsetPosition = value.position;
+                LeftUnityOffsetRotationEuler = PoseUtils.ClampAngle(value.rotation.eulerAngles);
+            }
+        }
+        
+        [Ignore]
+        public Pose RightUnityOffset
+        {
+            get => new Pose(RightUnityOffsetPosition, Quaternion.Euler(RightUnityOffsetRotationEuler));
+            set
+            {
+                RightUnityOffsetPosition = value.position;
+                RightUnityOffsetRotationEuler = PoseUtils.ClampAngle(value.rotation.eulerAngles);
+            }
         }
 
         internal event Action? ConfigDidChange;
