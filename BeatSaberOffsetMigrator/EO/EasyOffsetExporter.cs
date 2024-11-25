@@ -15,7 +15,7 @@ public class EasyOffsetExporter
 
     public bool ExportToEastOffset()
     {
-        if (!_offsetHelper.IsWorking)
+        if (!_offsetHelper.IsRuntimePoseValid)
         {
             Plugin.Log.Warn("OffsetHelper is not working, cannot export to EasyOffset");
             return false;

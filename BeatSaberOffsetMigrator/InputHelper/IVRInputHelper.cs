@@ -15,4 +15,6 @@ public interface IVRInputHelper
     Pose GetLeftVRControllerPose();
     
     Pose GetRightVRControllerPose();
+
+    bool TryGetControllerOffset(out Pose leftOffset, out Pose rightOffset);
 }

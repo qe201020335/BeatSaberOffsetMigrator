@@ -135,8 +135,6 @@
     <EmbeddedResource Include="UI\BSML\MainView.bsml" />
     <None Remove="UI\BSML\AdvanceView.bsml" />
     <EmbeddedResource Include="UI\BSML\AdvanceView.bsml" />
-    <None Remove="DeviceOffsetTable.json" />
-    <EmbeddedResource Include="DeviceOffsetTable.json" />
     <None Remove="UI\BSML\DocumentationView.bsml" />
     <EmbeddedResource Include="UI\BSML\DocumentationView.bsml" />
   </ItemGroup>

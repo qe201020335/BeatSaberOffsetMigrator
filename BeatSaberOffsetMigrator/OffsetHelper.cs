@@ -19,7 +19,7 @@ using Zenject;
 
 namespace BeatSaberOffsetMigrator;
 
-public class OffsetHelper
+public class OffsetHelper: IInitializable, IDisposable
 {
     private readonly SiraLog _logger;
     
@@ -39,9 +39,9 @@ public class OffsetHelper
     
     internal Pose RightGamePose { get; set; }
     
-    internal bool IsSupported => _vrInputHelper.Supported;
+    internal bool IsRuntimeSupported => _vrInputHelper.Supported;
     
-    internal bool IsWorking => _vrInputHelper.Working;
+    internal bool IsRuntimePoseValid => _vrInputHelper.Working;
 
     internal Pose LeftRuntimePose => _vrInputHelper.GetLeftVRControllerPose();
     
@@ -55,45 +55,71 @@ public class OffsetHelper
     private Pose UnityOffsetLReversed { get; set; } = Pose.identity;
     private Pose UnityOffsetRReversed { get; set; } = Pose.identity;
 
-    private readonly IReadOnlyDictionary<string, Pose> _deviceOffsetTable = new Dictionary<string, Pose>() // Left controller offset
-    {
-        {"Valve Index", new Pose(new Vector3(0.0f, -0.015f, -0.13f), Quaternion.Euler(-15.4f, 2.0f, 0.3f))},
-        {"Quest2 (SteamVR)", new Pose(new Vector3(0.007f, -0.00183f, -0.10195f), Quaternion.Euler(-20.6f, 0.0f, 0.0f))},
-        {"Quest3 (SteamVR)", new Pose(new Vector3(0.007f, -0.00183f, -0.10195f), Quaternion.Euler(-20.6f, 0.0f, 0.0f))},
-        {"Rift S (SteamVR)", new Pose(new Vector3(0.007f, -0.00183f, -0.10195f), Quaternion.Euler(-20.6f, 0.0f, 0.0f))},
-        {"Quest2 (QuestLink)", new Pose(new Vector3(0.0f, -0.03f, -0.04f), Quaternion.Euler(-60.0f, 0.0f, 0.0f))},
-        {"Quest3 (QuestLink)", new Pose(new Vector3(0.0f, -0.03f, -0.04f), Quaternion.Euler(-60.0f, 0.0f, 0.0f))},
-        {"Rift S (Oculus PC)", new Pose(new Vector3(0.0f, -0.03f, -0.04f), Quaternion.Euler(-60.0f, 0.0f, 0.0f))},
-    };
-    
-    internal string SelectedDeviceOffset { get; private set; } = "None";
+    private bool _usingCustomOffset;
+    internal bool RuntimeOffsetValid { get; private set; }
 
     private OffsetHelper(SiraLog logger, PluginConfig config, IMenuControllerAccessor controllerAccessor)
     {
         _logger = logger;
         _config = config;
         _leftController = controllerAccessor.LeftController;
-        _rightController = controllerAccessor.RightController;
+        _rightController = controllerAccessor.RightController; 
+    }
 
-        // try
-        // {
-        //     _logger.Debug("Loading device offset table");
-        //     using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("BeatSaberOffsetMigrator.DeviceOffsetTable.json");
-        //     using var textReader = new StreamReader(stream!);
-        //     using var jsonReader = new JsonTextReader(textReader);
-        //     var serializer = new JsonSerializer();
-        //     var table = serializer.Deserialize<Dictionary<string, Offset>>(jsonReader);
-        //     // shouldn't really happen
-        //     _deviceOffsetTable = table ?? throw new Exception("Deserialized table is null");
-        // }
-        // catch (Exception e)
-        // {
-        //     _logger.Error("Failed to load device offset table: " + e.Message);
-        //     _logger.Error(e);
-        //     _deviceOffsetTable = new Dictionary<string, Offset>();
-        // }
+    void IInitializable.Initialize()
+    {
+        RefreshRuntimeOffset();
+        _config.ConfigDidChange += OnConfigChanged;
+        _vrPlatformHelper.controllersDidChangeReferenceEvent += ControllerReferenceChanged;
+    }
+    
+    void IDisposable.Dispose()
+    {
+        _config.ConfigDidChange -= OnConfigChanged;
+        _vrPlatformHelper.controllersDidChangeReferenceEvent -= ControllerReferenceChanged;
+    }
 
-        SetSelectedDevice("None");
+    private void OnConfigChanged()
+    {
+        // If we just switched to using custom offset or we were using it but should not anymore
+        if (_config.UseCustomRuntimeOffset || _usingCustomOffset)  
+        {
+            RefreshRuntimeOffset();
+        }
+    }
+
+    private void ControllerReferenceChanged()
+    {
+        _logger.Debug("Controller reference changed, loading controller offsets");
+        if (!_config.UseCustomRuntimeOffset)
+        {
+            RefreshRuntimeOffset();
+        }
+    }
+
+    internal void RefreshRuntimeOffset()
+    {
+        _logger.Debug("Refreshing runtime offset");
+        _usingCustomOffset = _config.UseCustomRuntimeOffset;
+        if (_usingCustomOffset)
+        {
+            SetRuntimeOffset(_config.CustomRuntimeOffset.Left, _config.CustomRuntimeOffset.Right);
+            RuntimeOffsetValid = true;
+        }
+        else
+        {
+            var success = _vrInputHelper.TryGetControllerOffset(out var left, out var right);
+            RuntimeOffsetValid = success;
+            if (success)
+            {
+                SetRuntimeOffset(left, right);
+            }
+            else
+            {
+                _logger.Warn("Failed to get runtime controller offset from VR input helper");
+                SetRuntimeOffset(Pose.identity, Pose.identity);
+            }
+        }
     }
 
     private Pose CalculateOffset(Pose from, Pose to)
@@ -109,45 +135,13 @@ public class OffsetHelper
         return offset;
     }
 
-    private void SetUnityOffset(Pose left, Pose right)
+    private void SetRuntimeOffset(Pose left, Pose right)
     {
-        _logger.Debug($"Using Offsets L: {left.Format()}, R: {right.Format()}");
+        _logger.Debug($"Using Runtime Offsets L: {left.Format()}, R: {right.Format()}");
         UnityOffsetL = left;
         UnityOffsetR = right;
         UnityOffsetLReversed = CalculateOffset(left, Pose.identity);
         UnityOffsetRReversed = CalculateOffset(right, Pose.identity);
-    }
-
-    internal string[] GetDeviceList() => ["None", .._deviceOffsetTable.Keys.OrderBy(name => name), "Custom"];
-
-    internal bool SetSelectedDevice(string device)
-    {
-        if (device == SelectedDeviceOffset) return true;
-        if (device == "Custom")
-        {
-            SetUnityOffset(_config.UnityOffset.Left, _config.UnityOffset.Right);
-            SelectedDeviceOffset = device;
-            return true;
-        }
-
-        if (device == "None")
-        {
-            SetUnityOffset(Pose.identity, Pose.identity);
-            SelectedDeviceOffset = device;
-            return true;
-        }
-        
-        if (!_deviceOffsetTable.TryGetValue(device, out var offset))
-        {
-            SetUnityOffset(Pose.identity, Pose.identity);
-            SelectedDeviceOffset = "None";
-            _logger.Warn($"Device offset {device} not found");
-            return false;
-        }
-        
-        SelectedDeviceOffset = device;
-        SetUnityOffset(offset, offset.Mirror());
-        return true;
     }
     
     internal IEnumerator SaveUnityOffset()
@@ -161,7 +155,6 @@ public class OffsetHelper
                 !_vrPlatformHelper.GetNodePose(XRNode.RightHand, _rightController.nodeIdx, out var rightPos, out var rightRot))
             {
                 _logger.Error("Failed to get node pose");
-                ResetUnityOffset();
                 yield break;
             }
             
@@ -177,8 +170,8 @@ public class OffsetHelper
         var offsetL = CalculateOffset(LeftRuntimePose, unityL);
         var offsetR = CalculateOffset(RightRuntimePose, unityR);
         
-        _config.UnityOffset = new Offset(offsetL, offsetR);
-        SetUnityOffset(offsetL, offsetR);
+        _config.CustomRuntimeOffset = new Offset(offsetL, offsetR);
+        SetRuntimeOffset(offsetL, offsetR);
     }
     
     internal void RevertUnityOffset(Transform t, XRNode node)
@@ -197,13 +190,6 @@ public class OffsetHelper
         }
 
         t.Offset(offset);
-    }
-    
-    internal void ResetUnityOffset()
-    {
-        _config.UnityOffset = Offset.Identity;
-        UnityOffsetLReversed = Pose.identity;
-        UnityOffsetRReversed = Pose.identity;
     }
     
     private Pose AveragePose(List<Pose> poses)

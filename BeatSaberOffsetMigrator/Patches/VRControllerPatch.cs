@@ -30,7 +30,7 @@ public class VRControllerPatch: IAffinity
     [AffinityPatch(typeof(VRController), nameof(VRController.Update))]
     private void Postfix(VRController __instance)
     {
-        if (!_offsetHelper.IsSupported)
+        if (!_offsetHelper.IsRuntimeSupported)
         {
             // Don't do anything if the VR system is not supported
             return;
@@ -38,7 +38,7 @@ public class VRControllerPatch: IAffinity
         
         var viewTransform = __instance.viewAnchorTransform;
         var xrnode = __instance.node;
-        if (PluginConfig.Instance.ApplyOffset && _offsetHelper.IsWorking)
+        if (PluginConfig.Instance.ApplyOffset && _offsetHelper.IsRuntimePoseValid)
         {
             _wasApplying[xrnode] = true;
             viewTransform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);

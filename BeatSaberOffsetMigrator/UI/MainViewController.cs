@@ -34,6 +34,8 @@ public class MainViewController : BSMLAutomaticViewController
 
     private bool _parsed = false;
     
+    private readonly StringBuilder _builder = new StringBuilder(256);
+    
     [UIValue("ApplyOffset")]
     private bool ApplyOffset
     {
@@ -44,11 +46,14 @@ public class MainViewController : BSMLAutomaticViewController
         }
     }
 
-    [UIComponent("info_text")]
-    private TMP_Text _infoText = null!;
+    [UIComponent("info_text1")]
+    private TMP_Text _infoText1 = null!;
+    
+    [UIComponent("info_text2")]
+    private TMP_Text _infoText2 = null!;
 
     [UIValue("supported")]
-    private bool OffsetSupported => _offsetHelper.IsSupported;
+    private bool OffsetSupported => _offsetHelper.IsRuntimeSupported;
 
     private bool _enableAdvance = false;
 
@@ -91,79 +96,71 @@ public class MainViewController : BSMLAutomaticViewController
         }
     }
 
-    [UIValue("controller-list-items")]
-    private object[] _controllerList => _offsetHelper.GetDeviceList();
-    
-    [UIValue("controller-list-choice")]
-    private string SelectedController
+    [UIValue("UseCustomOffset")]
+    private bool UseCustomOffset
     {
-        get => _offsetHelper.SelectedDeviceOffset;
-        set
-        {
-            if (!_offsetHelper.SetSelectedDevice(value))
-            {
-                NotifyPropertyChanged();
-            }
-            
-            NotifyPropertyChanged(nameof(IsCustomController));
-        }
+        get => _config.UseCustomRuntimeOffset;
+        set => _config.UseCustomRuntimeOffset = value;
     }
-    
-    [UIValue("custom-device")]
-    private bool IsCustomController => _offsetHelper.SelectedDeviceOffset == "Custom";
 
     [UIAction("#post-parse")]
     private void OnParsed()
     {
         _parsed = true;
         
-        if (!_offsetHelper.IsSupported)
+        if (!_offsetHelper.IsRuntimeSupported)
         {
-            _infoText.text = "<color=red>Current runtime is not supported</color>";
+            _infoText1.text = "<color=red>Current runtime is not supported</color>";
+            _infoText2.text = "";
         }
         
         EnableAdvance = false; // will also reset the value in the VRControllerPatch
+    }
+    
+    [UIAction("refresh_offset")]
+    private void RefreshOffset()
+    {
+        _offsetHelper.RefreshRuntimeOffset();
     }
 
     private void Update()
     {
         if (!_parsed || !OffsetSupported) return;
 
-        var builder = new StringBuilder(256);
+        _builder.Clear();
         // Should use events and not polling, but I am too lazy
-        if (_offsetHelper.SelectedDeviceOffset == "Custom")
+        if (UseCustomOffset)
         {
-            builder.Append("Using custom Unity offset:\n" +
-                           $"L: {_offsetHelper.UnityOffsetL.Format()}\n" +
-                           $"R: {_offsetHelper.UnityOffsetR.Format()}\n");
+            _builder.Append("Using custom runtime offset:\n" +
+                            $"L: {_offsetHelper.UnityOffsetL.Format()}\n" +
+                            $"R: {_offsetHelper.UnityOffsetR.Format()}");
         }
-        else if (_offsetHelper.SelectedDeviceOffset == "None")
+        else if (_offsetHelper.RuntimeOffsetValid)
         {
-            builder.Append("No unity offset selected.\n");
+            _builder.Append("Using offset for current device\n" +
+                            $"L: {_offsetHelper.UnityOffsetL.Format()}\n" +
+                            $"R: {_offsetHelper.UnityOffsetR.Format()}");
         }
         else
         {
-            builder.Append($"Using Unity offset for {_offsetHelper.SelectedDeviceOffset}\n");
+            _builder.Append("<color=#FF0000>Failed to get runtime offset</color>\nCheck logs for details.");
         }
+
+        _infoText1.text = _builder.ToString();
         
+        _builder.Clear();
         if (_easyOffsetManager.CurrentPresetName != string.Empty)
         {
-            builder.Append($"Using EasyOffset preset: {_easyOffsetManager.CurrentPresetName}\n");
+            _builder.Append($"Using EasyOffset preset: {_easyOffsetManager.CurrentPresetName}\n");
             var preset = _easyOffsetManager.CurrentPreset!;
-            builder.Append($"L: {preset.LeftOffset.Format()}\n" +
-                           $"R: {preset.RightOffset.Format()}");
+            _builder.Append($"L: {preset.LeftOffset.Format()}\n" +
+                            $"R: {preset.RightOffset.Format()}");
         }
         else
         {
-            builder.Append("No EasyOffset preset selected or failed to load.");
+            _builder.Append("No EasyOffset preset selected or failed to load selected preset.");
         }
         
-        _infoText.text = builder.ToString();
-    }
-    
-    [UIAction("reset_unity_offset")]
-    private void ResetUnityOffset()
-    {
-        _offsetHelper.ResetUnityOffset();
+        _infoText2.text = _builder.ToString();
     }
 }

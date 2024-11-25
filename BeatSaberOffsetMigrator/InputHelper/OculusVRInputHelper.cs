@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using BeatSaberOffsetMigrator.Shared;
+using BeatSaberOffsetMigrator.Utils;
 using IPA.Utilities;
 using IPA.Utilities.Async;
 using SiraUtil.Logging;
@@ -13,6 +14,8 @@ namespace BeatSaberOffsetMigrator.InputHelper;
 
 public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDisposable
 {
+    private static readonly Pose LeftControllerOffset = new Pose(new Vector3(0.0f, -0.03f, -0.04f), Quaternion.Euler(-60.0f, 0.0f, 0.0f));
+
     public string RuntimeName => "OculusVR";
     public bool Supported => true;
     
@@ -58,6 +61,13 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
         _logger = logger;
         _sharedMemoryManager = OVRHelperSharedMemoryManager.CreateReadOnly();
         AppDomain.CurrentDomain.ProcessExit += (sender, args) => CleanUpHelper();  // in case we crash
+    }
+    
+    public bool TryGetControllerOffset(out Pose leftOffset, out Pose rightOffset)
+    {
+        leftOffset = LeftControllerOffset;
+        rightOffset = LeftControllerOffset.Mirror();
+        return true;
     }
 
     private void StartHelper()

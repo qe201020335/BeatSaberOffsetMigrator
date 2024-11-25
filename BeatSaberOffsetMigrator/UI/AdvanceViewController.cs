@@ -271,7 +271,7 @@ namespace BeatSaberOffsetMigrator.UI
         {
             if (CurExportState != ExportState.Idle) return;
             SaveButtonText = "Save";
-            if (!_offsetHelper.IsWorking)
+            if (!_offsetHelper.IsRuntimePoseValid)
             {
                 SaveModalText = "Controllers are not Tracking.";
                 CurExportState = ExportState.CannotExport;
@@ -307,7 +307,7 @@ namespace BeatSaberOffsetMigrator.UI
             }
             
             yield return null;
-            if (!_offsetHelper.IsWorking)
+            if (!_offsetHelper.IsRuntimePoseValid)
             {
                 SaveModalText = "Controllers are not tracking\nCannot save";
                 SaveButtonText = "Save";
@@ -349,7 +349,7 @@ namespace BeatSaberOffsetMigrator.UI
                 ExportModalText = "EasyOffset needs to be disabled first.";
                 CurExportState = ExportState.CannotExport;
             }
-            else if (!_offsetHelper.IsWorking)
+            else if (!_offsetHelper.IsRuntimePoseValid)
             {
                 ExportModalText = "Controllers are not Tracking.";
                 CurExportState = ExportState.CannotExport;
@@ -395,7 +395,7 @@ namespace BeatSaberOffsetMigrator.UI
             ExportButtonText = "Export";
             
             yield return null;
-            if (!_offsetHelper.IsWorking)
+            if (!_offsetHelper.IsRuntimePoseValid)
             {
                 ExportModalText = "Controllers are not tracking\nCannot export";
             }

@@ -27,7 +27,9 @@ namespace BeatSaberOffsetMigrator.Configuration
 
         public virtual int OffsetSampleCount { get; set; }= 32;
         
-        public virtual Offset UnityOffset { get; set; } = Offset.Identity;
+        public virtual bool UseCustomRuntimeOffset { get; set; } = false;
+
+        public virtual Offset CustomRuntimeOffset { get; set; } = Offset.Identity;
         
         [Ignore]
         public Pose LeftOffset
