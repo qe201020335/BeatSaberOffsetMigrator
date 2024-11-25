@@ -20,6 +20,9 @@ namespace BeatSaberOffsetMigrator.UI
         
         [Inject]
         private MainViewController _mainViewController = null!;
+        
+        [Inject]
+        private DocumentationViewController _documentationViewController = null!;
 
         private bool _allowDismiss = true;
 
@@ -31,7 +34,7 @@ namespace BeatSaberOffsetMigrator.UI
                 {
                     SetTitle("Offset Helper");
                     showBackButton = true;
-                    ProvideInitialViewControllers(_mainViewController);
+                    ProvideInitialViewControllers(_mainViewController, leftScreenViewController: _documentationViewController);
                 }
             }
             catch (Exception ex)

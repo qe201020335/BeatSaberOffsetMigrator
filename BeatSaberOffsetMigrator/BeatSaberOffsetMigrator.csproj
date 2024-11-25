@@ -137,6 +137,8 @@
     <EmbeddedResource Include="UI\BSML\AdvanceView.bsml" />
     <None Remove="DeviceOffsetTable.json" />
     <EmbeddedResource Include="DeviceOffsetTable.json" />
+    <None Remove="UI\BSML\DocumentationView.bsml" />
+    <EmbeddedResource Include="UI\BSML\DocumentationView.bsml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VRInputHelper.Oculus\VRInputHelper.Oculus.csproj" />
