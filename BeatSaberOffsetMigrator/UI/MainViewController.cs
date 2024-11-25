@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using BeatSaberMarkupLanguage.Attributes;
+using BeatSaberMarkupLanguage.Components.Settings;
 using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.EO;
@@ -73,7 +75,10 @@ public class MainViewController : BSMLAutomaticViewController
     }
 
     [UIValue("preset-list-items")]
-    private object[] PresetNames => ["None", .._easyOffsetManager.GetPresets()];
+    private object[] _presetNames = ["None"];
+
+    [UIComponent("preset-list")]
+    private DropDownListSetting _presetList = null!;
 
     [UIValue("preset-list-choice")]
     private string SelectedPreset
@@ -115,12 +120,23 @@ public class MainViewController : BSMLAutomaticViewController
         }
         
         EnableAdvance = false; // will also reset the value in the VRControllerPatch
+        RefreshPresets();
     }
     
     [UIAction("refresh_offset")]
     private void RefreshOffset()
     {
         _offsetHelper.RefreshRuntimeOffset();
+    }
+
+    [UIAction("refresh_presets")]
+    private void RefreshPresets()
+    {
+        object[] list = ["None", .._easyOffsetManager.GetPresets()];
+        _presetNames = list;
+        _presetList.Values = list;
+        _presetList.UpdateChoices();
+        _presetList.ReceiveValue();
     }
 
     private void Update()

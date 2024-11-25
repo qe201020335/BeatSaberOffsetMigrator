@@ -34,6 +34,7 @@ public class EasyOffsetManager
 
     public IList<string> GetPresets()
     {
+        _logger.Debug("Getting preset files from UserData");
         return Directory.GetFiles(EasyOffsetPresetsPath, "*.json").Select(Path.GetFileName).ToArray();
     }
     
