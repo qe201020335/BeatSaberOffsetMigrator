@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BeatSaberOffsetMigrator.Installers;
 using BeatSaberOffsetMigrator.Utils;
 using IPA.Utilities;
 using Newtonsoft.Json;
@@ -16,8 +17,14 @@ public class EasyOffsetManager
 {
     private static readonly string EasyOffsetPresetsPath = Path.Combine(UnityGame.UserDataPath, "EasyOffset", "Presets");
     
+    //values copied from 1.29 EasyOffset
+    private static readonly Pose OculusVRExtraOffset = new Pose(new Vector3(0f, 0f, 0.055f), Quaternion.Euler(-40f, 0f, 0f));
+    
     [Inject]
     private readonly SiraLog _logger = null!;
+
+    [Inject(Id = AppInstaller.IsOVRBindingKey)]
+    private readonly bool IsOvr;
 
     private readonly JsonSerializer _serializer = new JsonSerializer();
     
@@ -71,6 +78,11 @@ public class EasyOffsetManager
     {
         if (CurrentPreset == null) return;
         
+        if (IsOvr)
+        {
+            ApplyExtraOculusOffset(transform);
+        }
+        
         switch (node)
         {
             case XRNode.LeftHand:
@@ -82,5 +94,11 @@ public class EasyOffsetManager
             default:
                 return;
         }
+    }
+    
+    private void ApplyExtraOculusOffset(Transform transform)
+    {
+        transform.rotation *= OculusVRExtraOffset.rotation;
+        transform.position += transform.rotation * OculusVRExtraOffset.position;
     }
 }
