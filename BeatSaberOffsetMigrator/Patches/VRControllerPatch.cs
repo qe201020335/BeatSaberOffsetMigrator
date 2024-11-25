@@ -38,7 +38,7 @@ public class VRControllerPatch: IAffinity
         
         var viewTransform = __instance.viewAnchorTransform;
         var xrnode = __instance.node;
-        if (PluginConfig.Instance.ApplyOffset && _offsetHelper.IsRuntimePoseValid)
+        if (PluginConfig.Instance.ApplyOffset)
         {
             _wasApplying[xrnode] = true;
             viewTransform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
@@ -46,7 +46,7 @@ public class VRControllerPatch: IAffinity
             {
                 ApplyGeneratedOffset(__instance, xrnode);
             }
-            else
+            else if (_offsetHelper.IsRuntimePoseValid)
             {
                 ApplyOffset(__instance.transform, xrnode);
             }

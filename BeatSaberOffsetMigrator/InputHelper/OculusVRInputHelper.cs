@@ -73,6 +73,15 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
     private void StartHelper()
     {
         _logger.Info("Launching helper process");
+
+        if (!File.Exists(_helperPath))
+        {
+            _logger.Critical("Failed to start helper process, helper executable not found");
+            Working = false;
+            ReasonIfNotWorking = "Failed to start helper process. \nHelper executable not found.";
+            return;
+        }
+        
         var psi = new ProcessStartInfo
         {
             FileName = _helperPath,
