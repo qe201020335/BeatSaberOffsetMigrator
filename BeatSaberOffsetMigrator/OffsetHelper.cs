@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -53,8 +54,17 @@ public class OffsetHelper
     internal Pose UnityOffsetR { get; private set; } = Pose.identity;
     private Pose UnityOffsetLReversed { get; set; } = Pose.identity;
     private Pose UnityOffsetRReversed { get; set; } = Pose.identity;
-    
-    private readonly IReadOnlyDictionary<string, Offset> _deviceOffsetTable;
+
+    private readonly IReadOnlyDictionary<string, Pose> _deviceOffsetTable = new Dictionary<string, Pose>() // Left controller offset
+    {
+        {"Valve Index", new Pose(new Vector3(0.0f, -0.015f, -0.13f), Quaternion.Euler(-15.4f, 2.0f, 0.3f))},
+        {"Quest2 (SteamVR)", new Pose(new Vector3(0.007f, -0.00183f, -0.10195f), Quaternion.Euler(-20.6f, 0.0f, 0.0f))},
+        {"Quest3 (SteamVR)", new Pose(new Vector3(0.007f, -0.00183f, -0.10195f), Quaternion.Euler(-20.6f, 0.0f, 0.0f))},
+        {"Rift S (SteamVR)", new Pose(new Vector3(0.007f, -0.00183f, -0.10195f), Quaternion.Euler(-20.6f, 0.0f, 0.0f))},
+        {"Quest2 (QuestLink)", new Pose(new Vector3(0.0f, -0.03f, -0.04f), Quaternion.Euler(-60.0f, 0.0f, 0.0f))},
+        {"Quest3 (QuestLink)", new Pose(new Vector3(0.0f, -0.03f, -0.04f), Quaternion.Euler(-60.0f, 0.0f, 0.0f))},
+        {"Rift S (Oculus PC)", new Pose(new Vector3(0.0f, -0.03f, -0.04f), Quaternion.Euler(-60.0f, 0.0f, 0.0f))},
+    };
     
     internal string SelectedDeviceOffset { get; private set; } = "None";
 
@@ -65,23 +75,23 @@ public class OffsetHelper
         _leftController = controllerAccessor.LeftController;
         _rightController = controllerAccessor.RightController;
 
-        try
-        {
-            _logger.Debug("Loading device offset table");
-            using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("BeatSaberOffsetMigrator.DeviceOffsetTable.json");
-            using var textReader = new StreamReader(stream!);
-            using var jsonReader = new JsonTextReader(textReader);
-            var serializer = new JsonSerializer();
-            var table = serializer.Deserialize<Dictionary<string, Offset>>(jsonReader);
-            // shouldn't really happen
-            _deviceOffsetTable = table ?? throw new Exception("Deserialized table is null");
-        }
-        catch (Exception e)
-        {
-            _logger.Error("Failed to load device offset table: " + e.Message);
-            _logger.Error(e);
-            _deviceOffsetTable = new Dictionary<string, Offset>();
-        }
+        // try
+        // {
+        //     _logger.Debug("Loading device offset table");
+        //     using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("BeatSaberOffsetMigrator.DeviceOffsetTable.json");
+        //     using var textReader = new StreamReader(stream!);
+        //     using var jsonReader = new JsonTextReader(textReader);
+        //     var serializer = new JsonSerializer();
+        //     var table = serializer.Deserialize<Dictionary<string, Offset>>(jsonReader);
+        //     // shouldn't really happen
+        //     _deviceOffsetTable = table ?? throw new Exception("Deserialized table is null");
+        // }
+        // catch (Exception e)
+        // {
+        //     _logger.Error("Failed to load device offset table: " + e.Message);
+        //     _logger.Error(e);
+        //     _deviceOffsetTable = new Dictionary<string, Offset>();
+        // }
 
         SetSelectedDevice("None");
     }
@@ -136,7 +146,7 @@ public class OffsetHelper
         }
         
         SelectedDeviceOffset = device;
-        SetUnityOffset(offset.Left, offset.Right);
+        SetUnityOffset(offset, offset.Mirror());
         return true;
     }
     
