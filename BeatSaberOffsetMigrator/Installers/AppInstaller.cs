@@ -1,6 +1,8 @@
 using System;
 using BeatSaberOffsetMigrator.Configuration;
+using BeatSaberOffsetMigrator.EO;
 using BeatSaberOffsetMigrator.InputHelper;
+using BeatSaberOffsetMigrator.Utils;
 using UnityEngine.XR.OpenXR;
 using Zenject;
 
@@ -11,6 +13,8 @@ namespace BeatSaberOffsetMigrator.Installers
         private const string OpenVRLibId = "OpenVR";
         
         private readonly PluginConfig _config;
+        
+        public const string IsOVRBindingKey = "IsOVR";
 
         public AppInstaller(PluginConfig config)
         {
@@ -23,9 +27,11 @@ namespace BeatSaberOffsetMigrator.Installers
             
             Plugin.Log.Notice("Current OpenXR runtime: " + OpenXRRuntime.name);
             
+            var isOvr = false;
+            
             if (OpenXRRuntime.name.IndexOf("steamvr", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                if (Utils.IsModInstalled(OpenVRLibId))
+                if (ModUtils.IsModInstalled(OpenVRLibId))
                 {
                     Container.BindInterfacesTo<OpenVRInputHelper>().AsSingle();
                 }
@@ -39,12 +45,16 @@ namespace BeatSaberOffsetMigrator.Installers
             }
             else if (OpenXRRuntime.name.IndexOf("oculus", StringComparison.OrdinalIgnoreCase) >= 0)
             {
+                isOvr = true;
                 Container.BindInterfacesTo<OculusVRInputHelper>().AsSingle();
             }
             else
             {
                 Container.BindInterfacesTo<UnsupportedVRInputHelper>().AsSingle();
             }
+            
+            Container.Bind<bool>().WithId(IsOVRBindingKey).FromInstance(isOvr);
+            Container.BindInterfacesAndSelfTo<EasyOffsetManager>().AsSingle();
         }
     }
 }

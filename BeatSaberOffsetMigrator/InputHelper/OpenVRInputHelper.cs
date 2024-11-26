@@ -1,6 +1,8 @@
 ﻿using System;
+using BeatSaberOffsetMigrator.Utils;
 using SiraUtil.Logging;
 using UnityEngine;
+using UnityEngine.XR;
 using Valve.VR;
 using Zenject;
 
@@ -43,7 +45,6 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable, ITi
     }
 
     public string ReasonIfNotWorking { get; private set; } = "";
-    
     
     private OpenVRInputHelper(SiraLog logger)
     {
@@ -132,6 +133,21 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable, ITi
             _controllersFound = true;
             _logger.Notice($"Found index for controllers! {_leftControllerIndex} {_rightControllerIndex}");
         }
+    }
+
+    public bool TryGetControllerOffset(out Pose leftOffset, out Pose rightOffset)
+    {
+        _logger.Info("Loading controller offsets from OpenVR");
+        var flag1 = OpenVRUtilities.TryGetGripOffset(XRNode.LeftHand, out leftOffset);
+        var flag2 = OpenVRUtilities.TryGetGripOffset(XRNode.RightHand, out rightOffset);
+        if (flag1 && flag2)
+        {
+            return true;
+        }
+        
+        leftOffset = Pose.identity;
+        rightOffset = Pose.identity;
+        return false;
     }
     
     public Pose GetLeftVRControllerPose()

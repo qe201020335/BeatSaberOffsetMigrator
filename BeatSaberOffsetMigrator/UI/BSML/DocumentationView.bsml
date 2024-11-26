@@ -1,0 +1,21 @@
+﻿<vertical child-control-height='false' child-expand-height="false" spacing="1" pad-top="2" pad-left="4" pad-right="4" bg="round-rect-panel" bg-color="#0000007F" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+  <horizontal pad="0">
+    <text align="Center" text="HOW TO USE" font-size="6" italics="false"/>
+  </horizontal>
+  <vertical vertical-fit="PreferredSize" horizontal-fit="PreferredSize" preferred-width="100" spacing="0">
+    <text text="- Copy your 1.29.1 EasyOffset preset into this install" italics="false"/>
+    <text text="- Install EasyOffset and disable it in the Mods settings menu" italics="false"/>
+    <text text="- Select your 1.29.1 EasyOffset preset" italics="false"/>
+    <text text="- Enable 'Apply Offset' WITHOUT turning on advance migration" italics="false"/>
+    <text text="- Go to EasyOffset's settings menu and click 'Universal Import'" italics="false"/>
+    <text text="- Enable EasyOffset and save the imported offset to a preset" italics="false"/>
+    <text text="- Uninstall this mod and have fun" italics="false"/>
+  </vertical>
+  <horizontal>
+    <text align="Left" text="Special thanks to nicoco007 for making part of this mod possible!" italics="true"/>
+  </horizontal>
+  <horizontal spacing="2">
+    <text text="See README for advance migration and recording custom runtime offset" italics="false"/>
+  </horizontal>
+  <button text="Open README in Browser" on-click="open_readme"/>
+</vertical>

@@ -1,6 +1,10 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
+using BeatSaberOffsetMigrator.Models;
+using BeatSaberOffsetMigrator.Utils;
 using IPA.Config.Stores;
 using IPA.Config.Stores.Attributes;
+using IPA.Utilities.Async;
 using UnityEngine;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
@@ -13,26 +17,64 @@ namespace BeatSaberOffsetMigrator.Configuration
 
         public virtual bool ApplyOffset { get; set; } = false;
 
-        public virtual Vector3 LeftOffsetPosition { get; set; } = Vector3.zero;
+        protected virtual Vector3 LeftOffsetPosition { get; set; } = Vector3.zero;
         
         protected virtual Vector3 LeftOffsetRotationEuler { get; set; } = Vector3.zero;
        
-        public virtual Vector3 RightOffsetPosition { get; set; } = Vector3.zero;
+        protected virtual Vector3 RightOffsetPosition { get; set; } = Vector3.zero;
         
         protected virtual Vector3 RightOffsetRotationEuler { get; set; } = Vector3.zero;
+
+        public virtual int OffsetSampleCount { get; set; }= 32;
+        
+        public virtual bool UseCustomRuntimeOffset { get; set; } = false;
+
+        public virtual Offset CustomRuntimeOffset { get; set; } = Offset.Identity;
+        
+        public virtual string SelectedEasyOffsetPreset { get; set; } = string.Empty;
         
         [Ignore]
-        public virtual Quaternion LeftOffsetRotation
+        public Pose LeftOffset
         {
-            get => Quaternion.Euler(LeftOffsetRotationEuler);
-            set => LeftOffsetRotationEuler = Utils.ClampAngle(value.eulerAngles);
+            get => new Pose(LeftOffsetPosition, Quaternion.Euler(LeftOffsetRotationEuler));
+            set
+            {
+                LeftOffsetPosition = value.position;
+                LeftOffsetRotationEuler = PoseUtils.ClampAngle(value.rotation.eulerAngles);
+            }
         }
         
         [Ignore]
-        public virtual Quaternion RightOffsetRotation
+        public Pose RightOffset
         {
-            get => Quaternion.Euler(RightOffsetRotationEuler);
-            set => RightOffsetRotationEuler = Utils.ClampAngle(value.eulerAngles);
+            get => new Pose(RightOffsetPosition, Quaternion.Euler(RightOffsetRotationEuler));
+            set
+            {
+                RightOffsetPosition = value.position;
+                RightOffsetRotationEuler = PoseUtils.ClampAngle(value.rotation.eulerAngles);
+            }
+        }
+
+        internal event Action? ConfigDidChange;
+
+        private void HandleConfigChanged()
+        {
+            Plugin.Log.Trace("Config changed, broadcasting event");
+            var listener = ConfigDidChange;
+            UnityMainThreadTaskScheduler.Factory.StartNew(() =>
+            {
+                listener?.Invoke();
+            });
+        }
+        
+        public virtual void Changed()
+        {
+            HandleConfigChanged();
+        }
+
+        public virtual void OnReload()
+        {
+            HandleConfigChanged();
         }
     }
 }
