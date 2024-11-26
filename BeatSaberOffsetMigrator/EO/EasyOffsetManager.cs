@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.Installers;
 using BeatSaberOffsetMigrator.Utils;
 using IPA.Utilities;
@@ -22,6 +23,9 @@ public class EasyOffsetManager
     
     [Inject]
     private readonly SiraLog _logger = null!;
+    
+    [Inject]
+    private readonly PluginConfig _config = null!;
 
     [Inject(Id = AppInstaller.IsOVRBindingKey)]
     private readonly bool IsOvr;
@@ -32,6 +36,12 @@ public class EasyOffsetManager
 
     public string CurrentPresetName { get; private set; } = string.Empty;
 
+    [Inject]
+    private void Init()
+    {
+        LoadPreset(_config.SelectedEasyOffsetPreset);
+    }
+
     public IList<string> GetPresets()
     {
         _logger.Debug("Getting preset files from UserData");
@@ -40,6 +50,8 @@ public class EasyOffsetManager
     
     public bool LoadPreset(string name)
     {
+        _config.SelectedEasyOffsetPreset = name;
+        
         if (string.IsNullOrWhiteSpace(name))
         {
             CurrentPreset = null;

@@ -1,5 +1,6 @@
 using System;
 using BeatSaberOffsetMigrator.Configuration;
+using BeatSaberOffsetMigrator.EO;
 using BeatSaberOffsetMigrator.InputHelper;
 using BeatSaberOffsetMigrator.Utils;
 using UnityEngine.XR.OpenXR;
@@ -53,6 +54,7 @@ namespace BeatSaberOffsetMigrator.Installers
             }
             
             Container.Bind<bool>().WithId(IsOVRBindingKey).FromInstance(isOvr);
+            Container.BindInterfacesAndSelfTo<EasyOffsetManager>().AsSingle();
         }
     }
 }

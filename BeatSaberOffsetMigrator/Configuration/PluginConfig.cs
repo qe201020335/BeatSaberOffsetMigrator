@@ -31,6 +31,8 @@ namespace BeatSaberOffsetMigrator.Configuration
 
         public virtual Offset CustomRuntimeOffset { get; set; } = Offset.Identity;
         
+        public virtual string SelectedEasyOffsetPreset { get; set; } = string.Empty;
+        
         [Ignore]
         public Pose LeftOffset
         {
