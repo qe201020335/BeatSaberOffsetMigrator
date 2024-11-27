@@ -2,6 +2,7 @@
 LANGUAGE_THIS_EN,[LanguageName] in english,English,French,Spanish,German,Italian,Brazilian Portuguese,,Russian,,,Danish,,Swedish,Dutch,Polish,,Japanese,Simplified Chinese,Traditional Chinese,Korean,Czech,Hungarian,Română,Thai,,Hebrew,الإنجليزية,,Icelandic,Gaeilge
 LANGUAGE_THIS,,English,Français,Español,Deutsch,Italiano,Português-Brasileiro,,Русский,,,Dansk,,Svenska,Nederlands,Polski,,日本語,简体中文,繁體中文,한국어,Čeština,Magyar,Română,Thai,,עברית,الإنجليزية,,Íslenska,Gaeilge
 BSOM_GENERIC_CLOSE,,Close,,,,,,,,,,,,,,,,,关闭,,,,,,,,,,,,
+BSOM_GENERIC_UNKNOWN,,Unknown
 BSOM_MENU_TITLE,,Offset Helper,,,,,,,,,,,,,,,,,偏移助手,,,,,,,,,,,,
 BSOM_MENU_BUTTON_HINT,,Migrate controller offsets,,,,,,,,,,,,,,,,,迁移手柄设置,,,,,,,,,,,,
 BSOM_SEETING_APPLY_OFFSET,,Apply Offset,,,,,,,,,,,,,,,,,应用偏移,,,,,,,,,,,,
@@ -26,10 +27,69 @@ BSOM_DOC_STEPS,,"- Copy your 1.29.1 EasyOffset preset into this install
 - Uninstall this mod and have fun",,,,,,,,,,,,,,,,,"- 将你在 1.29.1 中使用的 EasyOffset 预设复制到当前这个游戏中
 - 安装 EasyOffset 并在模组设置菜单中将其禁用
 - 选择你的 1.29.1 EasyOffset 预设
-- 启用 “应用偏移”，但不要启用高级迁移选项
-- 在 EasyOffset 的设置菜单中点击 “Universal Import” 导入偏移
+- 启用 ‘应用偏移’，但不要启用高级迁移选项
+- 在 EasyOffset 的设置菜单中点击 ‘Universal Import’ 导入偏移
 - 启用 EasyOffset 并将导入的偏移保存到一个预设中
 - 卸载此模组然后爽玩！",,,,,,,,,,,,
 BSOM_DOC_THANKS,,Special thanks to nicoco007 for great help with parts of this mod!,,,,,,,,,,,,,,,,,特别感谢 nicoco007，为这个模组的一部分提供极大帮助！,,,,,,,,,,,,
 BSOM_DOC_SEE_README,,See README for advance migration and recording custom runtime offset,,,,,,,,,,,,,,,,,请参阅 README 了解高级迁移和记录自定义运行时偏移的方法,,,,,,,,,,,,
 BSOM_DOC_OPEN_README,,Open README in Browser,,,,,,,,,,,,,,,,,在浏览器中打开 README,,,,,,,,,,,,
+BSOM_ERR_UNSUPPORTED_RUNTIME,,Unsupported OpenXR runtime
+BSOM_ERR_OPENVR_NOT_INSTALLED,,OpenVR API Library not installed
+BSOM_ERR_HELPER_NOT_FOUND,,"Failed to start helper process.
+Helper executable not found."
+BSOM_ERR_HELPER_EXITED,,"Helper process exited.
+Check logs for details before restarting the game.",,,,,,,,,,,,,,,,,
+BSOM_ERR_HELPER_START_FAILED,,"Failed to start helper process.
+Check logs for details before restarting the game."
+BSOM_ERR_CONTROLLERS_NOT_TRACKING,,Not all controllers are tracking normally!
+BSOM_ERR_OPENVR_INIT_FAILED,,"Failed to initialize OpenVR
+Check logs for details",
+BSOM_ERR_OPENVR_CONTROLLER_MISSING,,Not all controllers are detected! Open and close SteamVR menu to refresh.
+BSOM_AM_CURRENT_RUNTIME_UNSUPPORTED,,Current runtime: {0}
+BSOM_AM_CURRENT_RUNTIME_SUPPORTED,,"Current runtime: {0}, using helper {1}"
+BSOM_AM_AM_NOT_ENABLED,,Applying Generated Offset
+BSOM_AM_CONTROLLER_POSES,,"L Real: {0}
+R Real: {1}
+L Game: {2}
+R Game: {3}
+L Diff: {4}
+R Diff: {5}",
+BSOM_AM_OFFSET_APPLIED,,"Offset is applied, disable offset to see live numbers
+L: {0}
+R: {1}",
+BSOM_AM_SAVE_MODAL_SAVE,,Save
+BSOM_AM_SAVE_MODAL_SAVING,,Saving
+BSOM_AM_SAVE_MODAL_SAVED,,Saved
+BSOM_AM_SAVE_MODAL_INVALID,,Controllers are not Tracking.
+BSOM_AM_SAVE_MODAL_TEXT,,"After pressing the save button, try holding your controller still or put it somewhere stable with good tracking. Offset will be saved 10 seconds after pressing the button."
+BSOM_AM_SAVE_MODAL_COUNTDOWN,,Save in {0}
+BSOM_AM_SAVE_MODAL_POST_INVALID,,"Controllers are not tracking
+Cannot save",
+BSOM_AM_SAVE_MODAL_SAMPLING,,Sampling Offset
+BSOM_AM_SAVE_MODAL_SUCCESS,,Offset saved successfully
+BSOM_AM_EXPORT_MODAL_EXPORT	,,Export
+BSOM_AM_EXPORT_MODAL_EXPORTED	,,Exported
+BSOM_AM_EXPORT_MODAL_EO_NOT_INSTALLED	,,EasyOffset is not installed.
+BSOM_AM_EXPORT_MODAL_EO_NOT_DISABLED,,EasyOffset needs to be disabled first.
+BSOM_AM_EXPORT_MODAL_INVALID,,Controllers are not Tracking.
+BSOM_AM_EXPORT_MODAL_TEXT,,"After pressing the export button, try holding your controller still or put it somewhere stable with good tracking. Offset will be exported to EasyOffset 10 seconds after pressing the button."
+BSOM_AM_EXPORT_MODAL_COUNTDOWN,,Export in {0}
+BSOM_AM_EXPORT_MODAL_POST_INVALID,,"Controllers are not tracking
+Cannot export",
+BSOM_AM_EXPORT_MODAL_SUCCESS,,Offset exported successfully
+BSOM_AM_EXPORT_MODAL_FAILED,,Failed to export
+,,
+
+
+
+
+
+
+
+
+
+
+
+
+

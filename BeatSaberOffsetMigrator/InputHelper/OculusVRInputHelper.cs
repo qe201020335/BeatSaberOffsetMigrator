@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using BeatSaberOffsetMigrator.Shared;
 using BeatSaberOffsetMigrator.Utils;
+using BGLib.Polyglot;
 using IPA.Utilities;
 using IPA.Utilities.Async;
 using SiraUtil.Logging;
@@ -78,7 +79,7 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
         {
             _logger.Critical("Failed to start helper process, helper executable not found");
             Working = false;
-            ReasonIfNotWorking = "Failed to start helper process. \nHelper executable not found.";
+            ReasonIfNotWorking = Localization.Get("BSOM_ERR_HELPER_NOT_FOUND");
             return;
         }
         
@@ -117,7 +118,7 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
             if (!_disposing)
             {
                 _logger.Warn("Helper process exited unexpectedly");
-                ReasonIfNotWorking = "Helper process exited. \nCheck logs for details before restarting the game.";
+                ReasonIfNotWorking = Localization.Get("BSOM_ERR_HELPER_EXITED");
             }
         };
         
@@ -189,7 +190,7 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
             _logger.Error("Failed to start helper process");
             _logger.Error(e);
             Working = false;
-            ReasonIfNotWorking = "Failed to start helper process. \nCheck logs for details before restarting the game.";
+            ReasonIfNotWorking = Localization.Get("BSOM_ERR_HELPER_START_FAILED");
             CleanUpHelper();
         }
     }
@@ -230,7 +231,7 @@ public class OculusVRInputHelper: IVRInputHelper, ITickable, IInitializable, IDi
         else
         {
             Working = false;
-            ReasonIfNotWorking = "Not all controllers are tracking normally!";
+            ReasonIfNotWorking = Localization.Get("BSOM_ERR_CONTROLLERS_NOT_TRACKING");
             _leftPose = Pose.identity;
             _rightPose = Pose.identity;
         }

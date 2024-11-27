@@ -3,6 +3,7 @@ using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.EO;
 using BeatSaberOffsetMigrator.InputHelper;
 using BeatSaberOffsetMigrator.Utils;
+using BGLib.Polyglot;
 using UnityEngine.XR.OpenXR;
 using Zenject;
 
@@ -39,7 +40,7 @@ namespace BeatSaberOffsetMigrator.Installers
                 {
                     Container.BindInterfacesTo<UnsupportedVRInputHelper>().AsSingle().OnInstantiated<UnsupportedVRInputHelper>((_, instance )=>
                     {
-                        instance.ReasonIfNotWorking = "OpenVR API Library not installed";
+                        instance.ReasonIfNotWorking = Localization.Get("BSOM_ERR_OPENVR_NOT_INSTALLED");
                     });
                 }
             }
@@ -50,7 +51,10 @@ namespace BeatSaberOffsetMigrator.Installers
             }
             else
             {
-                Container.BindInterfacesTo<UnsupportedVRInputHelper>().AsSingle();
+                Container.BindInterfacesTo<UnsupportedVRInputHelper>().AsSingle().OnInstantiated<UnsupportedVRInputHelper>((ctx, instance) =>
+                {
+                    instance.ReasonIfNotWorking = Localization.Get("BSOM_ERR_UNSUPPORTED_RUNTIME");
+                });
             }
             
             Container.Bind<bool>().WithId(IsOVRBindingKey).FromInstance(isOvr);
