@@ -2,7 +2,7 @@
 LANGUAGE_THIS_EN,[LanguageName] in english,English,French,Spanish,German,Italian,Brazilian Portuguese,,Russian,,,Danish,,Swedish,Dutch,Polish,,Japanese,Simplified Chinese,Traditional Chinese,Korean,Czech,Hungarian,Română,Thai,,Hebrew,الإنجليزية,,Icelandic,Gaeilge
 LANGUAGE_THIS,,English,Français,Español,Deutsch,Italiano,Português-Brasileiro,,Русский,,,Dansk,,Svenska,Nederlands,Polski,,日本語,简体中文,繁體中文,한국어,Čeština,Magyar,Română,Thai,,עברית,الإنجليزية,,Íslenska,Gaeilge
 BSOM_GENERIC_CLOSE,,Close,,,,,,,,,,,,,,,,,关闭,,,,,,,,,,,,
-BSOM_GENERIC_UNKNOWN,,Unknown
+BSOM_GENERIC_UNKNOWN,,Unknown,,,,,,,,,,,,,,,,,未知,,,,,,,,,,,,
 BSOM_MENU_TITLE,,Offset Helper,,,,,,,,,,,,,,,,,偏移助手,,,,,,,,,,,,
 BSOM_MENU_BUTTON_HINT,,Migrate controller offsets,,,,,,,,,,,,,,,,,迁移手柄设置,,,,,,,,,,,,
 BSOM_SEETING_APPLY_OFFSET,,Apply Offset,,,,,,,,,,,,,,,,,应用偏移,,,,,,,,,,,,
@@ -34,65 +34,72 @@ BSOM_DOC_STEPS,,"- Copy your 1.29.1 EasyOffset preset into this install
 BSOM_DOC_THANKS,,Special thanks to nicoco007 for great help with parts of this mod!,,,,,,,,,,,,,,,,,特别感谢 nicoco007，为这个模组的一部分提供极大帮助！,,,,,,,,,,,,
 BSOM_DOC_SEE_README,,See README for advance migration and recording custom runtime offset,,,,,,,,,,,,,,,,,请参阅 README 了解高级迁移和记录自定义运行时偏移的方法,,,,,,,,,,,,
 BSOM_DOC_OPEN_README,,Open README in Browser,,,,,,,,,,,,,,,,,在浏览器中打开 README,,,,,,,,,,,,
-BSOM_ERR_UNSUPPORTED_RUNTIME,,Unsupported OpenXR runtime
-BSOM_ERR_OPENVR_NOT_INSTALLED,,OpenVR API Library not installed
+BSOM_ERR_UNSUPPORTED_RUNTIME,,Unsupported OpenXR runtime,,,,,,,,,,,,,,,,,不支持的 OpenXR 运行时,,,,,,,,,,,,
+BSOM_ERR_OPENVR_NOT_INSTALLED,,OpenVR API Library not installed,,,,,,,,,,,,,,,,,OpenVR API 运行库未安装,,,,,,,,,,,,
 BSOM_ERR_HELPER_NOT_FOUND,,"Failed to start helper process.
-Helper executable not found."
+Helper executable not found.",,,,,,,,,,,,,,,,,辅助程序无法启动，文件不存在,,,,,,,,,,,,
 BSOM_ERR_HELPER_EXITED,,"Helper process exited.
-Check logs for details before restarting the game.",,,,,,,,,,,,,,,,,
+Check logs for details before restarting the game.",,,,,,,,,,,,,,,,,"辅助程序已退出。
+检查日志获取详细信息后再重新启动游戏。",,,,,,,,,,,,
 BSOM_ERR_HELPER_START_FAILED,,"Failed to start helper process.
-Check logs for details before restarting the game."
-BSOM_ERR_CONTROLLERS_NOT_TRACKING,,Not all controllers are tracking normally!
+Check logs for details before restarting the game.",,,,,,,,,,,,,,,,,"辅助程序启动失败。
+检查日志获取详细信息后再重新启动游戏。",,,,,,,,,,,,
+BSOM_ERR_CONTROLLERS_NOT_TRACKING,,Not all controllers are tracking normally!,,,,,,,,,,,,,,,,,手柄未在正常追踪！,,,,,,,,,,,,
 BSOM_ERR_OPENVR_INIT_FAILED,,"Failed to initialize OpenVR
-Check logs for details",
-BSOM_ERR_OPENVR_CONTROLLER_MISSING,,Not all controllers are detected! Open and close SteamVR menu to refresh.
-BSOM_AM_CURRENT_RUNTIME_UNSUPPORTED,,Current runtime: {0}
-BSOM_AM_CURRENT_RUNTIME_SUPPORTED,,"Current runtime: {0}, using helper {1}"
-BSOM_AM_AM_NOT_ENABLED,,Applying Generated Offset
+Check logs for details",,,,,,,,,,,,,,,,,"OpenVR 初始化失败
+请检查日志获取详细信息",,,,,,,,,,,,
+BSOM_ERR_OPENVR_CONTROLLER_MISSING,,Not all controllers are detected! Open and close SteamVR menu to refresh.,,,,,,,,,,,,,,,,,手柄未被全部检测到！打开再关闭 SteamVR 菜单来刷新,,,,,,,,,,,,
+BSOM_AM_CURRENT_RUNTIME_UNSUPPORTED,,Current runtime: {0},,,,,,,,,,,,,,,,,当前运行时：{0},,,,,,,,,,,,
+BSOM_AM_CURRENT_RUNTIME_SUPPORTED,,"Current runtime: {0}, using helper {1}",,,,,,,,,,,,,,,,,当前运行时：{0}，使用 {1},,,,,,,,,,,,
+BSOM_AM_AM_NOT_ENABLED,,Applying Generated Offset,,,,,,,,,,,,,,,,,正在应用生成的偏移,,,,,,,,,,,,
 BSOM_AM_CONTROLLER_POSES,,"L Real: {0}
 R Real: {1}
 L Game: {2}
 R Game: {3}
 L Diff: {4}
-R Diff: {5}",
+R Diff: {5}",,,,,,,,,,,,,,,,,"现实 左：{0}
+现实 右：{1}
+游戏 左：{2}
+游戏 右：{3}
+差值 左：{4}
+差值 右：{5}",,,,,,,,,,,,
 BSOM_AM_OFFSET_APPLIED,,"Offset is applied, disable offset to see live numbers
 L: {0}
-R: {1}",
-BSOM_AM_SAVE_MODAL_SAVE,,Save
-BSOM_AM_SAVE_MODAL_SAVING,,Saving
-BSOM_AM_SAVE_MODAL_SAVED,,Saved
-BSOM_AM_SAVE_MODAL_INVALID,,Controllers are not Tracking.
-BSOM_AM_SAVE_MODAL_TEXT,,"After pressing the save button, try holding your controller still or put it somewhere stable with good tracking. Offset will be saved 10 seconds after pressing the button."
-BSOM_AM_SAVE_MODAL_COUNTDOWN,,Save in {0}
+R: {1}",,,,,,,,,,,,,,,,,"偏移已应用，禁用偏移以查看实时数据
+左：{0}
+右：{1}",,,,,,,,,,,,
+BSOM_AM_SAVE_MODAL_SAVE,,Save,,,,,,,,,,,,,,,,,保存,,,,,,,,,,,,
+BSOM_AM_SAVE_MODAL_SAVING,,Saving,,,,,,,,,,,,,,,,,保存中,,,,,,,,,,,,
+BSOM_AM_SAVE_MODAL_SAVED,,Saved,,,,,,,,,,,,,,,,,已保存,,,,,,,,,,,,
+BSOM_AM_SAVE_MODAL_INVALID,,Controllers are not Tracking.,,,,,,,,,,,,,,,,,手柄不在追踪。,,,,,,,,,,,,
+BSOM_AM_SAVE_MODAL_TEXT,,"After pressing the save button, try holding your controller still or put it somewhere stable with good tracking. Offset will be saved 10 seconds after pressing the button.",,,,,,,,,,,,,,,,,按下保存按钮后，尝试保持手柄静止，或将其放在跟踪良好的稳定位置。偏移将在按下按钮 10 秒后保存。,,,,,,,,,,,,
+BSOM_AM_SAVE_MODAL_COUNTDOWN,,Save in {0},,,,,,,,,,,,,,,,,{0} 秒后保存,,,,,,,,,,,,
 BSOM_AM_SAVE_MODAL_POST_INVALID,,"Controllers are not tracking
-Cannot save",
-BSOM_AM_SAVE_MODAL_SAMPLING,,Sampling Offset
-BSOM_AM_SAVE_MODAL_SUCCESS,,Offset saved successfully
-BSOM_AM_EXPORT_MODAL_EXPORT	,,Export
-BSOM_AM_EXPORT_MODAL_EXPORTED	,,Exported
-BSOM_AM_EXPORT_MODAL_EO_NOT_INSTALLED	,,EasyOffset is not installed.
-BSOM_AM_EXPORT_MODAL_EO_NOT_DISABLED,,EasyOffset needs to be disabled first.
-BSOM_AM_EXPORT_MODAL_INVALID,,Controllers are not Tracking.
-BSOM_AM_EXPORT_MODAL_TEXT,,"After pressing the export button, try holding your controller still or put it somewhere stable with good tracking. Offset will be exported to EasyOffset 10 seconds after pressing the button."
-BSOM_AM_EXPORT_MODAL_COUNTDOWN,,Export in {0}
+Cannot save",,,,,,,,,,,,,,,,,"无法保存
+手柄不在追踪",,,,,,,,,,,,
+BSOM_AM_SAVE_MODAL_SAMPLING,,Sampling Offset,,,,,,,,,,,,,,,,,正在采样偏移,,,,,,,,,,,,
+BSOM_AM_SAVE_MODAL_SUCCESS,,Offset saved successfully,,,,,,,,,,,,,,,,,偏移保存成功,,,,,,,,,,,,
+BSOM_AM_EXPORT_MODAL_EXPORT	,,Export,,,,,,,,,,,,,,,,,导出,,,,,,,,,,,,
+BSOM_AM_EXPORT_MODAL_EXPORTED	,,Exported,,,,,,,,,,,,,,,,,已导出,,,,,,,,,,,,
+BSOM_AM_EXPORT_MODAL_EO_NOT_INSTALLED	,,EasyOffset is not installed.,,,,,,,,,,,,,,,,,未安装 EasyOffset,,,,,,,,,,,,,
+BSOM_AM_EXPORT_MODAL_EO_NOT_DISABLED,,EasyOffset needs to be disabled first.,,,,,,,,,,,,,,,,,EasyOffset 需要被禁用,,,,,,,,,,,,
+BSOM_AM_EXPORT_MODAL_INVALID,,Controllers are not Tracking.,,,,,,,,,,,,,,,,,手柄不在追踪。,,,,,,,,,,,,
+BSOM_AM_EXPORT_MODAL_TEXT,,"After pressing the export button, try holding your controller still or put it somewhere stable with good tracking. Offset will be exported to EasyOffset 10 seconds after pressing the button.",,,,,,,,,,,,,,,,,按下保存按钮后，尝试保持手柄静止，或将其放在跟踪良好的稳定位置。偏移将在按下按钮 10 秒后导出至 EasyOffset。,,,,,,,,,,,,
+BSOM_AM_EXPORT_MODAL_COUNTDOWN,,Export in {0},,,,,,,,,,,,,,,,,{0} 秒后导出,,,,,,,,,,,,
 BSOM_AM_EXPORT_MODAL_POST_INVALID,,"Controllers are not tracking
-Cannot export",
-BSOM_AM_EXPORT_MODAL_SUCCESS,,Offset exported successfully
-BSOM_AM_EXPORT_MODAL_FAILED,,Failed to export
-BSOM_MAIN_UNSUPPORTED_RUNTIME,,Current runtime is not supported
-BSOM_MAIN_EO_PRESET_NONE,,None
-BSOM_MAIN_INFO_CUSTOM_OFFSET,,Using custom runtime offset:,
-BSOM_MAIN_INFO_DEVICE_OFFSET,,"Using offset for current device:
-"
+Cannot export",,,,,,,,,,,,,,,,,"无法导出
+手柄不在追踪",,,,,,,,,,,,
+BSOM_AM_EXPORT_MODAL_SUCCESS,,Offset exported successfully,,,,,,,,,,,,,,,,,偏移导出成功,,,,,,,,,,,,
+BSOM_AM_EXPORT_MODAL_FAILED,,Failed to export,,,,,,,,,,,,,,,,,导出失败,,,,,,,,,,,,
+BSOM_MAIN_UNSUPPORTED_RUNTIME,,Current runtime is not supported,,,,,,,,,,,,,,,,,不支持当前运行时,,,,,,,,,,,,
+BSOM_MAIN_EO_PRESET_NONE,,None,,,,,,,,,,,,,,,,,无,,,,,,,,,,,,
+BSOM_MAIN_INFO_CUSTOM_OFFSET,,Using custom runtime offset:,,,,,,,,,,,,,,,,,正在使用自定义运行时偏移：,,,,,,,,,,,,
+BSOM_MAIN_INFO_DEVICE_OFFSET,,Using offset for current device:,,,,,,,,,,,,,,,,,正在使用当前设备的偏移：,,,,,,,,,,,,
 BSOM_MAIN_INFO_OFFSET,,"L: {0}
-R: {1}"
+R: {1}",,,,,,,,,,,,,,,,,"左：{0}
+右：{1}",,,,,,,,,,,,
 BSOM_MAIN_INFO_RUNTIME_OFFSET_FAILED,,"<color=#FF0000>Failed to get runtime offset</color>
-Check logs for details.",
-BSOM_MAIN_INFO_EO_PRESET,,Using EasyOffset preset: {0}
-BSOM_MAIN_INFO_EO_NONE_PRESET,,No EasyOffset preset selected or failed to load selected preset.
-,,
-
-
-
-
-
+Check logs for details.",,,,,,,,,,,,,,,,,"<color=#FF0000>无法获取当前运行时偏移</color>
+检查日志获取详细信息",,,,,,,,,,,,
+BSOM_MAIN_INFO_EO_PRESET,,Using EasyOffset preset: {0},,,,,,,,,,,,,,,,,正在使用 EasyOffset 预设：{0},,,,,,,,,,,,
+BSOM_MAIN_INFO_EO_NONE_PRESET,,No EasyOffset preset selected or failed to load selected preset.,,,,,,,,,,,,,,,,,未选择 EasyOffset 预设，或无法加载已选择的预设,,,,,,,,,,,,
