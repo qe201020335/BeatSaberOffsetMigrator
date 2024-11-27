@@ -10,5 +10,11 @@
     "BSIPA": "^4.2.0",
     "BeatSaberMarkupLanguage": "^1.12.0",
     "SiraUtil": "^3.0.0"
+  },
+  "features": {
+    "SiraLocalizer.LocalizedPlugin": {
+      "id": "beat-saber-offset-migrator",
+      "resourcePath": "BeatSaberOffsetMigrator.Assets.Localization.csv"
+    }
   }
 }
