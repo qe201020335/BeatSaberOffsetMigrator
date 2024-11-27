@@ -1,27 +1,35 @@
 ﻿Polyglot,100,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 LANGUAGE_THIS_EN,[LanguageName] in english,English,French,Spanish,German,Italian,Brazilian Portuguese,,Russian,,,Danish,,Swedish,Dutch,Polish,,Japanese,Simplified Chinese,Traditional Chinese,Korean,Czech,Hungarian,Română,Thai,,Hebrew,الإنجليزية,,Icelandic,Gaeilge
 LANGUAGE_THIS,,English,Français,Español,Deutsch,Italiano,Português-Brasileiro,,Русский,,,Dansk,,Svenska,Nederlands,Polski,,日本語,简体中文,繁體中文,한국어,Čeština,Magyar,Română,Thai,,עברית,الإنجليزية,,Íslenska,Gaeilge
-BSOM_GENERIC_CLOSE,,Close,,,,,,,,,,,,,,,,,关闭
-BSOM_MENU_TITLE,,Offset Helper,,,,,,,,,,,,,,,,,偏移助手,,,,,,,,,,
-BSOM_MENU_BUTTON_HINT,,Migrate controller offsets,,,,,,,,,,,,,,,,,迁移手柄设置,,,,,,,,,,
-BSOM_SEETING_APPLY_OFFSET,,Apply Offset,,,,,,,,,,,,,,,,,应用偏移
-BSOM_SETTING_ADVANCE_MIGRATION,,Enable Advance Migration,,,,,,,,,,,,,,,,,启用高级迁移
-BSOM_SETTING_CUSTOM_OFFSET,,Use Custom Runtime Offset,,,,,,,,,,,,,,,,,使用自定运行时偏移
-BSOM_SETTING_EASYOFFSET_PRESET,,EasyOffset Preset,,,,,,,,,,,,,,,,,EasyOffset 预设,
-BSOM_BUTTON_REFRESH_PRESETS,,Refresh Presets,,,,,,,,,,,,,,,,,刷新预设,
-BSOM_BUTTON_REFRESH_OFFSET,,Refresh Offset,,,,,,,,,,,,,,,,,刷新偏移
-BSOM_AM_TITLE,,Advance Migration,,,,,,,,,,,,,,,,,高级迁移
-BSOM_AM_RECORD_UNITY,,Record Runtime Offset,,,,,,,,,,,,,,,,,记录运行时偏移
-BSOM_AM_SAVE_MODAL_TITLE,,Save Offset,,,,,,,,,,,,,,,,,保存偏移
-BSOM_AM_EXPORT_MODAL_TITLE,,Export Offset,,,,,,,,,,,,,,,,,导出偏移
-BSOM_DOC_TITLE,,HOW TO USE,,,,,,,,,,,,,,,,,如何使用
-BSOM_DOC_STEP_1,,- Copy your 1.29.1 EasyOffset preset into this install,,,,,,,,,,,,,,,,,
-BSOM_DOC_STEP_2,,- Install EasyOffset and disable it in the Mods settings menu
-BSOM_DOC_STEP_3,,- Select your 1.29.1 EasyOffset preset
-BSOM_DOC_STEP_4,,- Enable 'Apply Offset' WITHOUT turning on advance migration
-BSOM_DOC_STEP_5,,- Go to EasyOffset's settings menu and click 'Universal Import'
-BSOM_DOC_STEP_6,,- Enable EasyOffset and save the imported offset to a preset,,,,,
-BSOM_DOC_STEP_7,,- Uninstall this mod and have fun
-BSOM_DOC_THANKS,,Special thanks to nicoco007 for making part of this mod possible!
-BSOM_DOC_SEE_README,,See README for advance migration and recording custom runtime offset
-BSOM_DOC_OPEN_README,,Open README in Browser
+BSOM_GENERIC_CLOSE,,Close,,,,,,,,,,,,,,,,,关闭,,,,,,,,,,,,
+BSOM_MENU_TITLE,,Offset Helper,,,,,,,,,,,,,,,,,偏移助手,,,,,,,,,,,,
+BSOM_MENU_BUTTON_HINT,,Migrate controller offsets,,,,,,,,,,,,,,,,,迁移手柄设置,,,,,,,,,,,,
+BSOM_SEETING_APPLY_OFFSET,,Apply Offset,,,,,,,,,,,,,,,,,应用偏移,,,,,,,,,,,,
+BSOM_SETTING_ADVANCE_MIGRATION,,Enable Advance Migration,,,,,,,,,,,,,,,,,启用高级迁移,,,,,,,,,,,,
+BSOM_SETTING_CUSTOM_OFFSET,,Use Custom Runtime Offset,,,,,,,,,,,,,,,,,使用自定运行时偏移,,,,,,,,,,,,
+BSOM_SETTING_EASYOFFSET_PRESET,,EasyOffset Preset,,,,,,,,,,,,,,,,,EasyOffset 预设,,,,,,,,,,,,
+BSOM_BUTTON_REFRESH_PRESETS,,Refresh Presets,,,,,,,,,,,,,,,,,刷新预设,,,,,,,,,,,,
+BSOM_BUTTON_REFRESH_OFFSET,,Refresh Offset,,,,,,,,,,,,,,,,,刷新偏移,,,,,,,,,,,,
+BSOM_AM_TITLE,,Advance Migration,,,,,,,,,,,,,,,,,高级迁移,,,,,,,,,,,,
+BSOM_AM_RECORD_UNITY,,Record Runtime Offset,,,,,,,,,,,,,,,,,记录运行时偏移,,,,,,,,,,,,
+BSOM_AM_SAVE_BUTTON,,Save Offset,,,,,,,,,,,,,,,,,保存偏移,,,,,,,,,,,,
+BSOM_AM_EXPORT_BUTTON,,Export Offset,,,,,,,,,,,,,,,,,导出偏移,,,,,,,,,,,,
+BSOM_AM_SAVE_MODAL_TITLE,,Save Offset,,,,,,,,,,,,,,,,,保存偏移,,,,,,,,,,,,
+BSOM_AM_EXPORT_MODAL_TITLE,,Export Offset,,,,,,,,,,,,,,,,,导出偏移,,,,,,,,,,,,
+BSOM_DOC_TITLE,,HOW TO USE,,,,,,,,,,,,,,,,,如何使用,,,,,,,,,,,,
+BSOM_DOC_STEPS,,"- Copy your 1.29.1 EasyOffset preset into this install
+- Install EasyOffset and disable it in the Mods settings menu
+- Select your 1.29.1 EasyOffset preset
+- Enable 'Apply Offset' WITHOUT turning on advance migration
+- Go to EasyOffset's settings menu and click 'Universal Import'
+- Enable EasyOffset and save the imported offset to a preset
+- Uninstall this mod and have fun",,,,,,,,,,,,,,,,,"- 将你在 1.29.1 中使用的 EasyOffset 预设复制到当前这个游戏中
+- 安装 EasyOffset 并在模组设置菜单中将其禁用
+- 选择你的 1.29.1 EasyOffset 预设
+- 启用 “应用偏移”，但不要启用高级迁移选项
+- 在 EasyOffset 的设置菜单中点击 “Universal Import” 导入偏移
+- 启用 EasyOffset 并将导入的偏移保存到一个预设中
+- 卸载此模组然后爽玩！",,,,,,,,,,,,
+BSOM_DOC_THANKS,,Special thanks to nicoco007 for great help with parts of this mod!,,,,,,,,,,,,,,,,,特别感谢 nicoco007，为这个模组的一部分提供极大帮助！,,,,,,,,,,,,
+BSOM_DOC_SEE_README,,See README for advance migration and recording custom runtime offset,,,,,,,,,,,,,,,,,请参阅 README 了解高级迁移和记录自定义运行时偏移的方法,,,,,,,,,,,,
+BSOM_DOC_OPEN_README,,Open README in Browser,,,,,,,,,,,,,,,,,在浏览器中打开 README,,,,,,,,,,,,

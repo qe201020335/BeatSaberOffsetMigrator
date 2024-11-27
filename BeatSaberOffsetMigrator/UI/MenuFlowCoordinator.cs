@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using BeatSaberMarkupLanguage;
+using BGLib.Polyglot;
 using HMUI;
 using SiraUtil.Logging;
 using Zenject;
@@ -32,7 +33,7 @@ namespace BeatSaberOffsetMigrator.UI
             {
                 if (firstActivation)
                 {
-                    SetTitle("Offset Helper");
+                    SetTitle(Localization.Get("BSOM_MENU_TITLE"));
                     showBackButton = true;
                     ProvideInitialViewControllers(_mainViewController, leftScreenViewController: _documentationViewController);
                 }
