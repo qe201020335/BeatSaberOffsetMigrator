@@ -9,6 +9,7 @@ using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.EO;
 using BeatSaberOffsetMigrator.Patches;
 using BeatSaberOffsetMigrator.Utils;
+using BGLib.Polyglot;
 using SiraUtil.Logging;
 using TMPro;
 using Zenject;
@@ -75,7 +76,7 @@ public class MainViewController : BSMLAutomaticViewController
     }
 
     [UIValue("preset-list-items")]
-    private object[] _presetNames = ["None"];
+    private object[] _presetNames = [Localization.Get("BSOM_MAIN_EO_PRESET_NONE")];
 
     [UIComponent("preset-list")]
     private DropDownListSetting _presetList = null!;
@@ -86,11 +87,11 @@ public class MainViewController : BSMLAutomaticViewController
         get
         {
             var presetName = _easyOffsetManager.CurrentPresetName;
-            return string.IsNullOrWhiteSpace(presetName) ? "None" : presetName;
+            return string.IsNullOrWhiteSpace(presetName) ? Localization.Get("BSOM_MAIN_EO_PRESET_NONE") : presetName;
         }
         set
         {
-            if (value == "None")
+            if (value == Localization.Get("BSOM_MAIN_EO_PRESET_NONE"))
             {
                 _easyOffsetManager.LoadPreset(string.Empty);
             }
@@ -115,7 +116,7 @@ public class MainViewController : BSMLAutomaticViewController
         
         if (!_offsetHelper.IsRuntimeSupported)
         {
-            _infoText1.text = "<color=red>Current runtime is not supported</color>";
+            _infoText1.text = "<color=red>" + Localization.Get("BSOM_MAIN_UNSUPPORTED_RUNTIME") + "</color>";
             _infoText2.text = "";
         }
         
@@ -132,7 +133,7 @@ public class MainViewController : BSMLAutomaticViewController
     [UIAction("refresh_presets")]
     private void RefreshPresets()
     {
-        object[] list = ["None", .._easyOffsetManager.GetPresets()];
+        object[] list = [Localization.Get("BSOM_MAIN_EO_PRESET_NONE"), .._easyOffsetManager.GetPresets()];
         _presetNames = list;
         _presetList.Values = list;
         _presetList.UpdateChoices();
@@ -147,19 +148,24 @@ public class MainViewController : BSMLAutomaticViewController
         // Should use events and not polling, but I am too lazy
         if (UseCustomOffset)
         {
-            _builder.Append("Using custom runtime offset:\n" +
-                            $"L: {_offsetHelper.UnityOffsetL.Format()}\n" +
-                            $"R: {_offsetHelper.UnityOffsetR.Format()}");
+            _builder.Append(Localization.Get("BSOM_MAIN_INFO_CUSTOM_OFFSET")).Append("\n")
+                .Append(string.Format(Localization.Get("BSOM_MAIN_INFO_OFFSET"),
+                    _offsetHelper.UnityOffsetL.Format(),
+                    _offsetHelper.UnityOffsetR.Format()
+                ));
+
         }
         else if (_offsetHelper.RuntimeOffsetValid)
         {
-            _builder.Append("Using offset for current device\n" +
-                            $"L: {_offsetHelper.UnityOffsetL.Format()}\n" +
-                            $"R: {_offsetHelper.UnityOffsetR.Format()}");
+            _builder.Append(Localization.Get("BSOM_MAIN_INFO_DEVICE_OFFSET")).Append("\n")
+                .Append(string.Format(Localization.Get("BSOM_MAIN_INFO_OFFSET"),
+                    _offsetHelper.UnityOffsetL.Format(),
+                    _offsetHelper.UnityOffsetR.Format()
+                ));
         }
         else
         {
-            _builder.Append("<color=#FF0000>Failed to get runtime offset</color>\nCheck logs for details.");
+            _builder.Append(Localization.Get("BSOM_MAIN_INFO_RUNTIME_OFFSET_FAILED"));
         }
 
         _infoText1.text = _builder.ToString();
@@ -167,14 +173,13 @@ public class MainViewController : BSMLAutomaticViewController
         _builder.Clear();
         if (_easyOffsetManager.CurrentPresetName != string.Empty)
         {
-            _builder.Append($"Using EasyOffset preset: {_easyOffsetManager.CurrentPresetName}\n");
+            _builder.Append(string.Format(Localization.Get("BSOM_MAIN_INFO_EO_PRESET"), _easyOffsetManager.CurrentPresetName)).Append("\n");
             var preset = _easyOffsetManager.CurrentPreset!;
-            _builder.Append($"L: {preset.LeftOffset.Format()}\n" +
-                            $"R: {preset.RightOffset.Format()}");
+            _builder.Append(string.Format(Localization.Get("BSOM_MAIN_INFO_OFFSET"), preset.LeftOffset.Format(), preset.RightOffset.Format()));
         }
         else
         {
-            _builder.Append("No EasyOffset preset selected or failed to load selected preset.");
+            _builder.Append(Localization.Get("BSOM_MAIN_INFO_EO_NONE_PRESET"));
         }
         
         _infoText2.text = _builder.ToString();

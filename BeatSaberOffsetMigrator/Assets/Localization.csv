@@ -79,15 +79,18 @@ BSOM_AM_EXPORT_MODAL_POST_INVALID,,"Controllers are not tracking
 Cannot export",
 BSOM_AM_EXPORT_MODAL_SUCCESS,,Offset exported successfully
 BSOM_AM_EXPORT_MODAL_FAILED,,Failed to export
+BSOM_MAIN_UNSUPPORTED_RUNTIME,,Current runtime is not supported
+BSOM_MAIN_EO_PRESET_NONE,,None
+BSOM_MAIN_INFO_CUSTOM_OFFSET,,Using custom runtime offset:,
+BSOM_MAIN_INFO_DEVICE_OFFSET,,"Using offset for current device:
+"
+BSOM_MAIN_INFO_OFFSET,,"L: {0}
+R: {1}"
+BSOM_MAIN_INFO_RUNTIME_OFFSET_FAILED,,"<color=#FF0000>Failed to get runtime offset</color>
+Check logs for details.",
+BSOM_MAIN_INFO_EO_PRESET,,Using EasyOffset preset: {0}
+BSOM_MAIN_INFO_EO_NONE_PRESET,,No EasyOffset preset selected or failed to load selected preset.
 ,,
-
-
-
-
-
-
-
-
 
 
 
