@@ -4,6 +4,8 @@
 
 A mod to migrate controller settings between versions.
 
+Special thanks to [nicoco007](https://github.com/nicoco007) for great help with parts of this mod!
+
 ## The Idea
 ### The Runtime-to-Saber Offset
 Controller poses are read directly from VR runtime, OpenVR or OculusVR, thus the reading will not be affected by the *internal* offsets done by Unity, Unity plugins and the game devs.
@@ -59,10 +61,31 @@ Due to the game migrating to OpenXR, the runtime used will be the default OpenXR
 - OculusVR: Meta Quest Link PC app -> Settings -> General -> OpenXR Runtime
 - Other runtimes such as VDXR are not supported.
 
-> [!IMPORTANT]
-> The same runtime must be used for both versions of the game to ensure the offset can be migrated correctly.
-
 ## How To Use
+### Simple Migration
+The simple migration only works on higher versions and will only migrate EasyOffset presets made on 1.29.1 or lower. 
+
+See the [advance migration](#how-to-use-advance-migration) for a direction agnostic advance migration.
+> [!IMPORTANT]
+> The same runtime must be used for both versions of the game to ensure the offset can be migrated correctly. 
+> See the [above](#what-runtime-am-i-using) for how to check your runtime.
+
+0. On 1.29.1, save your EasyOffset settings into a preset if not already
+1. Copy your 1.29.1 EasyOffset preset over to your higher version game (for example 1.39.1)
+2. Install EasyOffset and disable it in the Mods settings menu
+3. Select your 1.29.1 EasyOffset preset in the `Offset Helper` menu
+4. Enable `Apply Offset` WITHOUT turning on advance migration
+5. Go to EasyOffset's settings menu and click `Universal Import`
+6. Enable EasyOffset and save the imported offset to a preset
+7. Uninstall this mod and have fun! (Delete `Plugins\BeatSaberOffsetMigrator.dll`)
+
+### Record Custom Runtime Offset
+1. In the `Offset Helper` menu, turn off `Apply Offset` and enable `Advance Migration`
+2. In the `Advance Migration` menu, turn on `Record Runtime Offset`
+3. Press `Save Offset` to save the runtime offset
+   - ALL the warnings in the advance migration section apply here, see below
+
+## How To Use (Advance Migration)
 > [!IMPORTANT]  
 > Due to the game migrated to OpenXR on 1.29.4+, all base game poses are sampled from Unity's XR plugin. 
 > This means the timing of the mod reading the poses from runtime and using them in-game is out of sync.
@@ -77,7 +100,9 @@ Due to the game migrating to OpenXR, the runtime used will be the default OpenXR
 > [!WARNING]
 > On newer versions, if you are using OculusVR, **DO NOT** re-center/reset your view after you have launched the game!
 
-A typical use case is to migrate the offset from older versions to newer versions (1.29.1 and 1.38.0 will be used as examples).
+The advance migration will save the Runtime-to-Saber offset and restore it regardless of game versions. 
+
+Most people DO NOT need to use advance migration. The [simple migration](#simple-migration) is enough for most of the cases.
 
 ### Record Offset (For example, on 1.29.1)
 0. Make sure you have read the [notes](#things-to-note) and [warnings](#how-to-use) above
@@ -86,6 +111,7 @@ A typical use case is to migrate the offset from older versions to newer version
 3. Disable all menu pointer smoothing mods
 4. Make sure the base game Room Offset is all zero
 5. Click the `OFFSET HELPER` button found in the main menu
+   - Enable on `Advance Migration` if the option is available
 6. You should see the pose of your controllers and in-game sabers
    - On older versions, the "Diff" values should not change as you move your controllers.
    - On newer versions, due to the timing issue mentioned above, moving the controllers will cause the diff values to fluctuate.
@@ -102,6 +128,9 @@ After saving the offset, it is recommended to verify the offset is saved correct
    - On newer versions, due to the timing issue mentioned above, if the controllers are not physically still, the sabers will move slightly as the `Apply Offset` option is toggled
 
 ### Restore Offset (For example, on 1.38.0)
+> [!IMPORTANT]
+> The same runtime must be used for both versions of the game to ensure the offset can be migrated correctly.
+> See the [above](#what-runtime-am-i-using) for how to check your runtime.
 0. Make sure you have read the [notes](#things-to-note) and [warnings](#how-to-use) above
 1. Grab a [release](https://github.com/qe201020335/BeatSaberOffsetMigrator/releases) for your game version and install it
 2. Copy the configuration file from the game you just saved the offset to the game you want to restore the offset
@@ -112,6 +141,7 @@ After saving the offset, it is recommended to verify the offset is saved correct
 5. Disable all menu pointer smoothing mods
 6. Make sure base-game controller settings and room offset are all zero
 7. Click the `OFFSET HELPER` button found on the main menu
+   - Enable on `Advance Migration` if the option is available
 8. You should see the pose of your controllers and in-game sabers
    - On older versions, the "Diff" values should not change as you move your controllers.
    - On newer versions, due to the timing issue mentioned above, moving the controllers will cause the diff values to fluctuate.
