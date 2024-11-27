@@ -2,7 +2,7 @@
   <bool-setting text="Apply Offset" value="ApplyOffset" apply-on-change="true" bind-value="true" interactable="~supported"/>
   <bool-setting text="Enable Advance Migration" value="EnableAdvance" apply-on-change="true" bind-value="true"/>
   <bool-setting text="Use Custom Runtime Offset" value="UseCustomOffset" apply-on-change="true" bind-value="true"/>
-  <dropdown-list-setting text="EasyOffset Preset" id="preset-list" options="preset-list-items" value="preset-list-choice" apply-on-change="true" bind-value="true"/>
+  <dropdown-list-setting text="EasyOffset Preset" id="preset-list" options="preset-list-items" value="preset-list-choice" apply-on-change="true" bind-value="true" interactable="~supported"/>
   <horizontal vertical-fit="MinSize" min-height="18">
     <text id="info_text1" italics="false"/>
   </horizontal>
@@ -10,7 +10,7 @@
     <text id="info_text2" italics="false"/>
   </horizontal>
   <horizontal spacing="2">
-    <button text="Refresh Presets" on-click="refresh_presets"/>
-    <button text="Refresh Offset" on-click="refresh_offset"/>
+    <button text="Refresh Presets" on-click="refresh_presets" interactable="~supported"/>
+    <button text="Refresh Offset" on-click="refresh_offset" interactable="~supported"/>
   </horizontal>
 </vertical>
