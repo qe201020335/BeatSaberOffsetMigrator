@@ -66,12 +66,14 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable, ITi
     {
         LoadControllers();
         _vrPlatformHelper.inputFocusWasCapturedEvent += OnInputFocusCaptured;
+        _vrPlatformHelper.controllersDidChangeReferenceEvent += OnControllerReferenceChanged;
         Application.onBeforeRender += (this as ITickable).Tick;
     }
 
     void IDisposable.Dispose()
     {
         _vrPlatformHelper.inputFocusWasCapturedEvent -= OnInputFocusCaptured;
+        _vrPlatformHelper.controllersDidChangeReferenceEvent -= OnControllerReferenceChanged;
         Application.onBeforeRender -= (this as ITickable).Tick;
     }
 
@@ -94,6 +96,12 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable, ITi
     private void OnInputFocusCaptured()
     {
         _logger.Debug("Input focused, loading controllers");
+        LoadControllers();
+    }
+    
+    private void OnControllerReferenceChanged()
+    {
+        _logger.Debug("Controller reference changed, loading controllers");
         LoadControllers();
     }
 
