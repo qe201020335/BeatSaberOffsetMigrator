@@ -35,7 +35,7 @@
                 <text text="~export_modal_text" bold="false" align="Center" word-wrapping="true"/>
             </horizontal>
             <horizontal pref-width="50" horizontal-fit="PreferredSize">
-                <button id="close_export_modal_button" text="Close" on-click="close_modal"/>
+                <button id="close_export_modal_button" text-key="BSOM_GENERIC_CLOSE" on-click="close_modal"/>
                 <action-button id="export_button" text="~export_button_text" on-click="export_offset"/>
             </horizontal>
         </vertical>
