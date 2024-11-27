@@ -1,6 +1,7 @@
 ﻿using System;
 using BeatSaberMarkupLanguage.MenuButtons;
 using BeatSaberMarkupLanguage;
+using BGLib.Polyglot;
 using SiraUtil.Logging;
 using Zenject;
 
@@ -25,7 +26,7 @@ namespace BeatSaberOffsetMigrator.UI
         
         public MenuButtonManager()
         {
-            _menuButton = new MenuButton("Offset Helper", "Migrate controller offsets", OnMenuButtonClick);
+            _menuButton = new MenuButton(Localization.Get("BSOM_MENU_TITLE"), Localization.Get("BSOM_MENU_BUTTON_HINT"), OnMenuButtonClick);
         }
 
         public void Initialize()

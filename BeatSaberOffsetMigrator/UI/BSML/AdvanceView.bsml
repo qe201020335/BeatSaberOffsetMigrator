@@ -1,26 +1,26 @@
 <vertical child-control-height='false' child-expand-height="false" spacing="2" pad-top="2" pad-left="4" pad-right="4" bg="round-rect-panel" bg-color="#0000007F" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
     <horizontal pad="0">
-        <text align="Center" text="Advance Migration" font-size="6" italics="false"/>
+        <text align="Center" text-key="BSOM_AM_TITLE" font-size="6" italics="false"/>
     </horizontal>
-    <bool-setting text="Record Unity Offset" value="RecordUnityOffset" apply-on-change="true" bind-value="true" interactable="~supported"/>
+    <bool-setting text-key="BSOM_AM_RECORD_UNITY" value="RecordUnityOffset" apply-on-change="true" bind-value="true" interactable="~supported"/>
     <horizontal vertical-fit="PreferredSize" preferred-height="40">
         <text id="info_text" italics="false"/>
     </horizontal>
     <horizontal spacing="8">
-        <button id="save_modal_button" text="Save Offset" on-click="open_save"/>
-        <button id="export_modal_button" text="Export Offset" on-click="open_export"/>
+        <button id="save_modal_button" text-key="BSOM_AM_SAVE_BUTTON" on-click="open_save"/>
+        <button id="export_modal_button" text-key="BSOM_AM_EXPORT_BUTTON" on-click="open_export"/>
     </horizontal>
 
     <modal id="save_modal" size-delta-x="100" size-delta-y="40" show-event="show_save" hide-event="hide" click-off-closes="false" move-to-center="true" >
         <vertical pref-width="100" horizontal-fit="PreferredSize" pref-height="40" vertical-fit="PreferredSize" spacing="1" background="round-rect-panel">
             <horizontal>
-                <text text="Save Offset" font-size="6" align="Center"/>
+                <text text-key="BSOM_AM_SAVE_MODAL_TITLE" font-size="6" align="Center"/>
             </horizontal>
             <horizontal pad-left="4" pad-right="4">
                 <text text="~save_modal_text" bold="false" align="Center" word-wrapping="true"/>
             </horizontal>
             <horizontal pref-width="50" horizontal-fit="PreferredSize">
-                <button id="close_save_modal_button" text="Close" on-click="close_modal"/>
+                <button id="close_save_modal_button" text-key="BSOM_GENERIC_CLOSE" on-click="close_modal"/>
                 <action-button id="save_button" text="~save_button_text" on-click="save_offset"/>
             </horizontal>
         </vertical>
@@ -29,13 +29,13 @@
     <modal id="export_modal" size-delta-x="100" size-delta-y="40" show-event="show_export" hide-event="hide" click-off-closes="false" move-to-center="true" >
         <vertical pref-width="100" horizontal-fit="PreferredSize" pref-height="40" vertical-fit="PreferredSize" spacing="1" background="round-rect-panel">
             <horizontal>
-                <text text="Export Offset" font-size="6" align="Center"/>
+                <text text-key="BSOM_AM_EXPORT_MODAL_TITLE" font-size="6" align="Center"/>
             </horizontal>
             <horizontal pad-left="4" pad-right="4">
                 <text text="~export_modal_text" bold="false" align="Center" word-wrapping="true"/>
             </horizontal>
             <horizontal pref-width="50" horizontal-fit="PreferredSize">
-                <button id="close_export_modal_button" text="Close" on-click="close_modal"/>
+                <button id="close_export_modal_button" text-key="BSOM_GENERIC_CLOSE" on-click="close_modal"/>
                 <action-button id="export_button" text="~export_button_text" on-click="export_offset"/>
             </horizontal>
         </vertical>

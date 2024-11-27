@@ -1,5 +1,6 @@
 ﻿using System;
 using BeatSaberOffsetMigrator.Utils;
+using BGLib.Polyglot;
 using SiraUtil.Logging;
 using UnityEngine;
 using UnityEngine.XR;
@@ -53,7 +54,7 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable, ITi
         {
             _logger.Error("Failed to initialize OpenVR");
             Working = false;
-            ReasonIfNotWorking = "Failed to initialize OpenVR\nCheck logs for details";
+            ReasonIfNotWorking = Localization.Get("BSOM_ERR_OPENVR_INIT_FAILED");
         }
         else
         {
@@ -85,7 +86,7 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable, ITi
              || _poses[_rightControllerIndex].eTrackingResult != ETrackingResult.Running_OK)
         {
             Working = false;
-            ReasonIfNotWorking = "Not all controllers are tracking normally!";
+            ReasonIfNotWorking = Localization.Get("BSOM_ERR_CONTROLLERS_NOT_TRACKING");
         }
         else
         {
@@ -134,7 +135,7 @@ public class OpenVRInputHelper: IVRInputHelper, IInitializable, IDisposable, ITi
             _logger.Warn("Not enough controllers!");
             _controllersFound = false;
             Working = false;
-            ReasonIfNotWorking = "Not all controllers are detected! Open and close SteamVR menu to refresh.";
+            ReasonIfNotWorking = Localization.Get("BSOM_ERR_OPENVR_CONTROLLER_MISSING");
         }
         else
         {
