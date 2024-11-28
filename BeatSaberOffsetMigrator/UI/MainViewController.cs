@@ -7,6 +7,7 @@ using BeatSaberMarkupLanguage.Components.Settings;
 using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.EO;
+using BeatSaberOffsetMigrator.InputHelper;
 using BeatSaberOffsetMigrator.Installers;
 using BeatSaberOffsetMigrator.Patches;
 using BeatSaberOffsetMigrator.Utils;
@@ -29,6 +30,9 @@ public class MainViewController : BSMLAutomaticViewController
 
     [Inject]
     private readonly OffsetHelper _offsetHelper = null!;
+    
+    [Inject]
+    private readonly IVRInputHelper _vrInputHelper = null!;
 
     [Inject]
     private readonly EasyOffsetManager _easyOffsetManager = null!;
@@ -123,9 +127,9 @@ public class MainViewController : BSMLAutomaticViewController
             _infoText1.text = "<color=red>" + Localization.Get("BSOM_ERR_FPFC") + "</color>";
             _infoText2.text = "";
         }
-        else if (!_offsetHelper.IsRuntimeSupported)
+        else if (!_vrInputHelper.Supported)
         {
-            _infoText1.text = "<color=red>" + Localization.Get("BSOM_MAIN_UNSUPPORTED_RUNTIME") + "</color>";
+            _infoText1.text = "<color=red>" + _vrInputHelper.ReasonIfNotWorking + "</color>";
             _infoText2.text = "";
         }
         
