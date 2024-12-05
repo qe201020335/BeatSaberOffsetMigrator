@@ -3,7 +3,7 @@
   "id": "BeatSaberOffsetMigrator",
   "name": "BeatSaberOffsetMigrator",
   "author": "qe201020335",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "",
   "gameVersion": "1.39.1",
   "dependsOn": {
