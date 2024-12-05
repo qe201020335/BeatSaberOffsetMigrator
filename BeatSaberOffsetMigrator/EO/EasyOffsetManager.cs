@@ -45,7 +45,22 @@ public class EasyOffsetManager
     public IList<string> GetPresets()
     {
         _logger.Debug("Getting preset files from UserData");
-        return Directory.GetFiles(EasyOffsetPresetsPath, "*.json").Select(Path.GetFileName).ToArray();
+        if (!Directory.Exists(EasyOffsetPresetsPath))
+        {
+            _logger.Warn("EasyOffset presets directory does not exist");
+            return Array.Empty<string>();
+        }
+
+        try
+        {
+            return Directory.GetFiles(EasyOffsetPresetsPath, "*.json").Select(Path.GetFileName).ToArray();
+        }
+        catch (Exception e)
+        {
+            _logger.Critical("Failed to get easyoffet preset files: " + e.Message);
+            _logger.Critical(e);
+            return Array.Empty<string>();
+        }
     }
     
     public bool LoadPreset(string name)
