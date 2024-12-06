@@ -73,6 +73,8 @@ flowchart LR;
 强烈建议安装[社区翻译](https://github.com/Auros/SiraLocalizer/releases)模组以查看游戏内的中文模组界面
 
 0. 在 1.29.1 上，将您的 EasyOffset 设置保存到一个预设中（如果尚未保存）。
+   - 如果您之前没有使用 EasyOffset，您可以将您的设置导入到 EasyOffset 中，然后将其保存为一个预设。
+   - 详见 [EasyOffset 文档](https://github.com/Reezonate/EasyOffset?tab=readme-ov-file#import)
 1. 将您的 1.29.1 EasyOffset 预设复制到新版本的游戏中（例如 1.39.1）。
 2. 安装 EasyOffset 并在模组设置菜单中禁用它。
 3. 在 `偏移助手` 菜单中选择您的 1.29.1 EasyOffset 预设。
@@ -104,7 +106,7 @@ flowchart LR;
 
 高级迁移将保存 运行时到光剑 的偏移，并在不同游戏版本间恢复它。
 
-大多数人不需要使用高级迁移。[简单迁移](#简单迁移)已经足以应对大多数情况。
+**大多数人不需要使用高级迁移。[简单迁移](#简单迁移)已经足以应对大多数情况, _即使您之前没有使用 EasyOffset_。**
 
 强烈建议安装[社区翻译](https://github.com/Auros/SiraLocalizer/releases)模组以查看游戏内的中文模组界面
 

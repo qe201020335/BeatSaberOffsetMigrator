@@ -71,6 +71,8 @@ See the [advance migration](#how-to-use-advance-migration) for a direction agnos
 > See the [above](#what-runtime-am-i-using) for how to check your runtime.
 
 0. On 1.29.1, save your EasyOffset settings into a preset if not already
+   - If you were not using EasyOffset, you can import your settings into EasyOffset and then save them into a preset. 
+   - See the [EasyOffset documentation](https://github.com/Reezonate/EasyOffset?tab=readme-ov-file#import)
 1. Copy your 1.29.1 EasyOffset preset over to your higher version game (for example 1.39.1)
 2. Install EasyOffset and disable it in the Mods settings menu
 3. Select your 1.29.1 EasyOffset preset in the `Offset Helper` menu
@@ -102,7 +104,8 @@ See the [advance migration](#how-to-use-advance-migration) for a direction agnos
 
 The advance migration will save the Runtime-to-Saber offset and restore it regardless of game versions. 
 
-Most people DO NOT need to use advance migration. The [simple migration](#simple-migration) is enough for most of the cases.
+**Most people DO NOT need to use advance migration. 
+The [simple migration](#simple-migration) is enough for most of the cases, _even if you were not using EasyOffset_.**
 
 ### Record Offset (For example, on 1.29.1)
 0. Make sure you have read the [notes](#things-to-note) and [warnings](#how-to-use) above
