@@ -32,6 +32,7 @@ Re-applying the offset is as simple as overwriting the in-game saber pose with (
 This offset can then be imported by [EasyOffset](https://github.com/Reezonate/EasyOffset) via its universal import feature.
 
 ## Requirements
+These can all be installed using your preferred mod installer.
 - BSIPA
 - BSML
 - SiraUtil
@@ -74,6 +75,7 @@ See the [advance migration](#how-to-use-advance-migration) for a direction agnos
    - If you were not using EasyOffset, you can import your settings into EasyOffset and then save them into a preset. 
    - See the [EasyOffset documentation](https://github.com/Reezonate/EasyOffset?tab=readme-ov-file#import)
 1. Copy your 1.29.1 EasyOffset preset over to your higher version game (for example 1.39.1)
+   - The preset folder is at `UserData\EasyOffset\Preset\`
 2. Install EasyOffset and disable it in the Mods settings menu
 3. Select your 1.29.1 EasyOffset preset in the `Offset Helper` menu
 4. Enable `Apply Offset` WITHOUT turning on advance migration

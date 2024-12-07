@@ -32,6 +32,7 @@ flowchart LR;
 该偏移量可以通过 [EasyOffset](https://github.com/Reezonate/EasyOffset) 的通用导入功能进行导入。
 
 ## 模组依赖
+这些都可以通过模组安装器安装。
 - BSIPA
 - BSML
 - SiraUtil
@@ -76,6 +77,7 @@ flowchart LR;
    - 如果您之前没有使用 EasyOffset，您可以将您的设置导入到 EasyOffset 中，然后将其保存为一个预设。
    - 详见 [EasyOffset 文档](https://github.com/Reezonate/EasyOffset?tab=readme-ov-file#import)
 1. 将您的 1.29.1 EasyOffset 预设复制到新版本的游戏中（例如 1.39.1）。
+   - 预设文件夹在 `UserData\EasyOffset\Preset\`
 2. 安装 EasyOffset 并在模组设置菜单中禁用它。
 3. 在 `偏移助手` 菜单中选择您的 1.29.1 EasyOffset 预设。
 4. 启用 `应用偏移`，但不要开启高级迁移选项。
