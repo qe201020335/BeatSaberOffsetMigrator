@@ -2,9 +2,11 @@
 [![en](https://img.shields.io/badge/lang-en-blue.svg?style=for-the-badge)](/README.md)
 [![zh](https://img.shields.io/badge/语言-中文-red.svg?style=for-the-badge)](/README.zh.md)
 
-A mod to migrate controller settings between versions.
+A Beat Saber mod that migrates controller settings between versions.
 
 Special thanks to [nicoco007](https://github.com/nicoco007) for great help with parts of this mod!
+
+## Click [HERE](#simple-migration) for HOW TO USE
 
 ## The Idea
 ### The Runtime-to-Saber Offset
@@ -76,12 +78,13 @@ See the [advance migration](#how-to-use-advance-migration) for a direction agnos
    - See the [EasyOffset documentation](https://github.com/Reezonate/EasyOffset?tab=readme-ov-file#import)
 1. Copy your 1.29.1 EasyOffset preset over to your higher version game (for example 1.39.1)
    - The preset folder is at `UserData\EasyOffset\Preset\`
-2. Install EasyOffset and disable it in the Mods settings menu
-3. Select your 1.29.1 EasyOffset preset in the `Offset Helper` menu
-4. Enable `Apply Offset` WITHOUT turning on advance migration
-5. Go to EasyOffset's settings menu and click `Universal Import`
-6. Enable EasyOffset and save the imported offset to a preset
-7. Uninstall this mod and have fun! (Delete `Plugins\BeatSaberOffsetMigrator.dll`)
+2. Download and install the [latest release](https://github.com/qe201020335/BeatSaberOffsetMigrator/releases/latest) of this mod
+3. Install EasyOffset and disable it in the Mods settings menu
+4. Select your 1.29.1 EasyOffset preset in the `Offset Helper` menu
+5. Enable `Apply Offset` WITHOUT turning on advance migration
+6. Go to EasyOffset's settings menu and click `Universal Import`
+7. Enable EasyOffset and save the imported offset to a preset
+8. Uninstall this mod and have fun! (Delete `Plugins\BeatSaberOffsetMigrator.dll` and `UserData\BeatSaberOffsetMigrator`)
 
 ### Record Custom Runtime Offset
 1. In the `Offset Helper` menu, turn off `Apply Offset` and enable `Advance Migration`

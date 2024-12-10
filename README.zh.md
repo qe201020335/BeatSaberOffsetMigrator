@@ -6,6 +6,8 @@
 
 特别感谢 [nicoco007](https://github.com/nicoco007)，为这个模组的一部分提供极大帮助！
 
+## [点我](#简单迁移)查看如何使用
+
 ## 原理概念
 ### 运行时到光剑的姿态偏移量
 手柄的姿态（Pose）直接从 VR 运行时（OpenVR 或 OculusVR）中读取，因此读取的姿态不会受到 Unity、Unity 插件或游戏开发者的 *内部* 偏移影响。
@@ -78,12 +80,13 @@ flowchart LR;
    - 详见 [EasyOffset 文档](https://github.com/Reezonate/EasyOffset?tab=readme-ov-file#import)
 1. 将您的 1.29.1 EasyOffset 预设复制到新版本的游戏中（例如 1.39.1）。
    - 预设文件夹在 `UserData\EasyOffset\Preset\`
-2. 安装 EasyOffset 并在模组设置菜单中禁用它。
-3. 在 `偏移助手` 菜单中选择您的 1.29.1 EasyOffset 预设。
-4. 启用 `应用偏移`，但不要开启高级迁移选项。
-5. 前往 EasyOffset 的设置菜单并点击 `Universal Import`。
-6. 启用 EasyOffset 并将导入的偏移保存到一个预设中。
-7. 卸载此模组然后爽玩！（删除 `Plugins\BeatSaberOffsetMigrator.dll`）
+2. 下载并安装本模组的 [最新版本](https://github.com/qe201020335/BeatSaberOffsetMigrator/releases/latest)
+3. 安装 EasyOffset 并在模组设置菜单中禁用它。
+4. 在 `偏移助手` 菜单中选择您的 1.29.1 EasyOffset 预设。
+5. 启用 `应用偏移`，但不要开启高级迁移选项。
+6. 前往 EasyOffset 的设置菜单并点击 `Universal Import`。
+7. 启用 EasyOffset 并将导入的偏移保存到一个预设中。
+8. 卸载此模组然后爽玩！（删除 `Plugins\BeatSaberOffsetMigrator.dll` 和 `UserData\BeatSaberOffsetMigrator`）
 
 ### 记录自定运行时偏移
 1. 在 `偏移助手` 菜单中，关闭 `应用偏移` 并启用 `高级迁移`。
