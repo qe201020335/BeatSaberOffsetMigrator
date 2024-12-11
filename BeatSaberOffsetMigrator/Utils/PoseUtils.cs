@@ -37,6 +37,12 @@ public static class PoseUtils
         return $"({pose.position.x:F3}, {pose.position.y:F3}, {pose.position.z:F3}) " + 
                $"({euler.x:F1}, {euler.y:F1}, {euler.z:F1})";
     }
+    
+    public static string FormatQ(this Pose pose)
+    {
+        return $"({pose.position.x}, {pose.position.y}, {pose.position.z}) " + 
+               $"({pose.rotation.x}, {pose.rotation.y}, {pose.rotation.z}, {pose.rotation.w})";
+    }
 
     public static Pose Mirror(this Pose pose)
     {

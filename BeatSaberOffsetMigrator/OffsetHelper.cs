@@ -142,6 +142,7 @@ public class OffsetHelper: IInitializable, IDisposable
         UnityOffsetR = right;
         UnityOffsetLReversed = CalculateOffset(left, Pose.identity);
         UnityOffsetRReversed = CalculateOffset(right, Pose.identity);
+        _logger.Debug($"Reversed Runtime Offsets L: {UnityOffsetLReversed.FormatQ()}, R: {UnityOffsetRReversed.FormatQ()}");
     }
     
     internal IEnumerator SaveUnityOffset()
