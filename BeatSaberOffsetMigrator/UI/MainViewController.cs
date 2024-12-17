@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components.Settings;
+using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberOffsetMigrator.Configuration;
 using BeatSaberOffsetMigrator.EO;
 using BeatSaberOffsetMigrator.InputHelper;
 using BeatSaberOffsetMigrator.Installers;
-using BeatSaberOffsetMigrator.Patches;
 using BeatSaberOffsetMigrator.Utils;
 using BGLib.Polyglot;
 using SiraUtil.Logging;
 using TMPro;
+using UnityEngine.UI;
 using Zenject;
 
 namespace BeatSaberOffsetMigrator.UI;
@@ -43,6 +41,9 @@ public class MainViewController : BSMLAutomaticViewController
     private bool _parsed = false;
     
     private readonly StringBuilder _builder = new StringBuilder(256);
+    
+    [UIParams]
+    private BSMLParserParams _parserParams = null!;
     
     [UIValue("ApplyOffset")]
     private bool ApplyOffset
@@ -189,5 +190,64 @@ public class MainViewController : BSMLAutomaticViewController
         }
         
         _infoText2.text = _builder.ToString();
+    }
+
+    protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
+    {
+        base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
+        CloseModal();
+    }
+
+    [UIValue("AvailablePresetSlots")]
+    private int[] AvailablePresetSlots => [1, 2, 3, 4, 5];
+
+    [UIAction("FormatSlot")]
+    private string FormatSlot(int slot) => $"Custom Profile {slot}";
+
+    [UIValue("ProfileSlot")]
+    private int ProfileSlot { get; set; } = 1;
+
+    [UIValue("UseAlternativeHandling")]
+    private bool UseAlternativeHandling { get; set; } = false;
+    
+    private string _exportButtonText = "Export";
+    
+    [UIValue("export_button_text")]
+    private string ExportButtonText
+    {
+        get => _exportButtonText;
+        set
+        {
+            _exportButtonText = value;
+            NotifyPropertyChanged();
+        }
+    }
+
+    [UIAction("open_export")]
+    private void OpenExportModal()
+    {
+        if (!_parsed) return;
+        ExportButtonText = "Export";
+        _exportButton.interactable = true;
+        _parserParams.EmitEvent("show_export");
+    }
+
+    [UIAction("close_modal")]
+    private void CloseModal()
+    {
+        if (!_parsed) return;
+        _parserParams.EmitEvent("hide");
+    }
+    
+    [UIComponent("export_button")]
+    private Button _exportButton = null!;
+
+    [UIAction("export_offset")]
+    private void ExportOffset()
+    {
+        _logger.Notice($"Exporting current offset to profile slot {ProfileSlot} with {UseAlternativeHandling} Alternative Handling");
+        //TODO Export offset
+        _exportButton.interactable = false;
+        ExportButtonText = "Exported";
     }
 }
