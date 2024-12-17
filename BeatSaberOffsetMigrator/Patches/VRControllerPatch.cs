@@ -22,7 +22,7 @@ public class VRControllerPatch: IAffinity
     [Inject]
     private readonly EasyOffsetManager _easyOffsetManager = null!;
 
-    internal bool UseGeneratedOffset { get; set; } = false;
+    internal bool UseGeneratedOffset => !_config.AdvanceMigration;
 
     private Dictionary<XRNode, bool> _wasApplying = new Dictionary<XRNode, bool>(2);
 

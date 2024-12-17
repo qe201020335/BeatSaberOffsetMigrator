@@ -57,9 +57,6 @@ namespace BeatSaberOffsetMigrator.UI
         [Inject]
         private readonly EasyOffsetExporter _easyOffsetExporter = null!;
         
-        [Inject]
-        private readonly VRControllerPatch _vrControllerPatch = null!;
-        
         private bool _parsed = false;
 
         private bool _modalShowing = false;
@@ -249,14 +246,14 @@ namespace BeatSaberOffsetMigrator.UI
             {
                 _infoTextBuilder.Append("<color=#FF0000>").Append(_vrInputHelper.ReasonIfNotWorking).Append("</color>\n");
             }
-            else if (_config.ApplyOffset && !_vrControllerPatch.UseGeneratedOffset)
+            else if (_config.ApplyOffset && _config.AdvanceMigration)
             {
                 var info = string.Format(Localization.Get("BSOM_AM_OFFSET_APPLIED"), _config.LeftOffset.Format(), _config.RightOffset.Format());
                 _infoTextBuilder.Append(info).Append("\n");
             }
             else
             {
-                if (_config.ApplyOffset && _vrControllerPatch.UseGeneratedOffset)
+                if (_config.ApplyOffset && !_config.AdvanceMigration)
                 {
                     _infoTextBuilder.Append(Localization.Get("BSOM_AM_AM_NOT_ENABLED")).Append("\n");
                 }

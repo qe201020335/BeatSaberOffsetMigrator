@@ -36,9 +36,6 @@ public class MainViewController : BSMLAutomaticViewController
 
     [Inject]
     private readonly EasyOffsetManager _easyOffsetManager = null!;
-
-    [Inject]
-    private readonly VRControllerPatch _vrControllerPatch = null!;
     
     [Inject(Id = AppInstaller.IsFPFCBindingKey)]
     private readonly bool _isFpfc;
@@ -66,18 +63,15 @@ public class MainViewController : BSMLAutomaticViewController
     [UIValue("supported")]
     private bool OffsetSupported => _offsetHelper.IsRuntimeSupported;
 
-    private bool _enableAdvance = false;
-
     [UIValue("EnableAdvance")]
     public bool EnableAdvance
     {
-        get => _enableAdvance;
+        get => _config.AdvanceMigration;
         set
         {
-            _vrControllerPatch.UseGeneratedOffset = !value;
-            if (_enableAdvance != value)
+            if (_config.AdvanceMigration != value)
             {
-                _enableAdvance = value;
+                _config.AdvanceMigration = value;
                 NotifyPropertyChanged();
             }
         }
@@ -133,7 +127,6 @@ public class MainViewController : BSMLAutomaticViewController
             _infoText2.text = "";
         }
         
-        EnableAdvance = false; // will also reset the value in the VRControllerPatch
         RefreshPresets();
     }
     

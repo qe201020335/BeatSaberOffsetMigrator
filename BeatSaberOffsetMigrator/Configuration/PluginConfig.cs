@@ -16,6 +16,8 @@ namespace BeatSaberOffsetMigrator.Configuration
         public static PluginConfig Instance { get; set; } = null!;
 
         public virtual bool ApplyOffset { get; set; } = false;
+        
+        public virtual bool AdvanceMigration { get; set; } = false;
 
         protected virtual Vector3 LeftOffsetPosition { get; set; } = Vector3.zero;
         

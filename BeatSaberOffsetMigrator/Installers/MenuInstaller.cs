@@ -20,7 +20,7 @@ namespace BeatSaberOffsetMigrator.Installers
             Container.BindInterfacesAndSelfTo<MainViewController>().FromNewComponentAsViewController().AsSingle();
             Container.BindInterfacesAndSelfTo<MenuFlowCoordinator>().FromNewComponentOnNewGameObject().AsSingle();
             Container.BindInterfacesTo<MenuButtonManager>().AsSingle();
-            Container.BindInterfacesAndSelfTo<VRControllerPatch>().AsSingle();
+            Container.BindInterfacesTo<VRControllerPatch>().AsSingle();
             Container.BindInterfacesAndSelfTo<EasyOffsetExporter>().AsSingle();
         }
     }
