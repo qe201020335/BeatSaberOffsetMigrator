@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components.Settings;
 using BeatSaberMarkupLanguage.Parser;
@@ -34,6 +35,9 @@ public class MainViewController : BSMLAutomaticViewController
 
     [Inject]
     private readonly EasyOffsetManager _easyOffsetManager = null!;
+
+    [Inject]
+    private readonly OffsetExporter _offsetExporter = null!;
     
     [Inject(Id = AppInstaller.IsFPFCBindingKey)]
     private readonly bool _isFpfc;
@@ -199,13 +203,13 @@ public class MainViewController : BSMLAutomaticViewController
     }
 
     [UIValue("AvailablePresetSlots")]
-    private int[] AvailablePresetSlots => [1, 2, 3, 4, 5];
+    private int[] AvailablePresetSlots => _offsetExporter.CustomProfileIndices.ToArray();
 
     [UIAction("FormatSlot")]
-    private string FormatSlot(int slot) => $"Custom Profile {slot}";
+    private string FormatSlot(int slot) => _offsetExporter.GetProfileName(slot);
 
     [UIValue("ProfileSlot")]
-    private int ProfileSlot { get; set; } = 1;
+    private int ProfileSlot { get; set; } = 0;
 
     [UIValue("UseAlternativeHandling")]
     private bool UseAlternativeHandling { get; set; } = false;
@@ -245,8 +249,7 @@ public class MainViewController : BSMLAutomaticViewController
     [UIAction("export_offset")]
     private void ExportOffset()
     {
-        _logger.Notice($"Exporting current offset to profile slot {ProfileSlot} with {UseAlternativeHandling} Alternative Handling");
-        //TODO Export offset
+        _offsetExporter.ExportOffset(ProfileSlot, UseAlternativeHandling);
         _exportButton.interactable = false;
         ExportButtonText = "Exported";
     }
