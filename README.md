@@ -93,6 +93,11 @@ See the [advance migration](#how-to-use-advance-migration) for a direction agnos
    - ALL the warnings in the advance migration section apply here, see below
 
 ## How To Use (Advance Migration)
+> [!IMPORTANT]
+> **Most people DO NOT need to use advance migration. Don't use Advance Migration if you don't have to.**
+>
+> **The [simple migration](#simple-migration) is enough for most of the cases, _even if you were not using EasyOffset_.**
+
 > [!IMPORTANT]  
 > Due to the game migrated to OpenXR on 1.29.4+, all base game poses are sampled from Unity's XR plugin. 
 > This means the timing of the mod reading the poses from runtime and using them in-game is out of sync.
@@ -109,8 +114,6 @@ See the [advance migration](#how-to-use-advance-migration) for a direction agnos
 
 The advance migration will save the Runtime-to-Saber offset and restore it regardless of game versions. 
 
-**Most people DO NOT need to use advance migration. 
-The [simple migration](#simple-migration) is enough for most of the cases, _even if you were not using EasyOffset_.**
 
 ### Record Offset (For example, on 1.29.1)
 0. Make sure you have read the [notes](#things-to-note) and [warnings](#how-to-use) above
